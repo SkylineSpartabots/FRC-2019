@@ -2,8 +2,6 @@ package frc.robot.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.Date;
 
 /**
@@ -36,9 +34,11 @@ public class SimplePID {
 	private double derivative;// D term
 	public double kp, ki, kd; // tuning parameters, the hardest part of PID
 	private double prevTime = 0;
-	private PrintWriter writer;
+	private Logger PIDlog;
 	private boolean log;
+	//TODO: Add log files in usb mnt
 	/**
+	 * 
 	 * @param pidsource
 	 *            Object implementing PIDSource, contains method returning input
 	 * @param setpoint
@@ -58,23 +58,23 @@ public class SimplePID {
 		this.kp = kp;
 		this.ki = ki;
 		this.kd = kd;
-		this.log = log;			
-		try{
-			File f = new File("//home//lvuser//deploy//" + filename + ".txt");
-			f.createNewFile();
-			f.setWritable(true);
-			writer = new PrintWriter(f);
-		}	catch (IOException | SecurityException  | NullPointerException ex){
-			System.out.println("SimplePID File Exception: " + ex.getMessage());
-			this.log = false; 
-		}
+		this.log = log;	
 		if(log)	{
-			writer.println("Vernier Format 2");
-			writer.println("Untiled.clmb 5/5/2019 9:37:43 .");
-			writer.println("Data Set");
-			writer.println("Time	Input	Output	Error");
-			writer.println("x	y	z	w\n");
-			writer.flush();
+			try{
+				PIDlog = new Logger(filename + ".txt");
+			}	catch (NullPointerException ex){
+				System.out.println("SimplePID File Exception: Log Enabled without Valid FilePath" + ex.getMessage());
+				this.log = false;
+			}
+		}
+		if(this.log)	{
+			PIDlog.writeNewData("Vernier Format 2");
+			PIDlog.writeNewData("Vernier Format 2");
+			PIDlog.writeNewData("Untiled.clmb 5/5/2019 9:37:43 .");
+			PIDlog.writeNewData("Data Set");
+			PIDlog.writeNewData("Time	Input	Output	Error");
+			PIDlog.writeNewData("x	y	z	w\n");
+			PIDlog.flushLogData();
 		}
 	}
 	public double getOutput() {
@@ -111,22 +111,24 @@ public class SimplePID {
 		outputMin = min;
 	}
 	/**
-	 * PID Algorithm calculates in this TimerTask created by PIDMain
+	 * PID Algorithm calculates 
 	 * 
 	 * @author NeilHazra
 	 *
 	 */
 	public void writeNewData(double seconds, double input, double output, double error) {
-		writer.println("" + seconds + "\t" + input + "\t" + output + "\t" + error);
+		PIDlog.writeNewData("" + seconds + "\t" + input + "\t" + output + "\t" + error);
 	}
 	public void flushLogData(){
-		if(this.log = true)	writer.flush();	
+		if(this.log = true)	PIDlog.flushLogData();	
 	}
 	 public void resetPID() {
 		proportional = 0;
 		integral = 0;
 		derivative = 0;
-		flushLogData();
+		if(log)	{
+			flushLogData();
+		}
 	}
 
 	public double compute()	{

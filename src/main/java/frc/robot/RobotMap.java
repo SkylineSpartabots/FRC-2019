@@ -14,6 +14,12 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
+
+  //Socket Comm Ports
+  public static String JetsonStaticIP = "10.29.76.86";
+  public static int JetsonCommPort = 5804;
+  public static String SystemLogPath = "//home//lvuser//deploy//";
+
   // For example to map the left and right motors, you could define the
   // following variables to use with your drivetrain subsystem.
   // public static int leftMotor = 1;
