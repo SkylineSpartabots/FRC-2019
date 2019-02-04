@@ -14,19 +14,26 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
+  //Robot Constants
+  public static double TrackWidth = 0.5; //in meters
+  public static double MaxVelocity = 0; //m/s
+  public static double EncoderDistancePerPule  = 0.1; //Distance robot travels in one pulse
+  //Path Trajectories
+  public static String AutoTrajectoryPathLocations = "//home//lvuser//deploy//";
 
   //Socket Comm Ports
   public static String JetsonStaticIP = "10.29.76.86";
   public static int JetsonCommPort = 5804;
   public static String SystemLogPath = "//home//lvuser//deploy//";
+  //Motor Ports
+  public static int leftFrontDriveMotor = 1;
+  public static int leftBackDriveMotor = 2;
+  public static int rightFrontDriveMotor = 3;
+  public static int rightBackDriveMotor = 4;
 
-  // For example to map the left and right motors, you could define the
-  // following variables to use with your drivetrain subsystem.
-  // public static int leftMotor = 1;
-  // public static int rightMotor = 2;
-
-  // If you are using multiple modules, make sure to define both the port
-  // number and the module. For example you with a rangefinder:
-  // public static int rangefinderPort = 1;
-  // public static int rangefinderModule = 1;
+  //Encoder Ports
+  public static int RightWheelEncoderA = 1;
+  public static int RightWheelEncoderB = 2;
+  public static int LeftWheelEncoderA = 3;
+  public static int LeftWheelEncoderB = 4;
 }

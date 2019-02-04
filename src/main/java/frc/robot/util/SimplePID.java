@@ -1,8 +1,6 @@
 package frc.robot.util;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Date;
+
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * PID Controller Object
@@ -36,7 +34,6 @@ public class SimplePID {
 	private double prevTime = 0;
 	private Logger PIDlog;
 	private boolean log;
-	//TODO: Add log files in usb mnt
 	/**
 	 * 
 	 * @param pidsource
@@ -130,10 +127,12 @@ public class SimplePID {
 			flushLogData();
 		}
 	}
-
 	public double compute()	{
-		long currentTime = System.currentTimeMillis();
-		double dt = (currentTime - prevTime)/1000.0;
+		if(pidsource == null) {
+			return -216;
+		}
+		double currentTime = Timer.getFPGATimestamp();
+		double dt = (currentTime - prevTime);
 		input = pidsource.getInput();
 		error = input - setpoint;
 		proportional = kp * error;

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.util.*;
 
@@ -26,8 +27,10 @@ import frc.robot.util.*;
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI m_oi;
-  public static Logger SystemLog = new Logger(RobotMap.SystemLogPath);
+  public static Logger SystemLog;
+  public static RPS rps;
   public static JetsonComm JetsonWrapper;
+  public static DriveTrain driveTrain;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -38,9 +41,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    SystemLog = new Logger(RobotMap.SystemLogPath);
     m_oi = new OI();
+    rps = new RPS();
     JetsonWrapper = new JetsonComm();
-
+    driveTrain = new DriveTrain();
 
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -57,7 +62,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    
+    SystemLog.flushLogData();
   }
 
   /**
@@ -87,6 +92,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    rps.reset();
     m_autonomousCommand = m_chooser.getSelected();
 
     /*

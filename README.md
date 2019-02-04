@@ -13,7 +13,7 @@ The Spartabots' FRC robot code for the DESTINATION: DEEP SPACE game!
 3. Make a new WPILib Java project and clone this repository
 
 ### Libraries
-We use two 3rd party libraries:
+We use three 3rd party libraries:
 - [CTRE Phoenix](http://www.ctr-electronics.com/control-system/hro.html#product_tabs_technical_resources) (Currently using v5.12.0)
 - [NavX](https://pdocs.kauailabs.com/navx-mxp/software/roborio-libraries/java/) (Currently using v3.1.344)
 
