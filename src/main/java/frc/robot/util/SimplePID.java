@@ -74,6 +74,8 @@ public class SimplePID {
 			PIDlog.flushLogData();
 		}
 	}
+
+
 	public double getOutput() {
 		return output;
 	}

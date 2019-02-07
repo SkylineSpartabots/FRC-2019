@@ -25,15 +25,19 @@ public class RobotMap {
   public static String JetsonStaticIP = "10.29.76.86";
   public static int JetsonCommPort = 5804;
   public static String SystemLogPath = "//home//lvuser//deploy//";
-  //Motor Ports
-  public static int leftFrontDriveMotor = 1;
-  public static int leftBackDriveMotor = 2;
-  public static int rightFrontDriveMotor = 3;
-  public static int rightBackDriveMotor = 4;
 
-  //Encoder Ports
-  public static int RightWheelEncoderA = 1;
-  public static int RightWheelEncoderB = 2;
-  public static int LeftWheelEncoderA = 3;
-  public static int LeftWheelEncoderB = 4;
+  public static int rightFrontDrivePort = 0;
+  public static int rightMidDrivePort = 1;
+  public static int rightBackDrivePort = 2;
+
+  public static int leftFrontDrivePort = 3;
+  public static int leftMidDrivePort = 4;
+  public static int leftBackDrivePort = 5;
+
+  public static int masterElevatorPort = 6;
+  public static int slaveElevatorPort = 7;
+
+  public static int[] elevatorEncoderPorts = {0, 1};
+  public static int elevatorLimitSwitch = 2;
+
 }
