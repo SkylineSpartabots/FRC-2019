@@ -14,6 +14,7 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
+
   public static int rightFrontDrivePort = 0;
   public static int rightMidDrivePort = 1;
   public static int rightBackDrivePort = 2;
@@ -27,6 +28,5 @@ public class RobotMap {
 
   public static int[] elevatorEncoderPorts = {0, 1};
   public static int elevatorLimitSwitch = 2;
-
 
 }

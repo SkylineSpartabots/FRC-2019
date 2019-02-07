@@ -77,6 +77,8 @@ public class SimplePID {
 			writer.flush();
 		}
 	}
+
+
 	public double getOutput() {
 		return output;
 	}
