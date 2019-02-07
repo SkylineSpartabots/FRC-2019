@@ -7,7 +7,14 @@
 
 package frc.robot;
 
+
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.ElevatorManualAscent;
+import frc.robot.commands.ElevatorManualDescent;
+import frc.robot.commands.ElevatorToPosition;
+import frc.robot.commands.ElevatorToPosition.ElevatorPositions;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -44,11 +51,13 @@ public class OI {
 
   public Joystick driveStick;
 
-  public enum Button {
-		A(1),B(2),X(3),Y(4),LBumper(8),RBumper(7);
-		
-		public final int number;
-		
+	public Joystick secondStick;
+
+	public enum Button {
+		RBumper(6), LBumper(5), A(1), B(2), X(3), Y(4), RightJoystickBtn(10), LeftJoystickBtn(9);
+
+		private final int number;
+
 		Button(int number) {
 			this.number = number;
 		}
