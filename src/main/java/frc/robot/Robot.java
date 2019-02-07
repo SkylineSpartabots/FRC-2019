@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.util.*;
 
 /**
@@ -28,6 +29,7 @@ public class Robot extends TimedRobot {
   public static RPS rps;
   public static JetsonComm JetsonWrapper;
   public static DriveTrain driveTrain;
+  public static Intake intake;
   public static Elevator elevator;
   public static OI oi;
 

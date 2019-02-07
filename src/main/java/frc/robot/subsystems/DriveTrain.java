@@ -8,6 +8,8 @@
 package frc.robot.subsystems;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.commands.DriveWithJoystick;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -21,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * An example subsystem. You can replace me with your own Subsystem.
  */
 public class DriveTrain extends Subsystem {
-	WPI_TalonSRX leftFront, leftBack, rightFront, rightBack;
+	WPI_TalonSRX leftFront, leftBack, rightFront, rightBack, leftMid, rightMid;
 	SpeedControllerGroup left, right;
 	Encoder encoderLeft, encoderRight;
 	DifferentialDrive m_drive;
@@ -31,12 +33,15 @@ public class DriveTrain extends Subsystem {
 		leftBack = new WPI_TalonSRX(RobotMap.leftBackDrivePort);
 		rightFront = new WPI_TalonSRX(RobotMap.rightFrontDrivePort);
 		rightBack = new WPI_TalonSRX(RobotMap.rightBackDrivePort);
+		rightMid = new WPI_TalonSRX(RobotMap.rightMidDrivePort);
+		leftMid = new WPI_TalonSRX(RobotMap.leftMidDrivePort);
 
-    encoderRight = new Encoder(RobotMap.rightWheelEncoderPorts[0], RobotMap.rightWheelEncoderPorts[1]);
-    encoderLeft = new Encoder(RobotMap.leftWheelEncoderPorts[0], RobotMap.leftWheelEncoderPorts[1]);
 
-    encoderLeft.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
-    encoderRight.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
+    		encoderRight = new Encoder(RobotMap.rightWheelEncoderPorts[0], RobotMap.rightWheelEncoderPorts[1]);
+    		encoderLeft = new Encoder(RobotMap.leftWheelEncoderPorts[0], RobotMap.leftWheelEncoderPorts[1]);
+
+    		encoderLeft.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
+    		encoderRight.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
 		// Set in brake mode
 		leftFront.setNeutralMode(NeutralMode.Brake);
 		leftBack.setNeutralMode(NeutralMode.Brake);
@@ -86,5 +91,6 @@ public class DriveTrain extends Subsystem {
 		// Set the default command for a subsystem here.
 		// setDefaultCommand(new MySpecialCommand());
 		//setDefaultCommand(new ArcadeDriveWithJoystick());
+		setDefaultCommand(new DriveWithJoystick());
 	}
 }
