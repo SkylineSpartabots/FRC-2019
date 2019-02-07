@@ -27,13 +27,13 @@ public class DriveTrain extends Subsystem {
 	DifferentialDrive m_drive;
 
 	public DriveTrain() {    
-		leftFront = new WPI_TalonSRX(RobotMap.leftFrontDriveMotor);
-		leftBack = new WPI_TalonSRX(RobotMap.leftBackDriveMotor);
-		rightFront = new WPI_TalonSRX(RobotMap.rightFrontDriveMotor);
-		rightBack = new WPI_TalonSRX(RobotMap.rightBackDriveMotor);
+		leftFront = new WPI_TalonSRX(RobotMap.leftFrontDrivePort);
+		leftBack = new WPI_TalonSRX(RobotMap.leftBackDrivePort);
+		rightFront = new WPI_TalonSRX(RobotMap.rightFrontDrivePort);
+		rightBack = new WPI_TalonSRX(RobotMap.rightBackDrivePort);
 
-    encoderRight = new Encoder(RobotMap.RightWheelEncoderA, RobotMap.RightWheelEncoderB);
-    encoderLeft = new Encoder(RobotMap.LeftWheelEncoderA, RobotMap.LeftWheelEncoderB);
+    encoderRight = new Encoder(RobotMap.rightWheelEncoderPorts[0], RobotMap.rightWheelEncoderPorts[1]);
+    encoderLeft = new Encoder(RobotMap.leftWheelEncoderPorts[0], RobotMap.leftWheelEncoderPorts[1]);
 
     encoderLeft.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
     encoderRight.setDistancePerPulse(RobotMap.EncoderDistancePerPule);

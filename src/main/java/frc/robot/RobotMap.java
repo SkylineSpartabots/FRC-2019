@@ -34,10 +34,14 @@ public class RobotMap {
   public static int leftMidDrivePort = 4;
   public static int leftBackDrivePort = 5;
 
+  public static int[] rightWheelEncoderPorts = {0, 1};
+  public static int[] leftWheelEncoderPorts = {2, 3};
+
   public static int masterElevatorPort = 6;
   public static int slaveElevatorPort = 7;
 
-  public static int[] elevatorEncoderPorts = {0, 1};
+  public static int[] elevatorEncoderPorts = {4, 5};
   public static int elevatorLimitSwitch = 2;
+
 
 }
