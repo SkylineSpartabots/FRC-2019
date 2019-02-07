@@ -36,4 +36,14 @@ public class RobotMap {
   public static int RightWheelEncoderB = 2;
   public static int LeftWheelEncoderA = 3;
   public static int LeftWheelEncoderB = 4;
+
+  public static int leftIntakeMotor = 5;
+  public static int rightIntakeMotor = 7;
+  public static int centerIntakeMotor = 6;
+
+  public static int rightIntakeSolenoid = 1;
+  public static int leftIntakeSolenoid = 2;
+
+  public static int driveStick = 0;
+  public static int secondStick = 1;
 }

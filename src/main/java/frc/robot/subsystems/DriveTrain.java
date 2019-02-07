@@ -8,6 +8,8 @@
 package frc.robot.subsystems;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.commands.DriveWithJoystick;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -86,5 +88,6 @@ public class DriveTrain extends Subsystem {
 		// Set the default command for a subsystem here.
 		// setDefaultCommand(new MySpecialCommand());
 		//setDefaultCommand(new ArcadeDriveWithJoystick());
+		setDefaultCommand(new DriveWithJoystick());
 	}
 }

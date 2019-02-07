@@ -13,8 +13,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.*;
 import frc.robot.util.*;
 
 /**
@@ -31,6 +30,7 @@ public class Robot extends TimedRobot {
   public static RPS rps;
   public static JetsonComm JetsonWrapper;
   public static DriveTrain driveTrain;
+  public static Intake intake;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
