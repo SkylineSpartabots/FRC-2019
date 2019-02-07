@@ -33,8 +33,8 @@ public class RollIn extends Command {
   @Override
   protected void execute() {
     //power = 0.75;       if you choose to make it set to a specific power, then another command has to be made for RollOut, this way it's just in the joystick's triggers.
-    rTrigger = Robot.m_oi.driveStick.getRawAxis(OI.Axis.RTrigger.getBtnNumber());
-    lTrigger = Robot.m_oi.driveStick.getRawAxis(OI.Axis.LTrigger.getBtnNumber());
+    rTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.RTrigger.getBtnNumber());
+    lTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.LTrigger.getBtnNumber());
     power = rTrigger - lTrigger;
     Robot.intake.setIntakePower(power);
   }

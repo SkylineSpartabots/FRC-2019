@@ -31,8 +31,8 @@ public class DriveWithJoystick extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    turn = Robot.m_oi.driveStick.getRawAxis(OI.Axis.RX.getBtnNumber());
-    forward = Robot.m_oi.driveStick.getRawAxis(OI.Axis.LY.getBtnNumber());
+    turn = Robot.oi.driveStick.getRawAxis(OI.Axis.RX.getBtnNumber());
+    forward = Robot.oi.driveStick.getRawAxis(OI.Axis.LY.getBtnNumber());
     Robot.driveTrain.arcadeDrive(forward, turn);    
   }
 

@@ -23,16 +23,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * An example subsystem. You can replace me with your own Subsystem.
  */
 public class DriveTrain extends Subsystem {
-	WPI_TalonSRX leftFront, leftBack, rightFront, rightBack;
+	WPI_TalonSRX leftFront, leftBack, rightFront, rightBack, leftMid, rightMid;
 	SpeedControllerGroup left, right;
 	Encoder encoderLeft, encoderRight;
 	DifferentialDrive m_drive;
 
 	public DriveTrain() {    
-		leftFront = new WPI_TalonSRX(RobotMap.leftFrontDriveMotor);
-		leftBack = new WPI_TalonSRX(RobotMap.leftBackDriveMotor);
-		rightFront = new WPI_TalonSRX(RobotMap.rightFrontDriveMotor);
-		rightBack = new WPI_TalonSRX(RobotMap.rightBackDriveMotor);
+		leftFront = new WPI_TalonSRX(RobotMap.leftFrontDrivePort);
+		leftBack = new WPI_TalonSRX(RobotMap.leftBackDrivePort);
+		rightFront = new WPI_TalonSRX(RobotMap.rightFrontDrivePort);
+		rightBack = new WPI_TalonSRX(RobotMap.rightBackDrivePort);
+		rightMid = new WPI_TalonSRX(RobotMap.rightMidDrivePort);
+		leftMid = new WPI_TalonSRX(RobotMap.leftMidDrivePort);
 
     encoderRight = new Encoder(RobotMap.RightWheelEncoderA, RobotMap.RightWheelEncoderB);
     encoderLeft = new Encoder(RobotMap.LeftWheelEncoderA, RobotMap.LeftWheelEncoderB);
