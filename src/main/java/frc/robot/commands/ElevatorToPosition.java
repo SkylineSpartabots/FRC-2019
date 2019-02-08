@@ -15,20 +15,34 @@ import frc.robot.util.SimplePID;
 public class ElevatorToPosition extends Command {
 
   public enum ElevatorPositions{
-    CARGO_HOLD (100), 
-    ROCKET_SECOND (1000), 
-    ROCKET_THIRD (10000);
-
-    private final int encoderPosition;
-
-    ElevatorPositions(int encoderPosition){
-      this.encoderPosition = encoderPosition;
+      CARGO_SHIP,
+      ROCKET_FIRST,
+      ROCKET_SECOND, 
+      ROCKET_THIRD;
     }
-    public int getValue(){
-      return this.encoderPosition;
+  
+
+  private enum ElevatorControlPositions{
+      DOWN_POSITION (0), //rocket first level hatch and cargo ship hatch
+      CARGO_SHIP_CARGO (10),
+      ROCKET_SHIP_FIRST_CARGO (100),
+      ROCKET_SHIP_SECOND_HATCH (1000),
+      ROCKET_SHIP_SECOND_CARGO (10000),
+      ROCKET_SHIP_THIRD_HATCH (100000),
+      ROCKET_SHIP_THIRD_CARGO (1000000);
+
+      private final int position;
+
+      private ElevatorControlPositions(int position){
+        this.position = position;
+      }
+
+      private int getPosition(){
+        return this.position;
+      }
     }
 
-  }
+  
 
   public final static int ELEVATOR_THRESHOLD = 50;
   public final static int CLOCK_MAX = 5;;
@@ -53,8 +67,45 @@ public class ElevatorToPosition extends Command {
 
   public ElevatorToPosition(ElevatorPositions elevatorPosition) {
     requires(Robot.elevator);
+
+  
     
-    elevatorTarget = elevatorPosition.getValue();
+    switch (elevatorPosition) {
+      case CARGO_SHIP:
+        if(Robot.intake.isCargo()){
+          elevatorTarget = ElevatorControlPositions.CARGO_SHIP_CARGO.getPosition();
+        } else{
+          elevatorTarget = ElevatorControlPositions.DOWN_POSITION.getPosition();
+        }
+        break;
+
+      case ROCKET_FIRST:
+        if(Robot.intake.isCargo()){
+          elevatorTarget = ElevatorControlPositions.ROCKET_SHIP_FIRST_CARGO.getPosition();
+        } else{
+          elevatorTarget = ElevatorControlPositions.DOWN_POSITION.getPosition();
+        }
+        break;
+
+      case ROCKET_SECOND:
+        if(Robot.intake.isCargo()){
+          elevatorTarget = ElevatorControlPositions.ROCKET_SHIP_SECOND_CARGO.getPosition();
+        } else{
+          elevatorTarget = ElevatorControlPositions.ROCKET_SHIP_SECOND_HATCH.getPosition();
+        }
+        break;
+
+      case ROCKET_THIRD:
+        if(Robot.intake.isCargo()){
+          elevatorTarget = ElevatorControlPositions.ROCKET_SHIP_THIRD_CARGO.getPosition();
+        } else{
+          elevatorTarget = ElevatorControlPositions.ROCKET_SHIP_THIRD_HATCH.getPosition();
+        }
+        break;
+      
+      default:
+        elevatorTarget = ElevatorControlPositions.DOWN_POSITION.getPosition();
+    }
 
     elevatorSource = new PIDSource(){
     

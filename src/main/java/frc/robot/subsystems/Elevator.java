@@ -25,8 +25,8 @@ public class Elevator extends Subsystem {
   public Encoder elevatorEncoder;
   private DigitalInput elevatorLimitSwitch;
 
-  private final static int MAX_ENCODER_LIMIT = 1000; //TODO: Add limit
-  private final static int MIN_ENCODER_LIMIT = 0; 
+  public final static int MAX_ENCODER_LIMIT = 1000; //TODO: Add limit
+  public final static int MIN_ENCODER_LIMIT = 0; 
 
   public Elevator(){
     elevatorMaster = new WPI_TalonSRX(RobotMap.masterElevatorPort);
@@ -34,6 +34,9 @@ public class Elevator extends Subsystem {
 
     elevatorMaster.setNeutralMode(NeutralMode.Brake);
     elevatorSlave.setNeutralMode(NeutralMode.Brake);
+
+    elevatorMaster.setInverted(false);
+    elevatorSlave.setInverted(false);
 
     elevatorSlave.follow(elevatorMaster);
 
@@ -50,7 +53,10 @@ public class Elevator extends Subsystem {
     } else{
         elevatorMaster.set(0);
     }
-    
+
+    if(getLimitSwitchState()){
+        elevatorEncoder.reset();
+    }
   }
 
   /**

@@ -15,6 +15,7 @@ import frc.robot.commands.ElevatorManualAscent;
 import frc.robot.commands.ElevatorManualDescent;
 import frc.robot.commands.ElevatorToPosition;
 import frc.robot.commands.ElevatorToPosition.ElevatorPositions;
+import frc.robot.subsystems.DriveTrain;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -51,7 +52,8 @@ public class OI {
 
   public Joystick driveStick;
 
-	public Joystick secondStick;
+  public Joystick secondStick;
+   
 
 	public enum Button {
 		RBumper(6), LBumper(5), A(1), B(2), X(3), Y(4), RightJoystickBtn(10), LeftJoystickBtn(9);
@@ -82,11 +84,19 @@ public class OI {
     }
 
   }
+
+  public double clipDeadzone(double rawValue){
+    if(Math.abs(rawValue) > 0.05){
+      return rawValue;
+    } else{
+      return 0;
+    }
+  }
+
+
   
 public OI() {
   driveStick = new Joystick(RobotMap.driveStick);
-  
-
 
 }
 

@@ -8,8 +8,6 @@
 package frc.robot.subsystems;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.commands.DriveWithJoystick;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -23,36 +21,40 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * An example subsystem. You can replace me with your own Subsystem.
  */
 public class DriveTrain extends Subsystem {
-	WPI_TalonSRX leftFront, leftBack, rightFront, rightBack, leftMid, rightMid;
+	WPI_TalonSRX leftFront, leftMid, leftBack, rightFront, rightMid, rightBack;
 	SpeedControllerGroup left, right;
 	Encoder encoderLeft, encoderRight;
 	DifferentialDrive m_drive;
 
 	public DriveTrain() {    
-		leftFront = new WPI_TalonSRX(RobotMap.leftFrontDrivePort);
-		leftBack = new WPI_TalonSRX(RobotMap.leftBackDrivePort);
-		rightFront = new WPI_TalonSRX(RobotMap.rightFrontDrivePort);
+    leftFront = new WPI_TalonSRX(RobotMap.leftFrontDrivePort);
+    leftMid = new WPI_TalonSRX(RobotMap.leftMidDrivePort);
+    leftBack = new WPI_TalonSRX(RobotMap.leftBackDrivePort);
+    
+    rightFront = new WPI_TalonSRX(RobotMap.rightFrontDrivePort);
+    rightMid = new WPI_TalonSRX(RobotMap.rightMidDrivePort);
 		rightBack = new WPI_TalonSRX(RobotMap.rightBackDrivePort);
-		rightMid = new WPI_TalonSRX(RobotMap.rightMidDrivePort);
-		leftMid = new WPI_TalonSRX(RobotMap.leftMidDrivePort);
 
+    encoderRight = new Encoder(RobotMap.rightWheelEncoderPorts[0], RobotMap.rightWheelEncoderPorts[1]);
+    encoderLeft = new Encoder(RobotMap.leftWheelEncoderPorts[0], RobotMap.leftWheelEncoderPorts[1]);
 
-    		encoderRight = new Encoder(RobotMap.rightWheelEncoderPorts[0], RobotMap.rightWheelEncoderPorts[1]);
-    		encoderLeft = new Encoder(RobotMap.leftWheelEncoderPorts[0], RobotMap.leftWheelEncoderPorts[1]);
-
-    		encoderLeft.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
-    		encoderRight.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
+    encoderLeft.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
+    encoderRight.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
 		// Set in brake mode
-		leftFront.setNeutralMode(NeutralMode.Brake);
-		leftBack.setNeutralMode(NeutralMode.Brake);
-		rightFront.setNeutralMode(NeutralMode.Brake);
+    leftFront.setNeutralMode(NeutralMode.Brake);
+    leftMid.setNeutralMode(NeutralMode.Brake);
+    leftBack.setNeutralMode(NeutralMode.Brake);
+    
+    rightFront.setNeutralMode(NeutralMode.Brake);
+    rightMid.setNeutralMode(NeutralMode.Brake);
 		rightBack.setNeutralMode(NeutralMode.Brake);
 
-		left = new SpeedControllerGroup(leftFront, leftBack);
-		right = new SpeedControllerGroup(rightFront, rightBack);
+		left = new SpeedControllerGroup(leftFront, leftMid, leftBack);
+		right = new SpeedControllerGroup(rightFront, rightMid, rightBack);
 	
 		m_drive = new DifferentialDrive(left, right);
   }
+
   public void resetEncoders() {
     encoderLeft.reset();
     encoderRight.reset();
@@ -64,9 +66,12 @@ public class DriveTrain extends Subsystem {
     return encoderRight.getDistance();
   }
 	public void setBrake()	{
-		leftFront.neutralOutput();
-		leftBack.neutralOutput();
-		rightFront.neutralOutput();
+    leftFront.neutralOutput();
+    leftMid.neutralOutput();
+    leftBack.neutralOutput();
+    
+    rightFront.neutralOutput();
+    rightMid.neutralOutput();
 		rightBack.neutralOutput();
 	}
 	public void tankDrive(double leftSpeed, double rightSpeed) {
@@ -91,6 +96,5 @@ public class DriveTrain extends Subsystem {
 		// Set the default command for a subsystem here.
 		// setDefaultCommand(new MySpecialCommand());
 		//setDefaultCommand(new ArcadeDriveWithJoystick());
-		setDefaultCommand(new DriveWithJoystick());
 	}
 }

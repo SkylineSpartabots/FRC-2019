@@ -32,7 +32,11 @@ public class DriveWithJoystick extends Command {
   @Override
   protected void execute() {
     turn = Robot.oi.driveStick.getRawAxis(OI.Axis.RX.getBtnNumber());
+    turn = Robot.oi.clipDeadzone(turn);
+
     forward = Robot.oi.driveStick.getRawAxis(OI.Axis.LY.getBtnNumber());
+    forward = Robot.oi.clipDeadzone(forward);
+    
     Robot.driveTrain.arcadeDrive(forward, turn);    
   }
 

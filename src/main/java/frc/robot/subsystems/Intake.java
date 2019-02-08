@@ -9,10 +9,14 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import frc.robot.Robot;
 import frc.robot.RobotMap;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.commands.*;
+
 /**
  * Add your docs here.
  */
@@ -20,37 +24,67 @@ public class Intake extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  WPI_TalonSRX leftIntakeMotor, rightIntakeMotor, centerIntakeMotor;
-  Solenoid leftIntakeSolenoid, rightIntakeSolenoid;
+  WPI_TalonSRX masterIntakeMotor, slaveIntakeMotor, innerIntakeMotor;
+  Solenoid masterIntakeSolenoid, slaveIntakeSolenoid;
+  AnalogInput distanceSensor;
 
   public Intake() {
-    leftIntakeMotor = new WPI_TalonSRX(RobotMap.leftIntakeMotor);
-    rightIntakeMotor = new WPI_TalonSRX(RobotMap.rightIntakeMotor);
-    centerIntakeMotor = new WPI_TalonSRX(RobotMap.centerIntakeMotor);
+    masterIntakeMotor = new WPI_TalonSRX(RobotMap.masterIntakeMotor);
+    slaveIntakeMotor = new WPI_TalonSRX(RobotMap.slaveIntakeMotor);
+  
+    masterIntakeMotor.setNeutralMode(NeutralMode.Brake);
+    slaveIntakeMotor.setNeutralMode(NeutralMode.Brake);
 
-    leftIntakeMotor.setNeutralMode(NeutralMode.Brake);
-    rightIntakeMotor.setNeutralMode(NeutralMode.Brake);
-    centerIntakeMotor.setNeutralMode(NeutralMode.Brake);
+    masterIntakeMotor.setInverted(false); //TODO: set directions
+    slaveIntakeMotor.setInverted(false);
 
-    leftIntakeSolenoid = new Solenoid(RobotMap.leftIntakeSolenoid);
-    rightIntakeSolenoid = new Solenoid(RobotMap.rightIntakeSolenoid);
+    slaveIntakeMotor.follow(masterIntakeMotor);
+
+    innerIntakeMotor = new WPI_TalonSRX(RobotMap.innerIntakeMotor);
+    innerIntakeMotor.setInverted(false);
+
+    distanceSensor = new AnalogInput(RobotMap.intakeSensorPort);
+
+    masterIntakeSolenoid = new Solenoid(RobotMap.masterIntakeSolenoid);
+    slaveIntakeSolenoid = new Solenoid(RobotMap.slaveIntakeSolenoid); 
   }
 
-  public void openCloseIntake(boolean open) {
-    leftIntakeSolenoid.set(open);
-    rightIntakeSolenoid.set(open);
+  public void extendIntake() {
+    masterIntakeSolenoid.set(true);
+    slaveIntakeSolenoid.set(true);
+  }
+
+  public void retractIntake(){
+    masterIntakeSolenoid.set(false);
+    slaveIntakeSolenoid.set(false);
   }
 
   public void setIntakePower(double power) {
-    leftIntakeMotor.set(power);
-    rightIntakeMotor.set(power);
-    centerIntakeMotor.set(power);
+    if(isCargo() && power > 0){
+      power = 0;
+    }
+    if(Robot.elevator.elevatorEncoder.getRaw() > Elevator.MIN_ENCODER_LIMIT){
+      masterIntakeMotor.set(0);
+    } else {
+      masterIntakeMotor.set(power);
+    }
+    innerIntakeMotor.set(power);
   }
+
+  /**
+   * 
+   * @return if cargo is in the intake it returns true, if false there is a hatch. Love you Vibahv
+   */
+  public boolean isCargo(){
+    return distanceSensor.getValue() > RobotMap.intakeSensorThreshold;
+  }
+
 
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    setDefaultCommand(new RollIn());
+    setDefaultCommand(new IntakeControl());
+    
   }
 }

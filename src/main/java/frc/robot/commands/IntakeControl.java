@@ -10,14 +10,15 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
-public class RollIn extends Command {
+public class IntakeControl extends Command {
 
   private double power = 0;
   private double rTrigger;
   private double lTrigger;
 
-  public RollIn() {
+  public IntakeControl() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.intake);
@@ -32,11 +33,19 @@ public class RollIn extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    //power = 0.75;       if you choose to make it set to a specific power, then another command has to be made for RollOut, this way it's just in the joystick's triggers.
     rTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.RTrigger.getBtnNumber());
+    rTrigger = Robot.oi.clipDeadzone(rTrigger);
+
     lTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.LTrigger.getBtnNumber());
-    power = rTrigger - lTrigger;
-    Robot.intake.setIntakePower(power);
+    lTrigger = Robot.oi.clipDeadzone(lTrigger);
+
+    if(rTrigger > lTrigger){
+      Robot.intake.setIntakePower(rTrigger);
+    } else if(lTrigger < rTrigger){
+      Robot.intake.setIntakePower(-lTrigger);
+    } else{
+      Robot.intake.setIntakePower(0);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
