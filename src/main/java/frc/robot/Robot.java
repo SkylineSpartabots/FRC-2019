@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     rps = new RPS();
-    JetsonWrapper = new JetsonComm();
+    JetsonWrapper = new JetsonComm(); //this needs to move to autoinit
     driveTrain = new DriveTrain();
 
     oi = new OI();
@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SystemLog.flushLogData();
+    //SystemLog.flushLogData(); /this slows down the loop
   }
 
   /**

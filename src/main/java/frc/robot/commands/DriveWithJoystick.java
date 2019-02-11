@@ -36,8 +36,8 @@ public class DriveWithJoystick extends Command {
 
     forward = Robot.oi.driveStick.getRawAxis(OI.Axis.LY.getBtnNumber());
     forward = Robot.oi.clipDeadzone(forward);
-    
-    Robot.driveTrain.arcadeDrive(forward, turn);    
+
+    Robot.driveTrain.arcadeDrive(forward, turn);
   }
 
   // Make this return true when this Command no longer needs to run execute()

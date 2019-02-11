@@ -22,29 +22,26 @@ import frc.robot.subsystems.DriveTrain;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  //// CREATING BUTTONS
-  // One type of button is a joystick button which is any button on a
-  //// joystick.
-  // You create one by telling it which joystick it's on and which button
-  // number it is.
-  // Joystick stick = new Joystick(port);
-  // Button button = new JoystickButton(stick, buttonNumber);
+  public Joystick driveStick;
+	public enum Button {
+		RBumper(6), LBumper(5), A(1), B(2), X(3), Y(4), RightJoystickBtn(10), LeftJoystickBtn(9);
 
-  // There are a few additional built in buttons you can use. Additionally,
-  // by subclassing Button you can create custom triggers and bind those to
-  // commands the same as any other Button.
+		private final int number;
 
-  //// TRIGGERING COMMANDS WITH BUTTONS
-  // Once you have a button, it's trivial to bind it to a button in one of
-  // three ways:
+		Button(int number) {
+			this.number = number;
+		}
+		public int getBtnNumber() {
+			return number;
+		}
+	}
+	public enum Axis {
+		LX(0), LY(1), LTrigger(2), RTrigger(3), RX(4), RY(5);
+		private final int number;
 
-  // Start the command when the button is pressed and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenPressed(new ExampleCommand());
-
-  // Run the command while the button is being held down and interrupt it once
-  // the button is released.
-  // button.whileHeld(new ExampleCommand());
+		Axis(int number) {
+			this.number = number;
+		}
 
   // Start the command when the button is released and let it run the command
   // until it is finished as determined by it's isFinished method.
@@ -53,7 +50,7 @@ public class OI {
   public Joystick driveStick;
 
   public Joystick secondStick;
-   
+
 
 	public enum Button {
 		RBumper(6), LBumper(5), A(1), B(2), X(3), Y(4), RightJoystickBtn(10), LeftJoystickBtn(9);
@@ -67,7 +64,7 @@ public class OI {
 		public int getBtnNumber() {
 			return number;
 		}
-		
+
   }
 
   public enum Axis {
@@ -94,7 +91,7 @@ public class OI {
   }
 
 
-  
+
 public OI() {
   driveStick = new Joystick(RobotMap.driveStick);
 
