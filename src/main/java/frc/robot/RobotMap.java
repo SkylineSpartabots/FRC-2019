@@ -27,11 +27,6 @@ public class RobotMap {
   public static String SystemLogPath = "//home//lvuser//deploy//";
 
   //Encoder Ports
-  public static int RightWheelEncoderA = 1;
-  public static int RightWheelEncoderB = 2;
-  public static int LeftWheelEncoderA = 3;
-  public static int LeftWheelEncoderB = 4;
-
   public static int masterIntakeMotor = 5;
   public static int slaveIntakeMotor = 7;
 
@@ -63,6 +58,4 @@ public class RobotMap {
   public static int elevatorLimitSwitch = 2;
 
   public static final double JOYSTICK_DEADZONE = 0.05;
-
-
 }

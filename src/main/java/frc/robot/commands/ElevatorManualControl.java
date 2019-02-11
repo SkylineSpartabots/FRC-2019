@@ -11,16 +11,16 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.OI;
 import frc.robot.Robot;
 
-public class ElevatorManualAscent extends Command {
+public class ElevatorManualControl extends Command {
 
   private double power;
 
   /**
-   * @return specify a positive power to make the elevator go up
+   * @return specify a positive power to make the elevator go down
    * @param power
    */
   
-  public ElevatorManualAscent(double power) {
+  public ElevatorManualControl(double power) {
     requires(Robot.elevator);
     this.power = power;
   }
@@ -34,7 +34,7 @@ public class ElevatorManualAscent extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setPower(power);
+    Robot.elevator.setPower(-power);
   }
 
   // Make this return true when this Command no longer needs to run execute()

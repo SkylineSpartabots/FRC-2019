@@ -33,10 +33,10 @@ public class IntakeControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    rTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.RTrigger.getBtnNumber());
+    rTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.RTrigger.getAxisNumber());
     rTrigger = Robot.oi.clipDeadzone(rTrigger);
 
-    lTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.LTrigger.getBtnNumber());
+    lTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.LTrigger.getAxisNumber());
     lTrigger = Robot.oi.clipDeadzone(lTrigger);
 
     if(rTrigger > lTrigger){

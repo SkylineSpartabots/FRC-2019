@@ -53,12 +53,10 @@ public class Intake extends Subsystem {
     masterIntakeSolenoid.set(true);
     slaveIntakeSolenoid.set(true);
   }
-
   public void retractIntake(){
     masterIntakeSolenoid.set(false);
     slaveIntakeSolenoid.set(false);
   }
-
   public void setIntakePower(double power) {
     if(isCargo() && power > 0){
       power = 0;
@@ -73,7 +71,7 @@ public class Intake extends Subsystem {
 
   /**
    * 
-   * @return if cargo is in the intake it returns true, if false there is a hatch. Love you Vibahv
+   * @return if cargo is in the intake it returns true, if false there is a hatch.
    */
   public boolean isCargo(){
     return distanceSensor.getValue() > RobotMap.intakeSensorThreshold;
