@@ -51,8 +51,8 @@ public class RobotMap {
   public static int[] rightWheelEncoderPorts = {0, 1};
   public static int[] leftWheelEncoderPorts = {2, 3};
 
-  public static int masterElevatorPort = 6;
-  public static int slaveElevatorPort = 7;
+  public static int RightElevatorPort = 6;
+  public static int LeftElevatorPort = 7;
 
   public static int[] elevatorEncoderPorts = {4, 5};
   public static int elevatorLimitSwitch = 2;

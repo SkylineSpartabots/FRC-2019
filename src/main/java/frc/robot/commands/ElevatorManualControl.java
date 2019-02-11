@@ -12,11 +12,10 @@ import frc.robot.OI;
 import frc.robot.Robot;
 
 public class ElevatorManualControl extends Command {
-
   private double power;
 
   /**
-   * @return specify a positive power to make the elevator go down
+   * @return specify a power to make the elevator go up or down
    * @param power
    */
   
@@ -34,7 +33,7 @@ public class ElevatorManualControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setPower(-power);
+    Robot.elevator.setPower(power);
   }
 
   // Make this return true when this Command no longer needs to run execute()
