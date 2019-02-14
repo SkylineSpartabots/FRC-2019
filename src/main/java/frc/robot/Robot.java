@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.HatchMechanism;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.*;
 
@@ -31,7 +33,9 @@ public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Intake intake;
   public static Elevator elevator;
+  public static HatchMechanism hatchMechanism;
   public static OI oi;
+  public Compressor compressor;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -45,9 +49,13 @@ public class Robot extends TimedRobot {
     rps = new RPS();
     JetsonWrapper = new JetsonComm();
     driveTrain = new DriveTrain();
-
+    intake = new Intake();
     oi = new OI();
     elevator = new Elevator();
+    //compressor = new Compressor(RobotMap.compressorPort);
+    
+    //compressor.setClosedLoopControl(true);
+    
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
   }

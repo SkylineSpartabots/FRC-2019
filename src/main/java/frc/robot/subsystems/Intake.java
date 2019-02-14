@@ -29,8 +29,8 @@ public class Intake extends Subsystem {
   AnalogInput distanceSensor;
 
   public Intake() {
-    masterIntakeMotor = new WPI_TalonSRX(RobotMap.masterIntakeMotor);
-    slaveIntakeMotor = new WPI_TalonSRX(RobotMap.slaveIntakeMotor);
+    masterIntakeMotor = new WPI_TalonSRX(RobotMap.rightIntakeMotor);
+    slaveIntakeMotor = new WPI_TalonSRX(RobotMap.leftIntakeMotor);
   
     masterIntakeMotor.setNeutralMode(NeutralMode.Brake);
     slaveIntakeMotor.setNeutralMode(NeutralMode.Brake);
@@ -45,8 +45,8 @@ public class Intake extends Subsystem {
 
     distanceSensor = new AnalogInput(RobotMap.intakeSensorPort);
 
-    masterIntakeSolenoid = new Solenoid(RobotMap.masterIntakeSolenoid);
-    slaveIntakeSolenoid = new Solenoid(RobotMap.slaveIntakeSolenoid); 
+    masterIntakeSolenoid = new Solenoid(RobotMap.rightIntakeSolenoid);
+    slaveIntakeSolenoid = new Solenoid(RobotMap.leftIntakeSolenoid); 
   }
 
   public void extendIntake() {
@@ -59,15 +59,28 @@ public class Intake extends Subsystem {
     slaveIntakeSolenoid.set(false);
   }
 
+  public boolean getIntakeSolenoidState(){
+    return masterIntakeSolenoid.get();
+  }
+
+  
+  /**
+   * @return sets power to all three intake motors, looking at conditions of whether there is cargo and elevator position
+   * @param power
+   */
   public void setIntakePower(double power) {
+    // Stop intake if there is cargo
     if(isCargo() && power > 0){
       power = 0;
     }
-    if(Robot.elevator.elevatorEncoder.getRaw() > Elevator.MIN_ENCODER_LIMIT){
+
+    // Stop outer intake if elevator is up
+    if(Robot.elevator.elevatorEncoder.getDistance() > Elevator.MIN_ENCODER_LIMIT){
       masterIntakeMotor.set(0);
     } else {
       masterIntakeMotor.set(power);
     }
+    
     innerIntakeMotor.set(power);
   }
 

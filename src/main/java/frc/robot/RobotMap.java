@@ -26,21 +26,17 @@ public class RobotMap {
   public static int JetsonCommPort = 5804;
   public static String SystemLogPath = "//home//lvuser//deploy//";
 
-  //Encoder Ports
-  public static int RightWheelEncoderA = 1;
-  public static int RightWheelEncoderB = 2;
-  public static int LeftWheelEncoderA = 3;
-  public static int LeftWheelEncoderB = 4;
+  public static int compressorPort = 0;
 
-  public static int masterIntakeMotor = 5;
-  public static int slaveIntakeMotor = 7;
+  public static int rightIntakeMotor = 5;
+  public static int leftIntakeMotor = 7;
 
   public static int innerIntakeMotor = 6;
   public static int intakeSensorPort = 0;
   public static int intakeSensorThreshold = 0;
 
-  public static int masterIntakeSolenoid = 1;
-  public static int slaveIntakeSolenoid = 2;
+  public static int rightIntakeSolenoid = 1;
+  public static int leftIntakeSolenoid = 2;
 
   public static int driveStick = 0;
   public static int secondStick = 1;
@@ -56,11 +52,13 @@ public class RobotMap {
   public static int[] rightWheelEncoderPorts = {0, 1};
   public static int[] leftWheelEncoderPorts = {2, 3};
 
-  public static int masterElevatorPort = 6;
-  public static int slaveElevatorPort = 7;
+  public static int rightElevatorPort = 6;
+  public static int leftElevatorPort = 7;
 
   public static int[] elevatorEncoderPorts = {4, 5};
   public static int elevatorLimitSwitch = 2;
+
+  public static int hatchSolenoid = 3;
 
   public static final double JOYSTICK_DEADZONE = 0.05;
 

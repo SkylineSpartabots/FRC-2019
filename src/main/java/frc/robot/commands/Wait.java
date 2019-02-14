@@ -7,52 +7,44 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
-import frc.robot.Robot;
 
-public class ElevatorManualDescent extends Command {
+public class Wait extends Command {
+  private double timeInMsec;
+  private Timer timer;
 
-  private double power;
-
-  /**
-   * @return specify a positive power to make the elevator go down
-   * @param power
-   */
-  
-  public ElevatorManualDescent(double power) {
-    requires(Robot.elevator);
-    this.power = power;
+  public Wait(double timeInMsec) {
+    this.timeInMsec = timeInMsec;
+    timer = new Timer();
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.elevator.setPower(0);
+    timer.reset();
+    timer.start();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setPower(-power);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return !Robot.oi.driveStick.getRawButton(OI.Button.LBumper.getBtnNumber());
+    return timer.get() > (timeInMsec/1000);
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.elevator.setPower(0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }

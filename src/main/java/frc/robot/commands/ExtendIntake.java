@@ -8,51 +8,38 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
 
-public class ElevatorManualAscent extends Command {
-
-  private double power;
-
-  /**
-   * @return specify a positive power to make the elevator go up
-   * @param power
-   */
-  
-  public ElevatorManualAscent(double power) {
-    requires(Robot.elevator);
-    this.power = power;
+public class ExtendIntake extends Command {
+  public ExtendIntake() {
+    requires(Robot.intake);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.elevator.setPower(0);
+    Robot.intake.extendIntake();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setPower(power);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return !Robot.oi.driveStick.getRawButton(OI.Button.LBumper.getBtnNumber());
+    return Robot.intake.getIntakeSolenoidState();
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.elevator.setPower(0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }

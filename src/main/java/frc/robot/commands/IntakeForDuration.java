@@ -7,50 +7,41 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
 
+public class IntakeForDuration extends Command {
 
-public class IntakeControl extends Command {
+  private double intakePower;
+  private double timeInMsec;
+  private Timer timer;
 
-  private double rTrigger;
-  private double lTrigger;
-
-  public IntakeControl() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+  public IntakeForDuration(double intakePower, double timeInMsec) {
     requires(Robot.intake);
+    this.intakePower = intakePower;
+    this.timeInMsec = timeInMsec;
+    timer = new Timer();
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
     Robot.intake.setIntakePower(0);
+    timer.reset();
+    timer.start();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    rTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.RTrigger.getBtnNumber());
-    rTrigger = Robot.oi.clipDeadzone(rTrigger);
-
-    lTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.LTrigger.getBtnNumber());
-    lTrigger = Robot.oi.clipDeadzone(lTrigger);
-
-    if(rTrigger > lTrigger){
-      Robot.intake.setIntakePower(rTrigger);
-    } else if(lTrigger > rTrigger){
-      Robot.intake.setIntakePower(-lTrigger);
-    } else{
-      Robot.intake.setIntakePower(0);
-    }
+    Robot.intake.setIntakePower(intakePower);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return timer.get() > (timeInMsec/1000) || Robot.intake.isCargo();
   }
 
   // Called once after isFinished returns true
