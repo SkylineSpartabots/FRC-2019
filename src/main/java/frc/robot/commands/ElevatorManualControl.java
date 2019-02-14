@@ -11,53 +11,43 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.OI;
 import frc.robot.Robot;
 
+public class ElevatorManualControl extends Command {
+  private double power;
 
-public class IntakeControl extends Command {
-
-  private double rTrigger;
-  private double lTrigger;
-
-  public IntakeControl() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
-    requires(Robot.intake);
+  /**
+   * @return specify a power to make the elevator go up or down
+   * @param power
+   */
+  
+  public ElevatorManualControl(double power) {
+    requires(Robot.elevator);
+    this.power = power;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.intake.setIntakePower(0);
+    Robot.elevator.setPower(0);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    rTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.RTrigger.getAxisNumber());
-    rTrigger = Robot.oi.clipDeadzone(rTrigger);
-    lTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.LTrigger.getAxisNumber());
-    lTrigger = Robot.oi.clipDeadzone(lTrigger);
-
-    /**
-     * Sets power to the intake motors. Uses whichever trigger is more pressed
-     */
-    if(rTrigger > lTrigger){
-      Robot.intake.setIntakePower(rTrigger);
-    } else if(rTrigger < lTrigger){
-      Robot.intake.setIntakePower(-lTrigger);
-    } else{
-      Robot.intake.setIntakePower(0);
-    }
+    Robot.elevator.setPower(power);
   }
+
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return !Robot.oi.driveStick.getRawButton(OI.Button.LBumper.getBtnNumber());
   }
+
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.intake.setIntakePower(0);
+    Robot.elevator.setPower(0);
   }
+
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override

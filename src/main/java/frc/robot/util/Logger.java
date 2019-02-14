@@ -27,6 +27,6 @@ public class Logger{
         }
 	}
 	public void flushLogData(){
-		if(this.isLogging = true)	writer.flush();	
+		if(this.isLogging == true)	writer.flush();	
 	}
 }

@@ -1,7 +1,6 @@
 package frc.robot.util;
 import java.io.*;
 import java.net.Socket;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -15,31 +14,31 @@ public class JetsonComm implements Runnable{
 	public Thread TransferThread;
 	public JetsonVisionData VisionData;
 	private boolean isStopped = false;
+	public boolean isSocketConnected = false;
+
 	
-	public JetsonComm()  {
-		try {
-			System.out.println("Socket: Connecting");
-			Robot.SystemLog.writeNewData("Benign Message: Jetson Socket Connecting: TimeStamp: " + Timer.getFPGATimestamp());
+	public JetsonComm()  {		
+
+		System.out.println("Socket: Connecting");
+		Robot.SystemLog.writeNewData("Benign Message: Jetson Socket Connecting: TimeStamp: " + Timer.getFPGATimestamp());	
+		System.out.println("Trying To Connect");
+		try{
 			sock = new Socket(RobotMap.JetsonStaticIP,RobotMap.JetsonCommPort);
 			writer = new PrintWriter(sock.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Connection Successful");
+			isSocketConnected = true;
+		} catch(IOException ex)	{
+			System.out.println("Connection Failed");
 		}
-		VisionData = new JetsonVisionData();
-		TransferThread = new Thread(this);
-		TransferThread.start();
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-	        public void run() {
-	        	try {
-					in.close();
-					writer.close();
-					sock.close();
-				} catch (IOException e) {					
-				}
-	        }
-	    }));
-		Robot.SystemLog.writeNewData("Benign Message: Jetson Socket Ready: TimeStamp: " + Timer.getFPGATimestamp());
+		if(isSocketConnected)	{
+			VisionData = new JetsonVisionData();
+			TransferThread = new Thread(this);
+			TransferThread.start();
+			SmartDashboard.putString("Connected", "Connected");
+			System.out.println("Benign Message: Jetson Socket Ready: TimeStamp: " + Timer.getFPGATimestamp());
+			Robot.SystemLog.writeNewData("Benign Message: Jetson Socket Ready: TimeStamp: " + Timer.getFPGATimestamp());
+		}
 	}
 	public void transferData()	{
 		try {
@@ -50,8 +49,8 @@ public class JetsonComm implements Runnable{
 				VisionData.Z_Distance_RobotCoordinateFrame = Double.parseDouble(data[0]);
 				VisionData.Y_Distance_RobotCoordinateFrame = Double.parseDouble(data[1]);
 				VisionData.X_Distance_RobotCoordinateFrame = Double.parseDouble(data[2]);
-				VisionData.Y_Axis_Rotation_To_Vision_Target = Double.parseDouble(data[3]);
-				VisionData.X_Axis_Rotation_To_Vision_Target = Double.parseDouble(data[4]);				
+				VisionData.Y_Axis_Rotation_To_Vision_Target = Double.parseDouble(data[3]);	
+				VisionData.LastTimeStamp = Timer.getFPGATimestamp();
 				SmartDashboard.putString("JetsonRawDataString", s);
 				Thread.sleep(25);
 			}
@@ -68,7 +67,7 @@ public class JetsonComm implements Runnable{
 	}
 	@Override
 	public void run() {
-		while (!isStopped) {
+		while (!isStopped && isSocketConnected) {
 			transferData();
 		}
 	}
@@ -85,9 +84,8 @@ public class JetsonComm implements Runnable{
 		double X_Distance_RobotCoordinateFrame;
 
 		double Y_Axis_Rotation_To_Vision_Target;
-		double X_Axis_Rotation_To_Vision_Target;
 
-		long LastTimeStamp;
+		double LastTimeStamp;
 	}
 
 }

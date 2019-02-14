@@ -27,7 +27,7 @@ public class ElevatorControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double joyVal = Robot.oi.secondStick.getRawAxis(OI.Axis.RY.getBtnNumber());
+    double joyVal = Robot.oi.secondStick.getRawAxis(OI.Axis.RY.getAxisNumber());
     joyVal = Robot.oi.clipDeadzone(joyVal);
     Robot.elevator.setPower(joyVal/0.75); //TODO: Adjust constant
   }

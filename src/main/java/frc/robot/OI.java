@@ -26,33 +26,28 @@ public class OI {
    
 
 	public enum Button {
-		RBumper(6), LBumper(5), A(1), B(2), X(3), Y(4), RightJoystickBtn(10), LeftJoystickBtn(9);
-
-		private final int number;
-
+    RBumper(6), LBumper(5), A(1), B(2), X(3), Y(4), RightJoystickBtn(10), LeftJoystickBtn(9);
+    
+    private final int number;
+    
 		Button(int number) {
 			this.number = number;
 		}
-
 		public int getBtnNumber() {
 			return number;
 		}
-		
-  }
-
-  public enum Axis {
-    RX(5), LX(6), RTrigger(7), LTrigger(8), LY(9), RY(10);
-
-    public final int number;
-
-    private Axis(int number) {
-      this.number = number;
+	}
+	public enum Axis {
+		LX(0), LY(1), LTrigger(2), RTrigger(3), RX(4), RY(5);
+    private final int number;
+    
+		Axis(int number) {
+			this.number = number;
     }
 
-    public int getBtnNumber() {
-      return number;
-    }
-
+    public int getAxisNumber() {
+			return number;
+		}
   }
 
   /**
@@ -76,23 +71,30 @@ public class OI {
   driveStick = new Joystick(RobotMap.driveStick);
   secondStick = new Joystick(RobotMap.secondStick);
 
-  new JoystickButton(secondStick, OI.Button.A.getBtnNumber())
-    .whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_FIRST));;
+  JoystickButton buttonA = new JoystickButton(secondStick, OI.Button.A.getBtnNumber());
+  JoystickButton buttonB = new JoystickButton(secondStick, OI.Button.B.getBtnNumber());
+  JoystickButton buttonX = new JoystickButton(secondStick, OI.Button.X.getBtnNumber());
+  JoystickButton buttonY = new JoystickButton(secondStick, OI.Button.Y.getBtnNumber());
+  JoystickButton lBumper = new JoystickButton(secondStick, OI.Button.LBumper.getBtnNumber());
+  JoystickButton rBumper = new JoystickButton(secondStick, OI.Button.RBumper.getBtnNumber());
 
-  new JoystickButton(secondStick, OI.Button.B.getBtnNumber())
-    .whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.CARGO_SHIP));
+  try{
+    buttonA.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_FIRST));
+    buttonB.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.CARGO_SHIP));
+    buttonX.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_SECOND));
+    buttonY.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_THIRD));
 
-  new JoystickButton(secondStick, OI.Button.X.getBtnNumber())
-    .whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_SECOND));
-
-  new JoystickButton(secondStick, OI.Button.Y.getBtnNumber())
-    .whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_THIRD));
-
-  new JoystickButton(secondStick, OI.Button.RBumper.getBtnNumber())
-    .whenPressed(new GraspHatch());
-
-  new JoystickButton(secondStick, OI.Button.LBumper.getBtnNumber())
-    .whenPressed(new ReleaseHatch());
+    lBumper.whenPressed(new GraspHatch());
+    rBumper.whenPressed(new ReleaseHatch());
+    
+  } finally {
+    buttonA.close();
+    buttonB.close();
+    buttonX.close();
+    buttonY.close();
+    lBumper.close();
+    rBumper.close();
+  }
 
   //TODO: need to add controls for extending and retracting intake
 

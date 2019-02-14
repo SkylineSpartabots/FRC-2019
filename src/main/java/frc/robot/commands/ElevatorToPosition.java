@@ -17,7 +17,6 @@ public class ElevatorToPosition extends Command {
   public final static int ELEVATOR_THRESHOLD = 50;
   public final static int CLOCK_MAX = 5;;
 
-
   private SimplePID elevatorPID;
   private PIDSource elevatorSource;
   private int elevatorTarget;

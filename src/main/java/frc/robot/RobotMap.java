@@ -14,7 +14,7 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
-  //Robot Constants
+  //Robot Constants (metrics)
   public static double TrackWidth = 0.5; //in meters
   public static double MaxVelocity = 0; //m/s
   public static double EncoderDistancePerPule  = 0.1; //Distance robot travels in one pulse
@@ -23,7 +23,7 @@ public class RobotMap {
 
   //Socket Comm Ports
   public static String JetsonStaticIP = "10.29.76.86";
-  public static int JetsonCommPort = 5804;
+  public static int JetsonCommPort = 5806;
   public static String SystemLogPath = "//home//lvuser//deploy//";
 
   public static int compressorPort = 0;
@@ -61,6 +61,4 @@ public class RobotMap {
   public static int hatchSolenoid = 3;
 
   public static final double JOYSTICK_DEADZONE = 0.05;
-
-
 }
