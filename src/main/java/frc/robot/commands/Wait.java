@@ -1,50 +1,44 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class Wait extends Command {
-  private double timeInMsec;
-  private Timer timer;
 
-  public Wait(double timeInMsec) {
-    this.timeInMsec = timeInMsec;
-    timer = new Timer();
-  }
+	private double timeInMsec;
+	private Timer timer;
 
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {
-    timer.reset();
-    timer.start();
-  }
+	public Wait(double timeInMsec) {
+		this.timeInMsec = timeInMsec;
+		timer = new Timer();
+	}
 
-  // Called repeatedly when this Command is scheduled to run
-  @Override
-  protected void execute() {
-  }
+	// Called just before this Command runs the first time
+	@Override
+	protected void initialize() {
+		timer.reset();
+		timer.start();
+	}
 
-  // Make this return true when this Command no longer needs to run execute()
-  @Override
-  protected boolean isFinished() {
-    return timer.get() > (timeInMsec/1000);
-  }
+	// Called repeatedly when this Command is scheduled to run
+	@Override
+	protected void execute() {
+	}
 
-  // Called once after isFinished returns true
-  @Override
-  protected void end() {
-  }
+	// Make this return true when this Command no longer needs to run execute()
+	@Override
+	protected boolean isFinished() {
+		return timer.get() > (timeInMsec / 1000);
+	}
 
-  // Called when another command which requires one or more of the same
-  // subsystems is scheduled to run
-  @Override
-  protected void interrupted() {
-  }
+	// Called once after isFinished returns true
+	@Override
+	protected void end() {
+	}
+
+	// Called when another command which requires one or more of the same subsystems
+	// is scheduled to run
+	@Override
+	protected void interrupted() {
+	}
 }
