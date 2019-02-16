@@ -21,7 +21,7 @@ public class ElevatorControl extends Command {
 	protected void execute() {
 		double joyVal = Robot.oi.secondStick.getRawAxis(OI.Axis.RY.getAxisNumber());
 		joyVal = Robot.oi.clipDeadzone(joyVal);
-		Robot.elevator.setPower(joyVal / 0.75); // TODO: Adjust constant
+		Robot.elevator.setPower(joyVal * 0.75); // TODO: Adjust constant
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
