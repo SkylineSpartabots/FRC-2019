@@ -29,7 +29,7 @@ public class JetsonComm implements Runnable {
 		System.out.println("Trying To Connect");
 
 		try {
-			sock = new Socket(RobotMap.JetsonStaticIP, RobotMap.JetsonCommPort);
+			sock = new Socket(RobotMap.JETSON_STATIC_IP, RobotMap.JETSON_COMM_PORT);
 			writer = new PrintWriter(sock.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			

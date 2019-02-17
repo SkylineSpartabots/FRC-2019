@@ -34,11 +34,11 @@ public class PathExecuter extends Command {
 
 	public void initPathExecuter(Trajectory traj, String FileName) {
 		try {
-			TankModifier modifier = new TankModifier(traj).modify(RobotMap.TrackWidth);
+			TankModifier modifier = new TankModifier(traj).modify(RobotMap.TRACK_WIDTH);
 			left = new DistanceFollower(modifier.getLeftTrajectory());
 			right = new DistanceFollower(modifier.getRightTrajectory());
-			left.configurePIDVA(P, 0.0, D, 1 / RobotMap.MaxVelocity, k_a);
-			right.configurePIDVA(P, 0.0, D, 1 / RobotMap.MaxVelocity, k_a);
+			left.configurePIDVA(P, 0.0, D, 1 / RobotMap.MAX_VELOCITY, k_a);
+			right.configurePIDVA(P, 0.0, D, 1 / RobotMap.MAX_VELOCITY, k_a);
 
 			NAVXSource = new PIDSource() {
 				public double getInput() {
@@ -57,7 +57,7 @@ public class PathExecuter extends Command {
 		requires(Robot.driveTrain);
 
 		try {
-			File f = new File(RobotMap.AutoTrajectoryPathLocations + FileName);
+			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
 			Trajectory trajectory = Pathfinder.readFromFile(f);
 			initPathExecuter(trajectory, FileName);
 		} catch (Exception e) {
@@ -70,10 +70,10 @@ public class PathExecuter extends Command {
 
 		try {
 			Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-					Trajectory.Config.SAMPLES_HIGH, 0.05, RobotMap.MaxVelocity, 2.0, 60.0);
+					Trajectory.Config.SAMPLES_HIGH, 0.05, RobotMap.MAX_VELOCITY, 2.0, 60.0);
 			Trajectory trajectory = Pathfinder.generate(points, config);
 
-			File f = new File(RobotMap.AutoTrajectoryPathLocations + FileName);
+			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
 			Pathfinder.writeToFile(f, trajectory);
 			Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
 			initPathExecuter(trajectory, FileName);

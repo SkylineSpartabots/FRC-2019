@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.SPI;
  */
 public class RPS {
 
-	public AHRS ahrs;
+	private AHRS ahrs;
 
 	public RPS() {
 		ahrs = new AHRS(SPI.Port.kMXP);

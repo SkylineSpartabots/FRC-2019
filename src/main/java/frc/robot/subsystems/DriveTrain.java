@@ -16,24 +16,24 @@ import frc.robot.commands.DriveWithJoystick;
  */
 public class DriveTrain extends Subsystem {
 
-	WPI_TalonSRX leftFront, leftMid, leftBack, rightFront, rightMid, rightBack;
-	SpeedControllerGroup left, right;
-	Encoder encoderLeft, encoderRight;
-	DifferentialDrive m_drive;
+	private WPI_TalonSRX leftFront, leftMid, leftBack, rightFront, rightMid, rightBack;
+	private SpeedControllerGroup left, right;
+	private Encoder encoderLeft, encoderRight;
+	private DifferentialDrive m_drive;
 
 	public DriveTrain() {
-		leftFront = new WPI_TalonSRX(RobotMap.leftFrontDrivePort);
-		leftMid = new WPI_TalonSRX(RobotMap.leftMidDrivePort);
-		leftBack = new WPI_TalonSRX(RobotMap.leftBackDrivePort);
-		rightFront = new WPI_TalonSRX(RobotMap.rightFrontDrivePort);
-		rightMid = new WPI_TalonSRX(RobotMap.rightMidDrivePort);
-		rightBack = new WPI_TalonSRX(RobotMap.rightBackDrivePort);
+		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
+		leftMid = new WPI_TalonSRX(RobotMap.LEFT_MID_DRIVE_MOTOR);
+		leftBack = new WPI_TalonSRX(RobotMap.LEFT_BACK_DRIVE_MOTOR);
+		rightFront = new WPI_TalonSRX(RobotMap.RIGHT_FRONT_DRIVE_MOTOR);
+		rightMid = new WPI_TalonSRX(RobotMap.RIGHT_MID_DRIVE_MOTOR);
+		rightBack = new WPI_TalonSRX(RobotMap.RIGHT_BACK_DRIVE_MOTOR);
 
-		encoderRight = new Encoder(RobotMap.rightWheelEncoderPorts[0], RobotMap.rightWheelEncoderPorts[1]);
-		encoderLeft = new Encoder(RobotMap.leftWheelEncoderPorts[0], RobotMap.leftWheelEncoderPorts[1]);
+		encoderRight = new Encoder(RobotMap.RIGHT_WHEEL_ENCODER_PORT_A, RobotMap.RIGHT_WHEEL_ENCODER_PORT_B);
+		encoderLeft = new Encoder(RobotMap.LEFT_WHEEL_ENCODER_PORT_A, RobotMap.LEFT_WHEEL_ENCODER_PORT_B);
 
-		encoderLeft.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
-		encoderRight.setDistancePerPulse(RobotMap.EncoderDistancePerPule);
+		encoderLeft.setDistancePerPulse(RobotMap.ENCODER_DISTANCE_PER_PULSE);
+		encoderRight.setDistancePerPulse(RobotMap.ENCODER_DISTANCE_PER_PULSE);
 
 		// Set in brake mode
 		leftFront.setNeutralMode(NeutralMode.Brake);

@@ -49,9 +49,9 @@ public class Robot extends TimedRobot {
 		intake = new Intake();
 		oi = new OI();
 		elevator = new Elevator();
-		// compressor = new Compressor(RobotMap.compressorPort);
 
-		// compressor.setClosedLoopControl(true);
+		compressor = new Compressor(RobotMap.COMPRESSOR);
+		compressor.start();
 
 		// chooser.addOption("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);

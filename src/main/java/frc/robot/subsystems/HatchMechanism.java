@@ -9,7 +9,7 @@ public class HatchMechanism extends Subsystem {
 	private Solenoid hatchSolenoid;
 
 	public HatchMechanism() {
-		hatchSolenoid = new Solenoid(RobotMap.hatchSolenoid);
+		hatchSolenoid = new Solenoid(RobotMap.HATCH_SOLENOID);
 		hatchSolenoid.set(false);
 	}
 

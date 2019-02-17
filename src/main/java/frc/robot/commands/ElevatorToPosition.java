@@ -8,8 +8,8 @@ import frc.robot.util.SimplePID;
 
 public class ElevatorToPosition extends Command {
 
-	public final static int ELEVATOR_THRESHOLD = 50;
-	public final static int CLOCK_MAX = 5;;
+	private final static int ELEVATOR_THRESHOLD = 50;
+	private final static int CLOCK_MAX = 5;;
 
 	private SimplePID elevatorPID;
 	private PIDSource elevatorSource;

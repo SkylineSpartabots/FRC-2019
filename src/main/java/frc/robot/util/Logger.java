@@ -13,7 +13,7 @@ public class Logger {
 
 	public Logger(String filename) {
 		try {
-			File f = new File(RobotMap.SystemLogPath + filename + ".txt");
+			File f = new File(RobotMap.SYSTEM_LOG_PATH + filename + ".txt");
 			f.createNewFile();
 			f.setWritable(true);
 			writer = new PrintWriter(f);

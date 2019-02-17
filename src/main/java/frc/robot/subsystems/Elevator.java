@@ -20,8 +20,8 @@ public class Elevator extends Subsystem {
 	public final static int MIN_ENCODER_LIMIT = 0;
 
 	public Elevator() {
-		elevatorMaster = new WPI_TalonSRX(RobotMap.rightElevatorPort);
-		elevatorSlave = new WPI_TalonSRX(RobotMap.leftElevatorPort);
+		elevatorMaster = new WPI_TalonSRX(RobotMap.RIGHT_ELEVATOR);
+		elevatorSlave = new WPI_TalonSRX(RobotMap.LEFT_ELEVATOR);
 
 		elevatorMaster.setNeutralMode(NeutralMode.Brake);
 		elevatorSlave.setNeutralMode(NeutralMode.Brake);
@@ -31,8 +31,8 @@ public class Elevator extends Subsystem {
 
 		elevatorSlave.follow(elevatorMaster);
 
-		elevatorEncoder = new Encoder(RobotMap.elevatorEncoderPorts[0], RobotMap.elevatorEncoderPorts[1]);
-		elevatorLimitSwitch = new DigitalInput(RobotMap.elevatorLimitSwitch);
+		elevatorEncoder = new Encoder(RobotMap.ELEVATOR_ENCODER_PORT_A, RobotMap.ELEVATOR_ENCODER_PORT_B);
+		elevatorLimitSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH);
 	}
 
 	/**

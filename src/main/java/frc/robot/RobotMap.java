@@ -8,52 +8,55 @@ package frc.robot;
  */
 public class RobotMap {
 
-	// Robot Constants (metrics)
-	public static double TrackWidth = 0.5; // in meters
-	public static double MaxVelocity = 0; // in m/s
-	public static double EncoderDistancePerPule = 0.1; // Distance robot travels in one pulse
+	// Robot physical metrics
+	public static final double TRACK_WIDTH = 0.5; // in meters
+	public static final double MAX_VELOCITY = 0; // in m/s
+	public static final double ENCODER_DISTANCE_PER_PULSE = 0.1; // Distance robot travels in one pulse
 
-	// Path Trajectories
-	public static String AutoTrajectoryPathLocations = "//home//lvuser//deploy//";
+	// Path trajectories for sandstorm mode
+	public static final String AUTO_TRAJECTORY_PATH_LOCATIONS = "//home//lvuser//deploy//";
 
-	// Socket Comm Ports
-	public static String JetsonStaticIP = "10.29.76.86";
-	public static int JetsonCommPort = 5806;
-	public static String SystemLogPath = "//home//lvuser//deploy//";
+	// Jetson communications
+	public static final String JETSON_STATIC_IP = "10.29.76.86";
+	public static final int JETSON_COMM_PORT = 5806;
+	public static final String SYSTEM_LOG_PATH = "//home//lvuser//deploy//";
 
-	public static int compressorPort = 0;
+	public static final int COMPRESSOR = 0;
 
-	public static int rightIntakeMotor = 5;
-	public static int leftIntakeMotor = 7;
+	public static final int RIGHT_INTAKE_MOTOR = 5;
+	public static final int LEFT_INTAKE_MOTOR = 7;
 
-	public static int innerIntakeMotor = 6;
-	public static int intakeSensorPort = 0;
-	public static int intakeSensorThreshold = 0;
+	public static final int INNER_INTAKE_MOTOR = 6;
+	public static final int INTAKE_SENSOR = 0;
+	public static final int INTAKE_SENSOR_THRESHOLD = 0;
 
-	public static int rightIntakeSolenoid = 1;
-	public static int leftIntakeSolenoid = 2;
+	public static final int RIGHT_INTAKE_SOLENOID = 1;
+	public static final int LEFT_INTAKE_SOLENOID = 2;
 
-	public static int driveStick = 0;
-	public static int secondStick = 1;
+	// drive train motor ports - WCD
+	public static final int RIGHT_FRONT_DRIVE_MOTOR = 0;
+	public static final int RIGHT_MID_DRIVE_MOTOR = 1;
+	public static final int RIGHT_BACK_DRIVE_MOTOR = 2;
+	public static final int LEFT_FRONT_DRIVE_MOTOR = 3;
+	public static final int LEFT_MID_DRIVE_MOTOR = 4;
+	public static final int LEFT_BACK_DRIVE_MOTOR = 5;
 
-	public static int rightFrontDrivePort = 0;
-	public static int rightMidDrivePort = 1;
-	public static int rightBackDrivePort = 2;
+	public static final int RIGHT_ELEVATOR = 6; // master
+	public static final int LEFT_ELEVATOR = 7; // slave
 
-	public static int leftFrontDrivePort = 3;
-	public static int leftMidDrivePort = 4;
-	public static int leftBackDrivePort = 5;
+	// encoders on drive train
+	public static final int RIGHT_WHEEL_ENCODER_PORT_A = 0;
+	public static final int RIGHT_WHEEL_ENCODER_PORT_B = 1;
+	public static final int LEFT_WHEEL_ENCODER_PORT_A = 2;
+	public static final int LEFT_WHEEL_ENCODER_PORT_B = 3;
 
-	public static int[] rightWheelEncoderPorts = { 0, 1 };
-	public static int[] leftWheelEncoderPorts = { 2, 3 };
+	// encoders on elevator
+	public static final int ELEVATOR_ENCODER_PORT_A = 4;
+	public static final int ELEVATOR_ENCODER_PORT_B = 5;
 
-	public static int rightElevatorPort = 6;
-	public static int leftElevatorPort = 7;
+	// elevator limit switch port
+	public static final int ELEVATOR_LIMIT_SWITCH = 2;
 
-	public static int[] elevatorEncoderPorts = { 4, 5 };
-	public static int elevatorLimitSwitch = 2;
-
-	public static int hatchSolenoid = 3;
-
-	public static final double JOYSTICK_DEADZONE = 0.05;
+	// hatch mechanism solenoid port
+	public static final int HATCH_SOLENOID = 3;
 }

@@ -17,8 +17,8 @@ public class Intake extends Subsystem {
 	AnalogInput distanceSensor;
 
 	public Intake() {
-		masterIntakeMotor = new WPI_TalonSRX(RobotMap.rightIntakeMotor);
-		slaveIntakeMotor = new WPI_TalonSRX(RobotMap.leftIntakeMotor);
+		masterIntakeMotor = new WPI_TalonSRX(RobotMap.RIGHT_INTAKE_MOTOR);
+		slaveIntakeMotor = new WPI_TalonSRX(RobotMap.LEFT_INTAKE_MOTOR);
 
 		masterIntakeMotor.setNeutralMode(NeutralMode.Brake);
 		slaveIntakeMotor.setNeutralMode(NeutralMode.Brake);
@@ -28,13 +28,13 @@ public class Intake extends Subsystem {
 
 		slaveIntakeMotor.follow(masterIntakeMotor);
 
-		innerIntakeMotor = new WPI_TalonSRX(RobotMap.innerIntakeMotor);
+		innerIntakeMotor = new WPI_TalonSRX(RobotMap.INNER_INTAKE_MOTOR);
 		innerIntakeMotor.setInverted(false);
 
-		distanceSensor = new AnalogInput(RobotMap.intakeSensorPort);
+		distanceSensor = new AnalogInput(RobotMap.INTAKE_SENSOR);
 
-		masterIntakeSolenoid = new Solenoid(RobotMap.rightIntakeSolenoid);
-		slaveIntakeSolenoid = new Solenoid(RobotMap.leftIntakeSolenoid);
+		masterIntakeSolenoid = new Solenoid(RobotMap.RIGHT_INTAKE_SOLENOID);
+		slaveIntakeSolenoid = new Solenoid(RobotMap.LEFT_INTAKE_SOLENOID);
 	}
 
 	public void extendIntake() {
@@ -76,7 +76,7 @@ public class Intake extends Subsystem {
 	 * @return if cargo is in the intake it returns true, if false there is a hatch.
 	 */
 	public boolean isCargo() {
-		return distanceSensor.getValue() > RobotMap.intakeSensorThreshold;
+		return distanceSensor.getValue() > RobotMap.INTAKE_SENSOR_THRESHOLD;
 	}
 
 	@Override

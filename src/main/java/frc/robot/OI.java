@@ -12,6 +12,9 @@ import frc.robot.subsystems.Elevator;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
+
+	private static final double JOYSTICK_DEADZONE = 0.05;
+
 	public Joystick driveStick;
 	public Joystick secondStick;
 
@@ -45,11 +48,10 @@ public class OI {
 	/**
 	 * 
 	 * @param rawValue
-	 * @return clips deadzone (specified in RobotMap) from joysticks and triggers
-	 *         when value passed in
+	 * @return clips deadzone from joysticks and triggers when value passed in
 	 */
 	public double clipDeadzone(double rawValue) {
-		if (Math.abs(rawValue) > RobotMap.JOYSTICK_DEADZONE) {
+		if (Math.abs(rawValue) > JOYSTICK_DEADZONE) {
 			return rawValue;
 		} else {
 			return 0;
@@ -57,8 +59,8 @@ public class OI {
 	}
 
 	public OI() {
-		driveStick = new Joystick(RobotMap.driveStick);
-		secondStick = new Joystick(RobotMap.secondStick);
+		driveStick = new Joystick(0);
+		secondStick = new Joystick(1);
 
 		JoystickButton buttonA = new JoystickButton(secondStick, OI.Button.A.getBtnNumber());
 		JoystickButton buttonB = new JoystickButton(secondStick, OI.Button.B.getBtnNumber());

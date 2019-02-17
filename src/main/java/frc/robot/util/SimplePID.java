@@ -121,7 +121,7 @@ public class SimplePID {
 	}
 
 	public void flushLogData() {
-		if (this.log = true)
+		if (this.log)
 			PIDlog.flushLogData();
 	}
 
