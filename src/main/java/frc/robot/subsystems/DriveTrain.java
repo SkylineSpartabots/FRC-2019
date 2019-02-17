@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,18 +19,20 @@ import frc.robot.commands.DriveWithJoystick;
  */
 public class DriveTrain extends Subsystem {
 
-	private WPI_TalonSRX leftFront, leftMid, leftBack, rightFront, rightMid, rightBack;
+	private WPI_TalonSRX leftFront, rightFront;
+	private VictorSPX  leftMid, leftBack, rightMid, rightBack;
 	private SpeedControllerGroup left, right;
 	private Encoder encoderLeft, encoderRight;
 	private DifferentialDrive m_drive;
 
 	public DriveTrain() {
 		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
-		leftMid = new WPI_TalonSRX(RobotMap.LEFT_MID_DRIVE_MOTOR);
-		leftBack = new WPI_TalonSRX(RobotMap.LEFT_BACK_DRIVE_MOTOR);
+		leftMid = new VictorSPX(RobotMap.LEFT_MID_DRIVE_MOTOR);
+		leftBack = new VictorSPX(RobotMap.LEFT_BACK_DRIVE_MOTOR);
 		rightFront = new WPI_TalonSRX(RobotMap.RIGHT_FRONT_DRIVE_MOTOR);
-		rightMid = new WPI_TalonSRX(RobotMap.RIGHT_MID_DRIVE_MOTOR);
-		rightBack = new WPI_TalonSRX(RobotMap.RIGHT_BACK_DRIVE_MOTOR);
+		rightFront.setInverted(true);
+		rightMid = new VictorSPX(RobotMap.RIGHT_MID_DRIVE_MOTOR);
+		rightBack = new VictorSPX(RobotMap.RIGHT_BACK_DRIVE_MOTOR);
 
 		encoderRight = new Encoder(RobotMap.RIGHT_WHEEL_ENCODER_PORT_A, RobotMap.RIGHT_WHEEL_ENCODER_PORT_B);
 		encoderLeft = new Encoder(RobotMap.LEFT_WHEEL_ENCODER_PORT_A, RobotMap.LEFT_WHEEL_ENCODER_PORT_B);
@@ -43,12 +48,21 @@ public class DriveTrain extends Subsystem {
 		rightMid.setNeutralMode(NeutralMode.Brake);
 		rightBack.setNeutralMode(NeutralMode.Brake);
 
-		left = new SpeedControllerGroup(leftFront, leftMid, leftBack);
-		right = new SpeedControllerGroup(rightFront, rightMid, rightBack);
+		rightMid.follow(rightFront);
+		rightBack.follow(rightFront);
+		leftMid.follow(leftFront);
+		leftBack.follow(leftFront);
+		left = new SpeedControllerGroup(leftFront);
+		right = new SpeedControllerGroup(rightFront);
 
 		m_drive = new DifferentialDrive(left, right);
 	}
 
+	public void driveMotor()	{
+		//leftFront.set(0.4);
+		//rightFront.set(0.4);
+		  rightBack.set(Mode, demand0, demand1);
+	}
 	public void resetEncoders() {
 		encoderLeft.reset();
 		encoderRight.reset();
@@ -90,6 +104,6 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void initDefaultCommand() {
-		setDefaultCommand(new DriveWithJoystick());
+		//setDefaultCommand(new DriveWithJoystick());
 	}
 }

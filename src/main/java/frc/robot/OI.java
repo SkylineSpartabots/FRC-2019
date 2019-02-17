@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.ElevatorToPosition;
 import frc.robot.commands.GraspHatch;
 import frc.robot.commands.ReleaseHatch;
+import frc.robot.commands.TestDriveTrain;
 import frc.robot.subsystems.Elevator;
 
 /**
@@ -69,16 +70,19 @@ public class OI {
 		JoystickButton lBumper = new JoystickButton(secondStick, OI.Button.LBumper.getBtnNumber());
 		JoystickButton rBumper = new JoystickButton(secondStick, OI.Button.RBumper.getBtnNumber());
 
+		JoystickButton xDrive = new JoystickButton(driveStick, OI.Button.X.getBtnNumber());
 		try {
-			buttonA.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_FIRST));
-			buttonB.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.CARGO_SHIP));
-			buttonX.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_SECOND));
-			buttonY.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_THIRD));
+			xDrive.whileHeld(new TestDriveTrain());
+			//buttonA.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_FIRST));
+			//buttonB.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.CARGO_SHIP));
+			//buttonX.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_SECOND));
+			//buttonY.whenPressed(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_THIRD));
 
-			lBumper.whenPressed(new GraspHatch());
-			rBumper.whenPressed(new ReleaseHatch());
+			//lBumper.whenPressed(new GraspHatch());
+			//rBumper.whenPressed(new ReleaseHatch());
 
 		} finally {
+			xDrive.close();
 			buttonA.close();
 			buttonB.close();
 			buttonX.close();

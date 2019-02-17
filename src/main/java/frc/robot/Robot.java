@@ -10,7 +10,6 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchMechanism;
 import frc.robot.subsystems.Intake;
-import frc.robot.util.JetsonComm;
 import frc.robot.util.Logger;
 import frc.robot.util.RPS;
 
@@ -24,7 +23,6 @@ import frc.robot.util.RPS;
 public class Robot extends TimedRobot {
 	public static Logger SystemLog;
 	public static RPS rps;
-	public static JetsonComm JetsonWrapper;
 
 	public static DriveTrain driveTrain;
 	public static Intake intake;
@@ -44,11 +42,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		rps = new RPS();
-		JetsonWrapper = new JetsonComm(); // this needs to move to autoinit
 		driveTrain = new DriveTrain();
 		intake = new Intake();
-		oi = new OI();
 		elevator = new Elevator();
+		oi = new OI();
 
 		compressor = new Compressor(RobotMap.COMPRESSOR);
 		compressor.start();
