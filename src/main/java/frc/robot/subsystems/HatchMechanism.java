@@ -6,11 +6,14 @@ import frc.robot.RobotMap;
 
 public class HatchMechanism extends Subsystem {
 
-	private Solenoid hatchSolenoid;
+	private Solenoid hatchSolenoid, hatchSliderSolenoid;
 
 	public HatchMechanism() {
 		hatchSolenoid = new Solenoid(RobotMap.HATCH_SOLENOID);
+		hatchSliderSolenoid = new Solenoid(RobotMap.HATCH_SLIDER_SOLENOID);
+
 		hatchSolenoid.set(false);
+		hatchSliderSolenoid.set(false);
 	}
 
 	public void release() {
@@ -23,6 +26,18 @@ public class HatchMechanism extends Subsystem {
 
 	public boolean getState() {
 		return hatchSolenoid.get();
+	}
+
+	public void slideHatchOut() {
+		hatchSliderSolenoid.set(true);
+	}
+
+	public void slideHatchIn() {
+		hatchSliderSolenoid.set(false);
+	}
+
+	public boolean getSliderState() {
+		return hatchSliderSolenoid.get();
 	}
 
 	@Override

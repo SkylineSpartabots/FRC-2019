@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.subsystems.Elevator;
 
 public class IntakeControl extends Command {
 
@@ -22,6 +23,21 @@ public class IntakeControl extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
+
+		//Controls for moving intake down and up using dpad
+		int dpad_val = Robot.oi.secondStick.getPOV();
+
+		if (dpad_val == 315 || dpad_val == 0 || dpad_val == 45) {
+			Robot.intake.extendIntake();
+
+
+
+		} else if (dpad_val == 225 || dpad_val == 180 || dpad_val == 135  || (Robot.intake.isCargo() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT)) {
+			Robot.intake.retractIntake();
+			return;	
+		}
+
+
 		rTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.RTrigger.getAxisNumber());
 		rTrigger = Robot.oi.clipDeadzone(rTrigger);
 		lTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.LTrigger.getAxisNumber());

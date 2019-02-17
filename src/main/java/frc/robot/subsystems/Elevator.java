@@ -34,7 +34,7 @@ public class Elevator extends Subsystem {
 		elevatorEncoder = new Encoder(RobotMap.ELEVATOR_ENCODER_PORT_A, RobotMap.ELEVATOR_ENCODER_PORT_B);
 		elevatorLimitSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH);
 	}
-	public int getRawElevatorCount()	{
+	public int getElevatorEncoderOutput()	{
 		return elevatorEncoder.get();
 	}
 	/**

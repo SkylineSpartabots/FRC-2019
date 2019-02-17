@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
 	public static Intake intake;
 	public static Elevator elevator;
 	public static HatchMechanism hatchMechanism;
-	
+
 	public static OI oi;
 	public Compressor compressor;
 
@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
-		System.out.println(Robot.elevator.getRawElevatorCount());
+		System.out.println(Robot.elevator.getElevatorEncoderOutput());
 		// SystemLog.flushLogData(); // this slows down the loop
 	}
 

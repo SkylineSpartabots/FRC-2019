@@ -20,7 +20,7 @@ public class OI {
 	public Joystick secondStick;
 
 	public enum Button {
-		RBumper(6), LBumper(5), A(1), B(2), X(3), Y(4), RightJoystickBtn(10), LeftJoystickBtn(9);
+		RBumper(6), LBumper(5), A(1), B(2), X(3), Y(4), RightJoystickBtn(10), LeftJoystickBtn(9), Start(8), Back(7);
 
 		private final int number;
 
@@ -70,6 +70,9 @@ public class OI {
 		JoystickButton lBumper = new JoystickButton(secondStick, OI.Button.LBumper.getBtnNumber());
 		JoystickButton rBumper = new JoystickButton(secondStick, OI.Button.RBumper.getBtnNumber());
 
+		JoystickButton start = new JoystickButton(secondStick, OI.Button.Start.getBtnNumber());
+		JoystickButton back = new JoystickButton(secondStick, OI.Button.Back.getBtnNumber());
+
 		JoystickButton xDrive = new JoystickButton(driveStick, OI.Button.X.getBtnNumber());
 		try {
 			xDrive.whileHeld(new TestSubsystem(0.2));
@@ -81,6 +84,9 @@ public class OI {
 			//lBumper.whenPressed(new GraspHatch());
 			//rBumper.whenPressed(new ReleaseHatch());
 
+			//start.whenPressed(new SlideHatchOut());
+			//back.whenPressed(new SlideHatchIn());
+
 		} finally {
 			xDrive.close();
 			buttonA.close();
@@ -89,6 +95,8 @@ public class OI {
 			buttonY.close();
 			lBumper.close();
 			rBumper.close();
+			start.close();
+			start.close();
 		}
 
 		// TODO: need to add controls for extending and retracting intake

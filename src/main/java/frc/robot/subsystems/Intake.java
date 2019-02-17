@@ -13,7 +13,7 @@ import frc.robot.commands.IntakeControl;
 public class Intake extends Subsystem {
 
 	WPI_TalonSRX masterIntakeMotor, slaveIntakeMotor, innerIntakeMotor;
-	Solenoid masterIntakeSolenoid, slaveIntakeSolenoid;
+	Solenoid IntakeSolenoid, slaveIntakeSolenoid;
 	AnalogInput distanceSensor;
 
 	public Intake() {
@@ -33,22 +33,21 @@ public class Intake extends Subsystem {
 
 		distanceSensor = new AnalogInput(RobotMap.INTAKE_SENSOR);
 
-		masterIntakeSolenoid = new Solenoid(RobotMap.RIGHT_INTAKE_SOLENOID);
-		slaveIntakeSolenoid = new Solenoid(RobotMap.LEFT_INTAKE_SOLENOID);
+		IntakeSolenoid = new Solenoid(RobotMap.INTAKE_SOLENOID);
+
+		
 	}
 
 	public void extendIntake() {
-		masterIntakeSolenoid.set(true);
-		slaveIntakeSolenoid.set(true);
+		IntakeSolenoid.set(true);
 	}
 
 	public void retractIntake() {
-		masterIntakeSolenoid.set(false);
-		slaveIntakeSolenoid.set(false);
+		IntakeSolenoid.set(false);
 	}
 
 	public boolean getIntakeSolenoidState() {
-		return masterIntakeSolenoid.get();
+		return IntakeSolenoid.get();
 	}
 
 	/**
@@ -61,7 +60,6 @@ public class Intake extends Subsystem {
 		if (isCargo() && power > 0) {
 			power = 0;
 		}
-
 		// Stop outer intake if elevator is up
 		if (Robot.elevator.elevatorEncoder.getDistance() > Elevator.MIN_ENCODER_LIMIT) {
 			masterIntakeMotor.set(0);
@@ -81,6 +79,6 @@ public class Intake extends Subsystem {
 
 	@Override
 	public void initDefaultCommand() {
-		//setDefaultCommand(new IntakeControl());
+		setDefaultCommand(new IntakeControl());
 	}
 }

@@ -30,8 +30,7 @@ public class RobotMap {
 	public static final int INTAKE_SENSOR = 0; //TODO
 	public static final int INTAKE_SENSOR_THRESHOLD = 0; //TODO
 
-	public static final int RIGHT_INTAKE_SOLENOID = 1;//TODO
-	public static final int LEFT_INTAKE_SOLENOID = 2; //TODO
+	public static final int INTAKE_SOLENOID = 2;
 
 	// drive train motor ports - WCD
 	public static final int RIGHT_FRONT_DRIVE_MOTOR = 10;
@@ -58,5 +57,7 @@ public class RobotMap {
 	public static final int ELEVATOR_LIMIT_SWITCH = 2;
 
 	// hatch mechanism solenoid port
-	public static final int HATCH_SOLENOID = 3; //TODO
+	public static final int HATCH_SOLENOID = 0;
+
+	public static final int HATCH_SLIDER_SOLENOID = 1; 
 }
