@@ -11,7 +11,7 @@ public class RobotMap {
 	// Robot physical metrics
 	public static final double TRACK_WIDTH = 0.5; // in meters
 	public static final double MAX_VELOCITY = 0; // in m/s
-	public static final double ENCODER_DISTANCE_PER_PULSE = 0.1; // Distance robot travels in one pulse
+	public static final double ENCODER_DISTANCE_PER_PULSE = Math.PI*4/1000; // Distance robot travels in one pulse
 
 	// Path trajectories for sandstorm mode
 	public static final String AUTO_TRAJECTORY_PATH_LOCATIONS = "//home//lvuser//deploy//";
@@ -45,14 +45,14 @@ public class RobotMap {
 	public static final int LEFT_ELEVATOR = 1; // slave
 
 	// encoders on drive train
-	public static final int RIGHT_WHEEL_ENCODER_PORT_A = 3;
-	public static final int RIGHT_WHEEL_ENCODER_PORT_B = 4;
-	public static final int LEFT_WHEEL_ENCODER_PORT_A = 0;
-	public static final int LEFT_WHEEL_ENCODER_PORT_B = 1;
+	public static final int RIGHT_WHEEL_ENCODER_PORT_A = 4;
+	public static final int RIGHT_WHEEL_ENCODER_PORT_B = 3;
+	public static final int LEFT_WHEEL_ENCODER_PORT_A = 1;
+	public static final int LEFT_WHEEL_ENCODER_PORT_B = 0;
 
 	// encoders on elevator
-	public static final int ELEVATOR_ENCODER_PORT_A = 5;
-	public static final int ELEVATOR_ENCODER_PORT_B = 6;
+	public static final int ELEVATOR_ENCODER_PORT_A = 6;
+	public static final int ELEVATOR_ENCODER_PORT_B = 5;
 
 	// elevator limit switch port
 	public static final int ELEVATOR_LIMIT_SWITCH = 2;

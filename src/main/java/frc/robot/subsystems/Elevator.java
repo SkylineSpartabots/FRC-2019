@@ -16,7 +16,7 @@ public class Elevator extends Subsystem {
 	public Encoder elevatorEncoder;
 	private DigitalInput elevatorLimitSwitch;
 
-	public final static int MAX_ENCODER_LIMIT = 1000; // TODO: Add limit
+	public final static int MAX_ENCODER_LIMIT = 1400; // TODO: Add limit
 	public final static int MIN_ENCODER_LIMIT = 0;
 
 	public Elevator() {
@@ -34,11 +34,19 @@ public class Elevator extends Subsystem {
 		elevatorEncoder = new Encoder(RobotMap.ELEVATOR_ENCODER_PORT_A, RobotMap.ELEVATOR_ENCODER_PORT_B);
 		elevatorLimitSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH);
 	}
-
+	public int getRawElevatorCount()	{
+		return elevatorEncoder.get();
+	}
 	/**
 	 * Sets the power to the motor. Takes in consideration of the current elevator
 	 * position and resets the encoders when the limit switch is active
 	 */
+	public void setRawPower(double power)	{
+		elevatorMaster.set(power);		
+		if (getLimitSwitchState()) {
+			elevatorEncoder.reset();
+		}
+	}
 	public void setPower(double power) {
 		boolean maxReached = elevatorEncoder.getDistance() >= MAX_ENCODER_LIMIT && power > 0;
 		boolean minReached = elevatorEncoder.getDistance() <= MIN_ENCODER_LIMIT && power < 0;
@@ -63,7 +71,7 @@ public class Elevator extends Subsystem {
 
 	@Override
 	public void initDefaultCommand() {
-		//setDefaultCommand(new ElevatorControl());
+		setDefaultCommand(new ElevatorControl());
 	}
 
 	/**
