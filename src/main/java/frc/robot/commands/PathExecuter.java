@@ -45,7 +45,7 @@ public class PathExecuter extends Command {
 
 			NAVXSource = new PIDSource() {
 				public double getInput() {
-					return Robot.rps.getAngle();
+					return Robot.rps.getNavxAngle();
 				}
 			};
 			timer = new Timer();
@@ -100,7 +100,7 @@ public class PathExecuter extends Command {
 		RightMotorOutput = r + turn;
 		PathingLog.writeNewData(
 				"Pathing Update: LeftMotorOutput: " + LeftMotorOutput + " RightMotorOutput: " + RightMotorOutput
-						+ " DesiredHeading: " + desired_heading + " Actual Heading: " + Robot.rps.getAngle());
+						+ " DesiredHeading: " + desired_heading + " Actual Heading: " + Robot.rps.getNavxAngle());
 	}
 
 	/**
@@ -115,8 +115,8 @@ public class PathExecuter extends Command {
 		left.reset();
 		right.reset();
 
-		Robot.SystemLog.writeNewData("Path Executer Initialized: Angle=" + Robot.rps.getAngle());
-		System.out.println("Path Executer Initialize \n\n Angle=" + Robot.rps.getAngle());
+		Robot.SystemLog.writeNewData("Path Executer Initialized: Angle=" + Robot.rps.getNavxAngle());
+		System.out.println("Path Executer Initialize \n\n Angle=" + Robot.rps.getNavxAngle());
 	}
 
 	// Called repeatedly when this Command is scheduled to run

@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.io.IOException;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -22,6 +25,8 @@ import frc.robot.util.RPS;
  * project.
  */
 public class Robot extends TimedRobot {
+	public static NetworkTableInstance NetworkInst;
+	public static NetworkTable JetsonTable;
 	public static Logger SystemLog;
 	public static RPS rps;
 
@@ -41,13 +46,13 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
+		NetworkInst = NetworkTableInstance.getDefault();
+		JetsonTable = NetworkInst.getTable("JetsonData");
 		rps = new RPS();
-
 		driveTrain = new DriveTrain();
 		intake = new Intake();
 		elevator = new Elevator();
 		hatchMechanism = new HatchMechanism();
-		
 		oi = new OI();
 
 		// try-with-resource makes sure that there is no resource leak
@@ -58,9 +63,22 @@ public class Robot extends TimedRobot {
 		hatchMechanism.graspLotus();
 		hatchMechanism.slideIn();
 		intake.retractIntake();
-
-		// chooser.addOption("My Auto", new MyAutoCommand());
+		
 		SmartDashboard.putData("Auto mode", m_chooser);
+		//chooser.addOption("My Auto", new MyAutoCommand());
+
+		System.out.println("Starting Jetson");
+		String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
+		ProcessBuilder jetsonProcessStart = new ProcessBuilder();
+		jetsonProcessStart.command("sh", "-c", jetsonCmd);
+		jetsonProcessStart.inheritIO();
+		try{
+			jetsonProcessStart.start();
+		}	catch (IOException e){
+			System.out.println("IOException at Jetson Start");
+			System.out.println(e.getMessage());
+		}
+		System.out.println("Jetson Process Start Attempted | Did not Block");				
 	}
 
 	/**
@@ -74,7 +92,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
-		// System.out.println(Robot.elevator.getElevatorEncoderOutput());
+		System.out.println(rps.getXDisplacementToVisionTarget());
 		// SystemLog.flushLogData(); // this slows down the loop
 	}
 

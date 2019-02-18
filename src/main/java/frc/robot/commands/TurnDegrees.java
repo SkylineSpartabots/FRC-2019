@@ -35,13 +35,13 @@ public class TurnDegrees extends Command {
 		requires(Robot.driveTrain);
 
 		timer = new Timer();
-		this.angle = angle + Robot.rps.getAngle();
+		this.angle = angle + Robot.rps.getNavxAngle();
 		this.timeOutSecs = timeOutSecs;
 
 		turnSource = new PIDSource() {
 			@Override
 			public double getInput() {
-				return Robot.rps.getAngle();
+				return Robot.rps.getNavxAngle();
 			}
 		};
 
