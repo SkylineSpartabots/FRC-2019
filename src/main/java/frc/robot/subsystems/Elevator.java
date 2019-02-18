@@ -20,7 +20,7 @@ public class Elevator extends Subsystem {
 	private DigitalInput elevatorLimitSwitch;
 
 	public final static int MAX_ENCODER_LIMIT = 1400; // TODO: Add limit
-	public final static int MIN_ENCODER_LIMIT = 0;
+	public final static int MIN_ENCODER_LIMIT = 100;
 
 	public Elevator() {
 		elevatorMaster = new WPI_TalonSRX(RobotMap.RIGHT_ELEVATOR);

@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.Elevator;
@@ -19,6 +20,8 @@ public class ElevatorToPosition extends Command {
 	private int clockCounter = 0;
 	private boolean isFinished = false;
 
+	private Timer timer;
+
 	private double kP = 0; // TODO: add values
 	private double kI = 0;
 	private double kD = 0;
@@ -37,7 +40,8 @@ public class ElevatorToPosition extends Command {
 		// returns value whether it is in the cargo or hatch position
 		elevatorTarget = elevatorPosition.getPosition();
 
-		elevatorPID = new SimplePID(elevatorSource, elevatorTarget, kP, kI, kD, false, "ElevatorPID");
+		timer = new Timer();
+		elevatorPID = new SimplePID(elevatorSource, elevatorTarget, kP, kI, kD, timer, false);
 		elevatorPID.setOutputLimits(-0.4, 0.4);
 	}
 

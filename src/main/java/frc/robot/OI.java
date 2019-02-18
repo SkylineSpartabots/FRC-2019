@@ -5,7 +5,6 @@ import frc.robot.commands.GraspHatch;
 import frc.robot.commands.ReleaseHatch;
 import frc.robot.commands.SlideHatchIn;
 import frc.robot.commands.SlideHatchOut;
-import frc.robot.commands.TestSubsystem;
 import frc.robot.controllers.Logitech;
 import frc.robot.subsystems.Elevator;
 
@@ -21,8 +20,6 @@ public class OI {
 	public OI() {
 		driveStick = new Logitech(0);
 		secondStick = new Logitech(1);
-
-		driveStick.buttonX.whileHeld(new TestSubsystem(0.2));
 
 		secondStick.buttonB.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.CARGO_SHIP));
 		secondStick.buttonA.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_FIRST));

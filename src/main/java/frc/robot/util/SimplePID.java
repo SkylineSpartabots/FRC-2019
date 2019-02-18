@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
  * @author Vibhav Peri
  */
 public class SimplePID {
-	
+
 	private double outputMax = 1;
 	private double outputMin = -1;
 	private PIDSource pidsource;
@@ -44,17 +44,17 @@ public class SimplePID {
 	 * @param ki         integral gain
 	 * @param kd         derivative gain
 	 */
-	public SimplePID(Object pidsource, double setpoint, double kp, double ki, double kd, boolean log, String filename) {
+	public SimplePID(Object pidsource, double setpoint, double kp, double ki, double kd, Timer timer, boolean b) {
 		this.pidsource = (PIDSource) pidsource;
 		this.setpoint = setpoint;
 		this.kp = kp;
 		this.ki = ki;
 		this.kd = kd;
-		this.log = log;
+		this.log = b;
 
-		if (log) {
+		if (b) {
 			try {
-				PIDlog = new Logger(filename + ".txt");
+				PIDlog = new Logger(b + ".txt");
 			} catch (NullPointerException ex) {
 				System.out.println("SimplePID File Exception: Log Enabled without Valid FilePath" + ex.getMessage());
 				this.log = false;

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.TurnPIDTest;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchMechanism;
@@ -41,15 +42,22 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		rps = new RPS();
+
 		driveTrain = new DriveTrain();
 		intake = new Intake();
 		elevator = new Elevator();
+		hatchMechanism = new HatchMechanism();
+		
 		oi = new OI();
 
 		// try-with-resource makes sure that there is no resource leak
 		try (Compressor compressor = new Compressor(RobotMap.COMPRESSOR)) {
 			compressor.start();
 		}
+
+		hatchMechanism.graspLotus();
+		hatchMechanism.slideIn();
+		intake.retractIntake();
 
 		// chooser.addOption("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
@@ -66,7 +74,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
-		System.out.println(Robot.elevator.getElevatorEncoderOutput());
+		// System.out.println(Robot.elevator.getElevatorEncoderOutput());
 		// SystemLog.flushLogData(); // this slows down the loop
 	}
 
@@ -77,6 +85,9 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
+		hatchMechanism.graspLotus();
+		hatchMechanism.slideIn();
+		intake.retractIntake();
 	}
 
 	@Override
@@ -99,7 +110,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		rps.reset();
-		m_autonomousCommand = m_chooser.getSelected();
+		m_autonomousCommand = new TurnPIDTest();
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
@@ -124,6 +135,12 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
+		// Vishal, dont freak out, it will be removed promptly
+		hatchMechanism.graspLotus();
+		hatchMechanism.slideIn();
+		intake.retractIntake();
+		rps.reset();
+
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
@@ -139,6 +156,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		// System.out.println(rps.getAngle());
 	}
 
 	/**

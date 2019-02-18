@@ -23,19 +23,19 @@ public class IntakeControl extends Command {
 		// Controls for moving intake down and up using dpad
 		if (Robot.oi.secondStick.isPOVUpish()) {
 			Robot.intake.extendIntake();
-		} else if (Robot.oi.secondStick.isPOVDownish() || (Robot.intake.containsCargo() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT)) {
+		} else if (Robot.oi.secondStick.isPOVDownish() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT) {
 			Robot.intake.retractIntake();
-			return;	
+			return;
 		}
 
-		double rTrigger = Robot.oi.driveStick.getRTrigger();
-		double lTrigger = Robot.oi.driveStick.getLTrigger();
+		double rTrigger = Robot.oi.secondStick.getRTrigger();
+		double lTrigger = Robot.oi.secondStick.getLTrigger();
 
 		// Sets power to the intake motors. Uses whichever trigger is more pressed
 		if (rTrigger > lTrigger) {
-			Robot.intake.setIntakePower(rTrigger);
+			Robot.intake.setIntakePower(-rTrigger);
 		} else if (rTrigger < lTrigger) {
-			Robot.intake.setIntakePower(-lTrigger);
+			Robot.intake.setIntakePower(lTrigger);
 		} else {
 			Robot.intake.setIntakePower(0);
 		}

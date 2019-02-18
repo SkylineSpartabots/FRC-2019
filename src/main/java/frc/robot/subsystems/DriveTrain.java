@@ -51,9 +51,6 @@ public class DriveTrain extends Subsystem {
 		
 		left = new SpeedControllerGroup(leftFront, leftMid, leftBack);
 		right = new SpeedControllerGroup(rightFront, rightMid, rightBack);
-
-		right.setInverted(true);
-
 		m_drive = new DifferentialDrive(left, right);
 	}
 
@@ -92,7 +89,7 @@ public class DriveTrain extends Subsystem {
 		rightBack.neutralOutput();
 	}
 
-	private void tankDrive(double leftSpeed, double rightSpeed) {
+	public void tankDrive(double leftSpeed, double rightSpeed) {
 		m_drive.tankDrive(leftSpeed, rightSpeed);
 	}
 

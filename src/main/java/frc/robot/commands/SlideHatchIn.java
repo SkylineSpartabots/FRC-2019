@@ -13,6 +13,7 @@ import frc.robot.Robot;
 public class SlideHatchIn extends Command {
 
 	public SlideHatchIn() {
+		requires(Robot.hatchMechanism);
 	}
 
 	// Called just before this Command runs the first time

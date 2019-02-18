@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.io.File;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -24,6 +25,8 @@ public class PathExecuter extends Command {
 	private final double TurnI = 0;
 	private final double TurnD = 0;
 
+	private Timer timer;
+
 	private DistanceFollower left, right;
 	private PIDSource NAVXSource;
 	private SimplePID turnPID;
@@ -45,8 +48,8 @@ public class PathExecuter extends Command {
 					return Robot.rps.getAngle();
 				}
 			};
-
-			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, false, FileName + "TurnPID");
+			timer = new Timer();
+			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, timer, false);
 			PathingLog = new Logger(FileName + "-Log.txt");
 		} catch (Exception e) {
 			// TODO: catch exception

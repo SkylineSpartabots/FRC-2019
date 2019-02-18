@@ -23,7 +23,7 @@ public class RobotMap {
 
 	public static final int COMPRESSOR = 0;
 
-	public static final int RIGHT_INTAKE_MOTOR = 7;
+	public static final int RIGHT_INTAKE_MOTOR = 6;
 	public static final int LEFT_INTAKE_MOTOR = 11;
 
 	public static final int INNER_INTAKE_MOTOR = 5;
@@ -47,7 +47,7 @@ public class RobotMap {
 	public static final boolean IS_LEFT_MID_DRIVE_INVERTED = false;
 	public static final boolean IS_LEFT_BACK_DRIVE_INVERTED = false;
 
-	public static final int RIGHT_ELEVATOR = 6; // master
+	public static final int RIGHT_ELEVATOR = 7; // master
 	public static final int LEFT_ELEVATOR = 1; // slave
 
 	// encoders on drive train
