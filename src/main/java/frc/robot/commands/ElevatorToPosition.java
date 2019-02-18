@@ -29,7 +29,7 @@ public class ElevatorToPosition extends Command {
 	 * 
 	 * @param elevatorPosition
 	 */
-	public ElevatorToPosition(Elevator.ElevatorPositions elevatorPosition) {
+	public ElevatorToPosition(Elevator.ElevatorPosition elevatorPosition) {
 		requires(Robot.elevator);
 
 		elevatorSource = () -> Robot.elevator.elevatorEncoder.getDistance();

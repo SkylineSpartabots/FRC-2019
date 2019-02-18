@@ -4,45 +4,70 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 
+/**
+ * Subsystem for the lotus mechanism. Controls hatch panels.
+ */
 public class HatchMechanism extends Subsystem {
 
-	private Solenoid hatchSolenoid, hatchSliderSolenoid;
+	private Solenoid lotusSolenoid; // true when open (holding hatch in place), false when closed
+	private Solenoid sliderSolenoid; // true when pushed out, false when pushed in
 
 	public HatchMechanism() {
-		hatchSolenoid = new Solenoid(RobotMap.HATCH_SOLENOID);
-		hatchSliderSolenoid = new Solenoid(RobotMap.HATCH_SLIDER_SOLENOID);
+		lotusSolenoid = new Solenoid(RobotMap.HATCH_SOLENOID);
+		sliderSolenoid = new Solenoid(RobotMap.HATCH_SLIDER_SOLENOID);
 
-		hatchSolenoid.set(false);
-		hatchSliderSolenoid.set(false);
+		// ensures neutral position of closed lotus in back position
+		releaseLotus();
+		slideIn();
 	}
 
-	public void release() {
-		hatchSolenoid.set(false);
+	/**
+	 * Closes the lotus. This is the default position: no hatch panel inside.
+	 */
+	public void releaseLotus() {
+		lotusSolenoid.set(false);
 	}
 
-	public void grasp() {
-		hatchSolenoid.set(true);
+	/**
+	 * Opens the lotus to secure a hatch panel.
+	 */
+	public void graspLotus() {
+		lotusSolenoid.set(true);
 	}
 
-	public boolean getState() {
-		return hatchSolenoid.get();
+	/**
+	 * Returns whether the lotus is grasping something.
+	 * 
+	 * @return true if lotus is open, else false
+	 */
+	public boolean isLotusOpen() {
+		return lotusSolenoid.get();
 	}
 
-	public void slideHatchOut() {
-		hatchSliderSolenoid.set(true);
+	/**
+	 * Slides the hatch mechanism out.
+	 */
+	public void slideOut() {
+		sliderSolenoid.set(true);
 	}
 
-	public void slideHatchIn() {
-		hatchSliderSolenoid.set(false);
+	/**
+	 * Slides the hatch mechanism in.
+	 */
+	public void slideIn() {
+		sliderSolenoid.set(false);
 	}
 
-	public boolean getSliderState() {
-		return hatchSliderSolenoid.get();
+	/**
+	 * Returns whether the hatch mechanism is slid out.
+	 * 
+	 * @return true if mechanism is out, else true
+	 */
+	public boolean isSliderOut() {
+		return sliderSolenoid.get();
 	}
 
 	@Override
 	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		// setDefaultCommand(new MySpecialCommand());
 	}
 }

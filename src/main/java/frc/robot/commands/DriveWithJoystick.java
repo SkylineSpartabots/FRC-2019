@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
 
 public class DriveWithJoystick extends Command {
@@ -16,17 +15,15 @@ public class DriveWithJoystick extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		Robot.driveTrain.tankDrive(0, 0);
+		Robot.driveTrain.stop();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		turn = Robot.oi.driveStick.getRawAxis(OI.Axis.RX.getAxisNumber());
-		forward = Robot.oi.driveStick.getRawAxis(OI.Axis.LY.getAxisNumber());
-		double left = Robot.oi.driveStick.getRawAxis(OI.Axis.LY.getAxisNumber());
-		double right = Robot.oi.driveStick.getRawAxis(OI.Axis.RY.getAxisNumber());
-		Robot.driveTrain.arcadeDrive(-Robot.oi.clipDeadzone(forward), Robot.oi.clipDeadzone(turn));
+		turn = Robot.oi.driveStick.getRX();
+		forward = Robot.oi.driveStick.getLY();
+		Robot.driveTrain.arcadeDrive(-forward, turn);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
@@ -38,7 +35,7 @@ public class DriveWithJoystick extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-		Robot.driveTrain.tankDrive(0, 0);
+		Robot.driveTrain.stop();
 	}
 
 	// Called when another command which requires one or more of the same subsystems

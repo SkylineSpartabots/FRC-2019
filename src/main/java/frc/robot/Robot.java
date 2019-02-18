@@ -30,7 +30,6 @@ public class Robot extends TimedRobot {
 	public static HatchMechanism hatchMechanism;
 
 	public static OI oi;
-	public Compressor compressor;
 
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -47,8 +46,10 @@ public class Robot extends TimedRobot {
 		elevator = new Elevator();
 		oi = new OI();
 
-		compressor = new Compressor(RobotMap.COMPRESSOR);
-		compressor.start();
+		// try-with-resource makes sure that there is no resource leak
+		try (Compressor compressor = new Compressor(RobotMap.COMPRESSOR)) {
+			compressor.start();
+		}
 
 		// chooser.addOption("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);

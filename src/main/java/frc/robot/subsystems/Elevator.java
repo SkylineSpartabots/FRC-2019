@@ -10,6 +10,9 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.ElevatorControl;
 
+/**
+ * Subsystem for the elevator.
+ */
 public class Elevator extends Subsystem {
 
 	private WPI_TalonSRX elevatorMaster, elevatorSlave;
@@ -34,27 +37,38 @@ public class Elevator extends Subsystem {
 		elevatorEncoder = new Encoder(RobotMap.ELEVATOR_ENCODER_PORT_A, RobotMap.ELEVATOR_ENCODER_PORT_B);
 		elevatorLimitSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH);
 	}
+	
 	public int getElevatorEncoderOutput()	{
 		return elevatorEncoder.get();
 	}
+
 	/**
 	 * Sets the power to the motor. Takes in consideration of the current elevator
 	 * position and resets the encoders when the limit switch is active
+	 * 
+	 * @param power power <= 0
 	 */
-	public void setRawPower(double power)	{
-		elevatorMaster.set(power);		
+	public void setRawPower(double power) {
+		if (power > 0) {
+			throw new IllegalArgumentException("Power must be negative");
+		}
+		
+		elevatorMaster.set(power);
+
+		// reset encoder to 0 if elevator limit switch is pressed
 		if (getLimitSwitchState()) {
 			elevatorEncoder.reset();
 		}
 	}
+
 	public void setPower(double power) {
 		boolean maxReached = elevatorEncoder.getDistance() >= MAX_ENCODER_LIMIT && power > 0;
 		boolean minReached = elevatorEncoder.getDistance() <= MIN_ENCODER_LIMIT && power < 0;
 
-		if (!maxReached || !minReached) {
-			elevatorMaster.set(power);
-		} else {
+		if (maxReached || minReached) {
 			elevatorMaster.set(0);
+		} else {
+			elevatorMaster.set(power);
 		}
 
 		if (getLimitSwitchState()) {
@@ -63,7 +77,8 @@ public class Elevator extends Subsystem {
 	}
 
 	/**
-	 * @return returns the state of limit switch. True is active.
+	 * Returns the state of the limit switch
+	 * @return true is limit switch is active, else false
 	 */
 	public boolean getLimitSwitchState() {
 		return !elevatorLimitSwitch.get();
@@ -79,23 +94,23 @@ public class Elevator extends Subsystem {
 	 * different elevator positions
 	 * TODO: NEED TO ADD ACTUAL VALUES
 	 */
-	public enum ElevatorPositions {
+	public enum ElevatorPosition {
 		CARGO_SHIP(0, 0), ROCKET_FIRST(0, 0), ROCKET_SECOND(0, 0), ROCKET_THIRD(0, 0);
 
 		private final int cargoPosition;
 		private final int hatchPosition;
 
-		private ElevatorPositions(int cargoPosition, int hatchPosition) {
+		private ElevatorPosition(int cargoPosition, int hatchPosition) {
 			this.cargoPosition = cargoPosition;
 			this.hatchPosition = hatchPosition;
 		}
 
+		/**
+		 * Returns the cargo position if cargo is loaded into the intake, else the hatch position
+		 * @return position to put the elevator at
+		 */
 		public int getPosition() {
-			if (Robot.intake.isCargo()) {
-				return this.cargoPosition;
-			} else {
-				return this.hatchPosition;
-			}
+			return (Robot.intake.containsCargo() ? cargoPosition : hatchPosition);
 		}
 	}
 

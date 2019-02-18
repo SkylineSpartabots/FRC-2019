@@ -5,11 +5,16 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class Wait extends Command {
 
-	private double timeInMsec;
+	private double waitDuration; // in milliseconds
 	private Timer timer;
 
-	public Wait(double timeInMsec) {
-		this.timeInMsec = timeInMsec;
+	/**
+	 * Creates a command that finishes after the specified number of milliseconds.
+	 * 
+	 * @param waitDuration duration of timer in millseconds
+	 */
+	public Wait(double waitDuration) {
+		this.waitDuration = waitDuration;
 		timer = new Timer();
 	}
 
@@ -28,7 +33,7 @@ public class Wait extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return timer.get() > (timeInMsec / 1000);
+		return timer.get() > (waitDuration / 1000);
 	}
 
 	// Called once after isFinished returns true

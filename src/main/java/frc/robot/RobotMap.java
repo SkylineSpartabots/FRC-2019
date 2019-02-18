@@ -11,7 +11,7 @@ public class RobotMap {
 	// Robot physical metrics
 	public static final double TRACK_WIDTH = 0.5; // in meters
 	public static final double MAX_VELOCITY = 0; // in m/s
-	public static final double ENCODER_DISTANCE_PER_PULSE = Math.PI*4/1000; // Distance robot travels in one pulse
+	public static final double ENCODER_DISTANCE_PER_PULSE = Math.PI * 4 / 1000; // Distance robot travels in one pulse
 
 	// Path trajectories for sandstorm mode
 	public static final String AUTO_TRAJECTORY_PATH_LOCATIONS = "//home//lvuser//deploy//";
@@ -39,6 +39,13 @@ public class RobotMap {
 	public static final int LEFT_FRONT_DRIVE_MOTOR = 4;
 	public static final int LEFT_MID_DRIVE_MOTOR = 3;
 	public static final int LEFT_BACK_DRIVE_MOTOR = 2;
+	// whether each drive motor is inverted or not
+	public static final boolean IS_RIGHT_FRONT_DRIVE_INVERTED = true;
+	public static final boolean IS_RIGHT_MID_DRIVE_INVERTED = true;
+	public static final boolean IS_RIGHT_BACK_DRIVE_INVERTED = true;
+	public static final boolean IS_LEFT_FRONT_DRIVE_INVERTED = false;
+	public static final boolean IS_LEFT_MID_DRIVE_INVERTED = false;
+	public static final boolean IS_LEFT_BACK_DRIVE_INVERTED = false;
 
 	public static final int RIGHT_ELEVATOR = 6; // master
 	public static final int LEFT_ELEVATOR = 1; // slave

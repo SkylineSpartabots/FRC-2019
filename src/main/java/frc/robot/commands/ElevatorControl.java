@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
 
 public class ElevatorControl extends Command {
@@ -19,8 +18,7 @@ public class ElevatorControl extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		double joyVal = Robot.oi.secondStick.getRawAxis(OI.Axis.RY.getAxisNumber());
-		joyVal = Robot.oi.clipDeadzone(joyVal);
+		double joyVal = Robot.oi.secondStick.getRY();
 		System.out.println(-joyVal);
 		Robot.elevator.setRawPower(-joyVal); 
 	}

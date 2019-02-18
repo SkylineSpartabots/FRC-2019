@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -9,12 +8,12 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoystick;
 
 /**
- * An example subsystem. You can replace me with your own Subsystem.
+ * Subsystem for the West-Coast-style drive train.
+ * Has methods for driving in tank mode or arcade mode.
  */
 public class DriveTrain extends Subsystem {
 
@@ -29,11 +28,16 @@ public class DriveTrain extends Subsystem {
 		leftMid = new WPI_VictorSPX(RobotMap.LEFT_MID_DRIVE_MOTOR);
 		leftBack = new WPI_VictorSPX(RobotMap.LEFT_BACK_DRIVE_MOTOR);
 		rightFront = new WPI_TalonSRX(RobotMap.RIGHT_FRONT_DRIVE_MOTOR);
-		rightFront.setInverted(true);
 		rightMid = new WPI_VictorSPX(RobotMap.RIGHT_MID_DRIVE_MOTOR);
-		rightMid.setInverted(true);
 		rightBack = new WPI_VictorSPX(RobotMap.RIGHT_BACK_DRIVE_MOTOR);
-		rightBack.setInverted(true);
+
+		leftFront.setInverted(RobotMap.IS_LEFT_FRONT_DRIVE_INVERTED);
+		leftMid.setInverted(RobotMap.IS_LEFT_MID_DRIVE_INVERTED);
+		leftBack.setInverted(RobotMap.IS_LEFT_BACK_DRIVE_INVERTED);
+		rightFront.setInverted(RobotMap.IS_RIGHT_FRONT_DRIVE_INVERTED);
+		rightMid.setInverted(RobotMap.IS_RIGHT_MID_DRIVE_INVERTED);
+		rightBack.setInverted(RobotMap.IS_RIGHT_BACK_DRIVE_INVERTED);
+		
 		encoderRight = new Encoder(RobotMap.RIGHT_WHEEL_ENCODER_PORT_A, RobotMap.RIGHT_WHEEL_ENCODER_PORT_B);
 		encoderLeft = new Encoder(RobotMap.LEFT_WHEEL_ENCODER_PORT_A, RobotMap.LEFT_WHEEL_ENCODER_PORT_B);
 
@@ -47,29 +51,36 @@ public class DriveTrain extends Subsystem {
 		
 		left = new SpeedControllerGroup(leftFront, leftMid, leftBack);
 		right = new SpeedControllerGroup(rightFront, rightMid, rightBack);
+
 		right.setInverted(true);
+
 		m_drive = new DifferentialDrive(left, right);
 	}
 
-	public void driveMotor()	{
-		leftFront.set(0.4);
-		rightFront.set(0.4);
-		rightBack.set(0.4);
-		rightMid.set(0.4);  
-		leftMid.set(0.4);
-		leftBack.set(0.4);
-	}
+	/**
+	 * Resets both the left and right encoders
+	 */
 	public void resetEncoders() {
 		encoderLeft.reset();
 		encoderRight.reset();
 	}
 
+	/**
+	 * Returns the distance in meters from the left encoder
+	 * @return distance in meters travelled by the drive train's left side
+	 */
 	public double getLeftEncoderDistance() {
-		return encoderLeft.getRaw()*RobotMap.ENCODER_DISTANCE_PER_PULSE;//encoderLeft.getDistance();
+		// encoderLeft.getDistance();
+		return encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
 	}
 
+	/**
+	 * Returns the distance in meters from the right encoder
+	 * @return distance in meters travelled by the drive train's right side
+	 */
 	public double getRightEncoderDistance() {
-		return encoderRight.getRaw()*RobotMap.ENCODER_DISTANCE_PER_PULSE;//encoderRight.getDistance();
+		// encoderRight.getDistance();
+		return encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
 	}
 
 	public void setBrake() {
@@ -81,8 +92,15 @@ public class DriveTrain extends Subsystem {
 		rightBack.neutralOutput();
 	}
 
-	public void tankDrive(double leftSpeed, double rightSpeed) {
+	private void tankDrive(double leftSpeed, double rightSpeed) {
 		m_drive.tankDrive(leftSpeed, rightSpeed);
+	}
+
+	/**
+	 * Stops all drive train motors
+	 */
+	public void stop() {
+		tankDrive(0, 0);
 	}
 
 	public void arcadeDrive(double forward, double turn) {
@@ -92,11 +110,6 @@ public class DriveTrain extends Subsystem {
 	public void rawMotorOutput(double leftSpeed, double rightSpeed) {
 		left.set(leftSpeed);
 		right.set(rightSpeed);
-	}
-
-	public void drive(double speed, double rotation) {
-		SmartDashboard.putNumber("Power", speed);
-		m_drive.arcadeDrive(speed, rotation, true);
 	}
 
 	public void initDefaultCommand() {

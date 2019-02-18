@@ -10,12 +10,12 @@ public class ElevatorTestGroup extends CommandGroup {
 	 * cargo) with a 2 second delay between each movement
 	 */
 	public ElevatorTestGroup() {
-		addSequential(new ElevatorToPosition(Elevator.ElevatorPositions.CARGO_SHIP));
+		addSequential(new ElevatorToPosition(Elevator.ElevatorPosition.CARGO_SHIP));
 		addSequential(new Wait(2000));
-		addSequential(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_FIRST));
+		addSequential(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_FIRST));
 		addSequential(new Wait(2000));
-		addSequential(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_SECOND));
+		addSequential(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_SECOND));
 		addSequential(new Wait(2000));
-		addSequential(new ElevatorToPosition(Elevator.ElevatorPositions.ROCKET_THIRD));
+		addSequential(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_THIRD));
 	}
 }
