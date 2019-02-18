@@ -14,6 +14,7 @@ public class SlideHatchIn extends Command {
   public SlideHatchIn() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.hatchMechanism);
   }
 
   // Called just before this Command runs the first time

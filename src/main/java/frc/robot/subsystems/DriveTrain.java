@@ -28,12 +28,11 @@ public class DriveTrain extends Subsystem {
 		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
 		leftMid = new WPI_VictorSPX(RobotMap.LEFT_MID_DRIVE_MOTOR);
 		leftBack = new WPI_VictorSPX(RobotMap.LEFT_BACK_DRIVE_MOTOR);
-		rightFront = new WPI_TalonSRX(RobotMap.RIGHT_FRONT_DRIVE_MOTOR);
-		rightFront.setInverted(true);
+
+		rightFront = new WPI_TalonSRX(RobotMap.RIGHT_FRONT_DRIVE_MOTOR);		
 		rightMid = new WPI_VictorSPX(RobotMap.RIGHT_MID_DRIVE_MOTOR);
-		rightMid.setInverted(true);
 		rightBack = new WPI_VictorSPX(RobotMap.RIGHT_BACK_DRIVE_MOTOR);
-		rightBack.setInverted(true);
+		
 		encoderRight = new Encoder(RobotMap.RIGHT_WHEEL_ENCODER_PORT_A, RobotMap.RIGHT_WHEEL_ENCODER_PORT_B);
 		encoderLeft = new Encoder(RobotMap.LEFT_WHEEL_ENCODER_PORT_A, RobotMap.LEFT_WHEEL_ENCODER_PORT_B);
 
@@ -47,7 +46,6 @@ public class DriveTrain extends Subsystem {
 		
 		left = new SpeedControllerGroup(leftFront, leftMid, leftBack);
 		right = new SpeedControllerGroup(rightFront, rightMid, rightBack);
-		right.setInverted(true);
 		m_drive = new DifferentialDrive(left, right);
 	}
 

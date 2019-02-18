@@ -29,25 +29,22 @@ public class IntakeControl extends Command {
 
 		if (dpad_val == 315 || dpad_val == 0 || dpad_val == 45) {
 			Robot.intake.extendIntake();
-
-
-
-		} else if (dpad_val == 225 || dpad_val == 180 || dpad_val == 135  || (Robot.intake.isCargo() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT)) {
+		} else if (dpad_val == 225 || dpad_val == 180 || dpad_val == 135 ||  Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT) {
 			Robot.intake.retractIntake();
-			return;	
+			return;
 		}
 
 
-		rTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.RTrigger.getAxisNumber());
+		rTrigger = Robot.oi.secondStick.getRawAxis(OI.Axis.RTrigger.getAxisNumber());
 		rTrigger = Robot.oi.clipDeadzone(rTrigger);
-		lTrigger = Robot.oi.driveStick.getRawAxis(OI.Axis.LTrigger.getAxisNumber());
+		lTrigger = Robot.oi.secondStick.getRawAxis(OI.Axis.LTrigger.getAxisNumber());
 		lTrigger = Robot.oi.clipDeadzone(lTrigger);
 
 		// Sets power to the intake motors. Uses whichever trigger is more pressed
 		if (rTrigger > lTrigger) {
-			Robot.intake.setIntakePower(rTrigger);
+			Robot.intake.setIntakePower(-rTrigger);
 		} else if (rTrigger < lTrigger) {
-			Robot.intake.setIntakePower(-lTrigger);
+			Robot.intake.setIntakePower(lTrigger);
 		} else {
 			Robot.intake.setIntakePower(0);
 		}

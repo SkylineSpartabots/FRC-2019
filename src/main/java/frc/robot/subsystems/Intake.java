@@ -23,10 +23,10 @@ public class Intake extends Subsystem {
 		masterIntakeMotor.setNeutralMode(NeutralMode.Brake);
 		slaveIntakeMotor.setNeutralMode(NeutralMode.Brake);
 
-		masterIntakeMotor.setInverted(false); // TODO: set directions
+		masterIntakeMotor.setInverted(true);
 		slaveIntakeMotor.setInverted(false);
 
-		slaveIntakeMotor.follow(masterIntakeMotor);
+		//slaveIntakeMotor.follow(masterIntakeMotor);
 
 		innerIntakeMotor = new WPI_TalonSRX(RobotMap.INNER_INTAKE_MOTOR);
 		innerIntakeMotor.setInverted(false);
@@ -57,14 +57,16 @@ public class Intake extends Subsystem {
 	 */
 	public void setIntakePower(double power) {
 		// Stop intake if there is cargo
-		if (isCargo() && power > 0) {
+		/*if (isCargo() && power > 0) {
 			power = 0;
-		}
+		}*/
 		// Stop outer intake if elevator is up
-		if (Robot.elevator.elevatorEncoder.getDistance() > Elevator.MIN_ENCODER_LIMIT) {
+		if (Robot.elevator.elevatorEncoder.getDistance() > Elevator.MIN_ENCODER_LIMIT || !getIntakeSolenoidState()) {
 			masterIntakeMotor.set(0);
+			slaveIntakeMotor.set(0);
 		} else {
 			masterIntakeMotor.set(power);
+			slaveIntakeMotor.set(power);
 		}
 
 		innerIntakeMotor.set(power);

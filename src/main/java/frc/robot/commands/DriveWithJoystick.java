@@ -24,8 +24,6 @@ public class DriveWithJoystick extends Command {
 	protected void execute() {
 		turn = Robot.oi.driveStick.getRawAxis(OI.Axis.RX.getAxisNumber());
 		forward = Robot.oi.driveStick.getRawAxis(OI.Axis.LY.getAxisNumber());
-		double left = Robot.oi.driveStick.getRawAxis(OI.Axis.LY.getAxisNumber());
-		double right = Robot.oi.driveStick.getRawAxis(OI.Axis.RY.getAxisNumber());
 		Robot.driveTrain.arcadeDrive(-Robot.oi.clipDeadzone(forward), Robot.oi.clipDeadzone(turn));
 	}
 
