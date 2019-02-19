@@ -51,11 +51,7 @@ public class DriveTrain extends Subsystem {
 		
 		left = new SpeedControllerGroup(leftFront, leftMid, leftBack);
 		right = new SpeedControllerGroup(rightFront, rightMid, rightBack);
-<<<<<<< HEAD
-		right.setInverted(true);
-=======
 		
->>>>>>> pathing changes
 		m_drive = new DifferentialDrive(left, right);
 		m_drive.setRightSideInverted(false);
 	}
