@@ -5,7 +5,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.ElevatorControl;
@@ -15,27 +17,31 @@ import frc.robot.commands.ElevatorControl;
  */
 public class Elevator extends Subsystem {
 
-	private WPI_TalonSRX elevatorMaster, elevatorSlave;
+	private WPI_TalonSRX rightElevatorMotor, leftElevatorMotor;
 	public Encoder elevatorEncoder;
 	private DigitalInput elevatorLimitSwitch;
 
-	public final static int MAX_ENCODER_LIMIT = 1400; // TODO: Add limit
+	public final static int MAX_ENCODER_LIMIT = 1000; // TODO: Add limit
 	public final static int MIN_ENCODER_LIMIT = 10;
+	public final static int amps = 15;
+	public final static int timeoutMs = 5000;
 
 	public Elevator() {
-		elevatorMaster = new WPI_TalonSRX(RobotMap.RIGHT_ELEVATOR);
-		elevatorSlave = new WPI_TalonSRX(RobotMap.LEFT_ELEVATOR);
+		rightElevatorMotor = new WPI_TalonSRX(RobotMap.RIGHT_ELEVATOR);
+		leftElevatorMotor = new WPI_TalonSRX(RobotMap.LEFT_ELEVATOR);
 
-		elevatorMaster.setNeutralMode(NeutralMode.Brake);
-		elevatorSlave.setNeutralMode(NeutralMode.Brake);
+		rightElevatorMotor.setNeutralMode(NeutralMode.Brake);
+		leftElevatorMotor.setNeutralMode(NeutralMode.Brake);
+		rightElevatorMotor.configContinuousCurrentLimit(amps, timeoutMs);
+		leftElevatorMotor.configContinuousCurrentLimit(amps, timeoutMs);
 
-		elevatorMaster.setInverted(false);
-		elevatorSlave.setInverted(false);
+		rightElevatorMotor.setInverted(true);
+		leftElevatorMotor.setInverted(false);
 
-		elevatorSlave.follow(elevatorMaster);
 
 		elevatorEncoder = new Encoder(RobotMap.ELEVATOR_ENCODER_PORT_A, RobotMap.ELEVATOR_ENCODER_PORT_B);
 		elevatorLimitSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH);
+		
 	}
 	
 	public int getElevatorEncoderOutput()	{
@@ -48,24 +54,24 @@ public class Elevator extends Subsystem {
 	 * 
 	 * @param power power <= 0
 	 */
-	public void setRawPower(double power) {
-		
-		elevatorMaster.set(power);
-
-		// reset encoder to 0 if elevator limit switch is pressed
-		if (getLimitSwitchState()) {
-			elevatorEncoder.reset();
-		}
+	private void setRawPower(double power) {
+		//rightElevatorMotor.set(power);
+		leftElevatorMotor.set(power);
+		SmartDashboard.putNumber("LeftElevatorCurrent", leftElevatorMotor.getOutputCurrent());
+		SmartDashboard.putNumber("RightElevatorCurrent", rightElevatorMotor.getOutputCurrent());
+		SmartDashboard.putNumber("Left Elevator Output Voltage", leftElevatorMotor.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Right Elevator Output Voltage", rightElevatorMotor.getMotorOutputVoltage());
 	}
 
 	public void setPower(double power) {
-		boolean maxReached = elevatorEncoder.getDistance() >= MAX_ENCODER_LIMIT && power > 0;
-		boolean minReached = elevatorEncoder.getDistance() <= MIN_ENCODER_LIMIT && power < 0;
-
+		boolean maxReached = getElevatorEncoderOutput() >= MAX_ENCODER_LIMIT && power > 0;
+		boolean minReached = getElevatorEncoderOutput() <= MIN_ENCODER_LIMIT && power < 0;
+		SmartDashboard.putNumber("ElevatorEncoderCount", getElevatorEncoderOutput());
+		SmartDashboard.putBoolean("Elevator Limit Switch", getLimitSwitchState());
 		if (maxReached || minReached) {
-			elevatorMaster.set(0);
+			setRawPower(0);
 		} else {
-			elevatorMaster.set(power);
+			setRawPower(power);
 		}
 
 		if (getLimitSwitchState()) {
