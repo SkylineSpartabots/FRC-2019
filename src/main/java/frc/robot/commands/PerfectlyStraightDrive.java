@@ -96,7 +96,7 @@ public class PerfectlyStraightDrive extends Command {
   @Override
   protected boolean isFinished() {
     if(direction){
-      if(leftTarget <= Robot.driveTrain.getLeftEncoderDistanceInches() || rightTarget <= Robot.driveTrain.getRightEncoderDistance()){
+      if(leftTarget <= Robot.driveTrain.getLeftEncoderDistanceInches() || rightTarget <= Robot.driveTrain.getRightEncoderDistanceInches()){
         turnPID.resetPID();
         return true;
       } else{
@@ -104,7 +104,7 @@ public class PerfectlyStraightDrive extends Command {
       }
         
     } else{
-      if(leftTarget >= Robot.driveTrain.getLeftEncoderDistanceInches() || rightTarget >= Robot.driveTrain.getRightEncoderDistance()){
+      if(leftTarget >= Robot.driveTrain.getLeftEncoderDistanceInches() || rightTarget >= Robot.driveTrain.getRightEncoderDistanceInches()){
         turnPID.resetPID();
         return true;
       } else{
