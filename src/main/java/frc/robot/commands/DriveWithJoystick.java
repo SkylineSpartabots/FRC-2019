@@ -5,8 +5,8 @@ import frc.robot.Robot;
 
 public class DriveWithJoystick extends Command {
 
-	private double turn;
-	private double forward;
+	private double right;
+	private double left;
 
 	public DriveWithJoystick() {
 		requires(Robot.driveTrain);
@@ -21,12 +21,11 @@ public class DriveWithJoystick extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		/*turn = Robot.oi.driveStick.getRX();
-		forward = Robot.oi.driveStick.getLY();
-		Robot.driveTrain.arcadeDrive(-forward, turn);*/
-		double left = -Robot.oi.driveStick.getLY();
-		double right = -Robot.oi.driveStick.getRY();
-		Robot.driveTrain.tankDrive(left, right);
+		double forward = Robot.oi.driveStick.getLY();
+		double turn = Robot.oi.driveStick.getRX();
+		//Robot.driveTrain.rawMotorOutput(left, right);
+		Robot.driveTrain.arcadeDrive(-forward, turn);
+		//Robot.driveTrain.tankDrive(-left, -right);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

@@ -51,8 +51,13 @@ public class DriveTrain extends Subsystem {
 		
 		left = new SpeedControllerGroup(leftFront, leftMid, leftBack);
 		right = new SpeedControllerGroup(rightFront, rightMid, rightBack);
+<<<<<<< HEAD
 		right.setInverted(true);
+=======
+		
+>>>>>>> pathing changes
 		m_drive = new DifferentialDrive(left, right);
+		m_drive.setRightSideInverted(false);
 	}
 
 	/**
@@ -65,19 +70,17 @@ public class DriveTrain extends Subsystem {
 
 	/**
 	 * Returns the distance in meters from the left encoder
-	 * @return distance in meters travelled by the drive train's left side
+	 * @return distance in inches travelled by the drive train's left side
 	 */
 	public double getLeftEncoderDistance() {
-		// encoderLeft.getDistance();
 		return encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
 	}
 
 	/**
 	 * Returns the distance in meters from the right encoder
-	 * @return distance in meters travelled by the drive train's right side
+	 * @return distance in inches travelled by the drive train's right side
 	 */
 	public double getRightEncoderDistance() {
-		// encoderRight.getDistance();
 		return encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
 	}
 
@@ -92,6 +95,7 @@ public class DriveTrain extends Subsystem {
 
 	public void tankDrive(double leftSpeed, double rightSpeed) {
 		m_drive.tankDrive(leftSpeed, rightSpeed);
+		
 	}
 
 	/**
@@ -107,7 +111,7 @@ public class DriveTrain extends Subsystem {
 
 	public void rawMotorOutput(double leftSpeed, double rightSpeed) {
 		left.set(leftSpeed);
-		right.set(rightSpeed);
+		right.set(-rightSpeed);
 	}
 
 	public void initDefaultCommand() {

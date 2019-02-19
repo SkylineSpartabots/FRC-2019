@@ -36,7 +36,6 @@ public class Logitech {
 
 	public Logitech(int port) {
 		joystick = new Joystick(port);
-
 		buttonA = new JoystickButton(joystick, BUTTON_A);
 		buttonB = new JoystickButton(joystick, BUTTON_B);
 		buttonX = new JoystickButton(joystick, BUTTON_X);

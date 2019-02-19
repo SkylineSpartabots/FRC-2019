@@ -17,11 +17,11 @@ import jaci.pathfinder.modifiers.TankModifier;
 
 public class PathExecuter extends Command {
 
-	private final double P = 0;
+	private final double P = 0.5;
 	private final double D = 0;
 	private final double k_a = 0;
 
-	private final double TurnP = 0;
+	private final double TurnP = 0.5;
 	private final double TurnI = 0;
 	private final double TurnD = 0;
 
@@ -58,7 +58,6 @@ public class PathExecuter extends Command {
 
 	public PathExecuter(String FileName) {
 		requires(Robot.driveTrain);
-
 		try {
 			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
 			Trajectory trajectory = Pathfinder.readFromFile(f);
@@ -72,22 +71,24 @@ public class PathExecuter extends Command {
 		requires(Robot.driveTrain);
 
 		try {
+			System.out.println("Reached line 74");
 			Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
 					Trajectory.Config.SAMPLES_HIGH, 0.05, RobotMap.MAX_VELOCITY, 2.0, 60.0);
+			System.out.println("Reached line 77");
 			Trajectory trajectory = Pathfinder.generate(points, config);
-
-			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
-			Pathfinder.writeToFile(f, trajectory);
-			Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
+			System.out.println("Reached line 79");
+			//File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
+			//Pathfinder.writeToFile(f, trajectory);
+			//Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
 			initPathExecuter(trajectory, FileName);
 		} catch (Exception e) {
-			Robot.SystemLog.writeNewData("PathExecuter Line 39: Error Creating Trajectory Path");
+			//Robot.SystemLog.writeNewData("PathExecuter Line 39: Error Creating Trajectory Path");
 		}
 	}
 
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
-		double l = left.calculate(LeftEncoderDistance);
-		double r = left.calculate(RightEncoderDistance);
+		double l = left.calculate(LeftEncoderDistance/39);
+		double r = left.calculate(RightEncoderDistance/39);
 		double desired_heading = Pathfinder.r2d(left.getHeading());
 		turnPID.setSetpoint(desired_heading);
 		double turn = turnPID.compute();
@@ -115,7 +116,7 @@ public class PathExecuter extends Command {
 		left.reset();
 		right.reset();
 
-		Robot.SystemLog.writeNewData("Path Executer Initialized: Angle=" + Robot.rps.getNavxAngle());
+		//Robot.SystemLog.writeNewData("Path Executer Initialized: Angle=" + Robot.rps.getNavxAngle());
 		System.out.println("Path Executer Initialize \n\n Angle=" + Robot.rps.getNavxAngle());
 	}
 
@@ -146,7 +147,7 @@ public class PathExecuter extends Command {
 	// is scheduled to run
 	@Override
 	protected void interrupted() {
-		Robot.SystemLog.writeNewData("Path Executer Interrupted");
+		//Robot.SystemLog.writeNewData("Path Executer Interrupted");
 		end();
 	}
 }

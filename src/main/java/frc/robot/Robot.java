@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
 		try (Compressor compressor = new Compressor(RobotMap.COMPRESSOR)) {
 			compressor.start();
 		}
-		
+
 		SmartDashboard.putData("Auto mode", m_chooser);
 		//chooser.addOption("My Auto", new MyAutoCommand());
 
@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
 			System.out.println("IOException at Jetson Start");
 			System.out.println(e.getMessage());
 		}
-		System.out.println("Jetson Process Start Attempted | Did not Block");				
+		System.out.println("Jetson Process Start Attempted | Did not Block");
 	}
 
 	/**
@@ -88,7 +88,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
-	//	System.out.println(rps.getXDisplacementToVisionTarget());
 		// SystemLog.flushLogData(); // this slows down the loop
 	}
 
@@ -147,7 +146,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		// Vishal, dont freak out, it will be removed promptly
-		
+
 
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
@@ -169,7 +168,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		System.out.println(intake.isCargo());
 	}
 
 	/**

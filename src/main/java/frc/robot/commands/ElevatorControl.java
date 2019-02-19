@@ -19,7 +19,6 @@ public class ElevatorControl extends Command {
 	@Override
 	protected void execute() {
 		double joyVal = Robot.oi.secondStick.getRY();
-		System.out.println(-joyVal);
 		Robot.elevator.setRawPower(-joyVal); 
 	}
 
