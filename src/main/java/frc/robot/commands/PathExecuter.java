@@ -4,6 +4,7 @@ import java.io.File;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.util.Logger;
@@ -17,13 +18,13 @@ import jaci.pathfinder.modifiers.TankModifier;
 
 public class PathExecuter extends Command {
 
-	private final double P = 14;
+	private final double P = 20;
 	private final double D = 0;
-	private final double k_a = 0;
+	private final double k_a = 2;
 
-	private final double TurnP = 0;
+	private final double TurnP = 0.03;
 	private final double TurnI = 0;
-	private final double TurnD = 0;
+	private final double TurnD = 0.05;
 
 	private Timer timer;
 
@@ -90,16 +91,15 @@ public class PathExecuter extends Command {
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
 		double l = left.calculate(LeftEncoderDistance);
 		double r = left.calculate(RightEncoderDistance);
-		double desired_heading = Pathfinder.r2d(left.getHeading());
+		double desired_heading = Pathfinder.boundHalfDegrees(Pathfinder.r2d(left.getHeading()));
 		turnPID.setSetpoint(desired_heading);
 		double turn = turnPID.compute();
-		System.out.println(Timer.getFPGATimestamp());
-		// double angleDifference = Pathfinder.boundHalfDegrees(desired_heading -
-		// gyroHeading);
-		// double turn = 0.8 * (-1.0/80.0) * angleDifference;
-
-		LeftMotorOutput = l/100 ;//+ turn;
-		RightMotorOutput = r/100 ;//+ turn;
+		System.out.println("LeftDesiredPosition" + left.getSegment().position + "ActualPosition:" + Robot.driveTrain.getLeftEncoderDistanceMeters());
+		System.out.println("RightDesiredPosition" + right.getSegment().position + "ActualPosition:" + Robot.driveTrain.getRightEncoderDistanceMeters());
+		
+		System.out.println("Heading Error: " + turnPID.getError());
+		LeftMotorOutput = l/100 - turn;
+		RightMotorOutput = r/100 + turn;
 		PathingLog.writeNewData(
 				"Pathing Update: LeftMotorOutput: " + LeftMotorOutput + " RightMotorOutput: " + RightMotorOutput
 						+ " DesiredHeading: " + desired_heading + " Actual Heading: " + Robot.rps.getNavxAngle());
@@ -127,6 +127,7 @@ public class PathExecuter extends Command {
 		updateMotorOutputs(Robot.driveTrain.getLeftEncoderDistanceMeters(), Robot.driveTrain.getRightEncoderDistanceMeters());
 		System.out.println("PathExecuter Motor Power: " + LeftMotorOutput + ", " + RightMotorOutput);
 		System.out.println("Encoder Values:" + Robot.driveTrain.getRightEncoderDistanceMeters() + ", " + Robot.driveTrain.getLeftEncoderDistanceMeters());
+		SmartDashboard.putNumber("Heading", Robot.rps.getNavxAngle());
 		//System.out.println(left.getSegment().x);
 		
 		

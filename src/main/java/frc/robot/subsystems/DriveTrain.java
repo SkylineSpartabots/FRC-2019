@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoystick;
 
@@ -22,6 +23,7 @@ public class DriveTrain extends Subsystem {
 	private Encoder encoderLeft, encoderRight;
 	private DifferentialDrive m_drive;
 	private SpeedControllerGroup left, right;
+	
 
 	public DriveTrain() {
 		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
@@ -78,20 +80,28 @@ public class DriveTrain extends Subsystem {
 	 * @return distance in inches travelled by the drive train's left side
 	 */
 	public double getLeftEncoderDistanceInches() {
-		return encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
+		double inches = encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
+		SmartDashboard.putNumber("Left Encoder In Inches", inches);
+		return inches;
 	}
 	public double getLeftEncoderDistanceMeters() {
-		return encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE*0.0254;
+		double meters = encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE*0.0254;
+		SmartDashboard.putNumber("Left Encoder In Meters", meters);
+		return meters;
 	}
 	/**
 	 * Returns the distance in meters from the right encoder
 	 * @return distance in inches travelled by the drive train's right side
 	 */
 	public double getRightEncoderDistanceInches() {
-		return encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
+		double inches = encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
+		SmartDashboard.putNumber("Right Encoder In Inches", inches);
+		return inches;
 	}
 	public double getRightEncoderDistanceMeters() {
-		return encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE*0.0254;
+		double meters = encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE*0.0254;
+		SmartDashboard.putNumber("Right Encoder In Meters", meters);
+		return meters;
 	}
 	public void setBrake() {
 		leftFront.neutralOutput();
@@ -103,6 +113,8 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void tankDrive(double leftSpeed, double rightSpeed) {
+		getLeftEncoderDistanceInches();
+		getRightEncoderDistanceInches();
 		m_drive.tankDrive(leftSpeed, rightSpeed);
 	}
 
@@ -114,6 +126,8 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void arcadeDrive(double forward, double turn) {
+		getLeftEncoderDistanceInches();
+		getRightEncoderDistanceInches();
 		m_drive.arcadeDrive(forward, turn);
 	}
 

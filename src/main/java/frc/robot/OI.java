@@ -8,7 +8,6 @@ import frc.robot.commands.SlideHatchIn;
 import frc.robot.commands.SlideHatchOut;
 import frc.robot.controllers.Logitech;
 import frc.robot.subsystems.Elevator;
-import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Waypoint;
 
 /**
@@ -29,10 +28,10 @@ public class OI {
 		};
 		driveStick.buttonA.whenPressed(new PathExecuter(test, "test"));
 
-		secondStick.buttonB.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.CARGO_SHIP));
-		secondStick.buttonA.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_FIRST));
-		secondStick.buttonX.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_SECOND));
-		secondStick.buttonY.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_THIRD));
+		//secondStick.buttonB.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.CARGO_SHIP));
+		//secondStick.buttonA.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_FIRST));
+		//secondStick.buttonX.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_SECOND));
+		//secondStick.buttonY.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_THIRD));
 
 		secondStick.buttonLBumper.whenPressed(new GraspHatch());
 		secondStick.buttonRBumper.whenPressed(new ReleaseHatch());
