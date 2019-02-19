@@ -1,12 +1,8 @@
 package frc.robot.commands;
-
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-
 public class DriveWithJoystick extends Command {
 
-	private double right;
-	private double left;
 
 	public DriveWithJoystick() {
 		requires(Robot.driveTrain);
@@ -21,10 +17,14 @@ public class DriveWithJoystick extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		double forward = Robot.oi.driveStick.getLY();
+		double left = Robot.oi.driveStick.getLY();
+		double right = Robot.oi.driveStick.getRY();
 		double turn = Robot.oi.driveStick.getRX();
-		//Robot.driveTrain.rawMotorOutput(left, right);
+		double forward = Robot.oi.driveStick.getLY();
+		
+		//Robot.driveTrain.rawMotorOutput(-left, -right);
 		Robot.driveTrain.arcadeDrive(-forward, turn);
+		//Robot.driveTrain.testMotor();
 		//Robot.driveTrain.tankDrive(-left, -right);
 	}
 

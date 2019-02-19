@@ -45,7 +45,7 @@ public class TurnDegrees extends Command {
 			}
 		};
 
-		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, timer, false);
+		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, false);
 		turnPID.setOutputLimits(-0.6, 0.6);
 	}
 

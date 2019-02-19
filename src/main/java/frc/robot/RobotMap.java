@@ -9,9 +9,9 @@ package frc.robot;
 public class RobotMap {
 
 	// Robot physical metrics
-	public static final double TRACK_WIDTH = 0.5; // in meters
-	public static final double MAX_VELOCITY = 5; // in m/s
-	public static final double ENCODER_DISTANCE_PER_PULSE = Math.PI * 4 / 1000; // Distance robot travels in one pulse
+	public static final double TRACK_WIDTH = 0.64; // in meters
+	public static final double MAX_VELOCITY = 1.7; // in m/s
+	public static final double ENCODER_DISTANCE_PER_PULSE = Math.PI * 4 / 1000; // Distance in inches robot travels in one pulse
 
 	// Path trajectories for sandstorm mode
 	public static final String AUTO_TRAJECTORY_PATH_LOCATIONS = "//home//lvuser//deploy//";

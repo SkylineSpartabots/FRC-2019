@@ -44,7 +44,7 @@ public class SimplePID {
 	 * @param ki         integral gain
 	 * @param kd         derivative gain
 	 */
-	public SimplePID(Object pidsource, double setpoint, double kp, double ki, double kd, Timer timer, boolean b) {
+	public SimplePID(Object pidsource, double setpoint, double kp, double ki, double kd, boolean b) {
 		this.pidsource = (PIDSource) pidsource;
 		this.setpoint = setpoint;
 		this.kp = kp;

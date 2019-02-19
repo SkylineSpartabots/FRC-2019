@@ -41,7 +41,7 @@ public class ElevatorToPosition extends Command {
 		elevatorTarget = elevatorPosition.getPosition();
 
 		timer = new Timer();
-		elevatorPID = new SimplePID(elevatorSource, elevatorTarget, kP, kI, kD, timer, false);
+		elevatorPID = new SimplePID(elevatorSource, elevatorTarget, kP, kI, kD, false);
 		elevatorPID.setOutputLimits(-0.4, 0.4);
 	}
 

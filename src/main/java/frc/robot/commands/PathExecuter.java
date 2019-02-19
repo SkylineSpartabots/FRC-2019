@@ -17,11 +17,11 @@ import jaci.pathfinder.modifiers.TankModifier;
 
 public class PathExecuter extends Command {
 
-	private final double P = 0.5;
+	private final double P = 14;
 	private final double D = 0;
 	private final double k_a = 0;
 
-	private final double TurnP = 0.5;
+	private final double TurnP = 0;
 	private final double TurnI = 0;
 	private final double TurnD = 0;
 
@@ -40,19 +40,19 @@ public class PathExecuter extends Command {
 			TankModifier modifier = new TankModifier(traj).modify(RobotMap.TRACK_WIDTH);
 			left = new DistanceFollower(modifier.getLeftTrajectory());
 			right = new DistanceFollower(modifier.getRightTrajectory());
-			left.configurePIDVA(P, 0.0, D, 1 / RobotMap.MAX_VELOCITY, k_a);
-			right.configurePIDVA(P, 0.0, D, 1 / RobotMap.MAX_VELOCITY, k_a);
-
+			left.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
+			right.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
+			
 			NAVXSource = new PIDSource() {
 				public double getInput() {
 					return Robot.rps.getNavxAngle();
 				}
 			};
 			timer = new Timer();
-			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, timer, false);
+			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, false);
 			PathingLog = new Logger(FileName + "-Log.txt");
 		} catch (Exception e) {
-			// TODO: catch exception
+			
 		}
 	}
 
@@ -63,20 +63,21 @@ public class PathExecuter extends Command {
 			Trajectory trajectory = Pathfinder.readFromFile(f);
 			initPathExecuter(trajectory, FileName);
 		} catch (Exception e) {
-			// TODO: catch exception
+			
 		}
 	}
 
 	public PathExecuter(Waypoint[] points, String FileName) {
 		requires(Robot.driveTrain);
-
 		try {
-			System.out.println("Reached line 74");
+			System.out.println("Generating Trajectory");
 			Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-					Trajectory.Config.SAMPLES_HIGH, 0.05, RobotMap.MAX_VELOCITY, 2.0, 60.0);
-			System.out.println("Reached line 77");
+					Trajectory.Config.SAMPLES_FAST, 0.02, RobotMap.MAX_VELOCITY, 2.0, 60.0);
+			
 			Trajectory trajectory = Pathfinder.generate(points, config);
-			System.out.println("Reached line 79");
+			System.out.println("Trajectory Length: " + trajectory.length());
+			//System.out.println(trajectory.get(72).x);
+			//System.out.println(trajectory.get(72).y);
 			//File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
 			//Pathfinder.writeToFile(f, trajectory);
 			//Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
@@ -87,18 +88,18 @@ public class PathExecuter extends Command {
 	}
 
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
-		double l = left.calculate(LeftEncoderDistance/39);
-		double r = left.calculate(RightEncoderDistance/39);
+		double l = left.calculate(LeftEncoderDistance);
+		double r = left.calculate(RightEncoderDistance);
 		double desired_heading = Pathfinder.r2d(left.getHeading());
 		turnPID.setSetpoint(desired_heading);
 		double turn = turnPID.compute();
-
+		System.out.println(Timer.getFPGATimestamp());
 		// double angleDifference = Pathfinder.boundHalfDegrees(desired_heading -
 		// gyroHeading);
 		// double turn = 0.8 * (-1.0/80.0) * angleDifference;
 
-		LeftMotorOutput = l + turn;
-		RightMotorOutput = r + turn;
+		LeftMotorOutput = l/100 ;//+ turn;
+		RightMotorOutput = r/100 ;//+ turn;
 		PathingLog.writeNewData(
 				"Pathing Update: LeftMotorOutput: " + LeftMotorOutput + " RightMotorOutput: " + RightMotorOutput
 						+ " DesiredHeading: " + desired_heading + " Actual Heading: " + Robot.rps.getNavxAngle());
@@ -123,7 +124,12 @@ public class PathExecuter extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		updateMotorOutputs(Robot.driveTrain.getLeftEncoderDistance(), Robot.driveTrain.getRightEncoderDistance());
+		updateMotorOutputs(Robot.driveTrain.getLeftEncoderDistanceMeters(), Robot.driveTrain.getRightEncoderDistanceMeters());
+		System.out.println("PathExecuter Motor Power: " + LeftMotorOutput + ", " + RightMotorOutput);
+		System.out.println("Encoder Values:" + Robot.driveTrain.getRightEncoderDistanceMeters() + ", " + Robot.driveTrain.getLeftEncoderDistanceMeters());
+		//System.out.println(left.getSegment().x);
+		
+		
 		Robot.driveTrain.rawMotorOutput(LeftMotorOutput, RightMotorOutput);
 	}
 
@@ -140,6 +146,7 @@ public class PathExecuter extends Command {
 		left.reset();
 		right.reset();
 		turnPID.resetPID();
+		Robot.driveTrain.rawMotorOutput(0,0);
 		Robot.driveTrain.setBrake();
 	}
 

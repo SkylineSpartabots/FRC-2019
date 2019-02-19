@@ -24,9 +24,8 @@ public class OI {
 		driveStick = new Logitech(0);
 		secondStick = new Logitech(1);
 		Waypoint[] test = new Waypoint[]{
-			new Waypoint(0.01, -1, 0),
-			//new Waypoint(-2, -2, 0),
 			new Waypoint(0, 0, 0),
+			new Waypoint(5, 5, Math.PI/2),
 		};
 		driveStick.buttonA.whenPressed(new PathExecuter(test, "test"));
 

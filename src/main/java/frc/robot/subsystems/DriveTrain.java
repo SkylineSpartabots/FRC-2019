@@ -19,9 +19,9 @@ public class DriveTrain extends Subsystem {
 
 	private WPI_TalonSRX leftFront, rightFront;
 	private WPI_VictorSPX  leftMid, leftBack, rightMid, rightBack;
-	private SpeedControllerGroup left, right;
 	private Encoder encoderLeft, encoderRight;
 	private DifferentialDrive m_drive;
+	private SpeedControllerGroup left, right;
 
 	public DriveTrain() {
 		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
@@ -37,7 +37,7 @@ public class DriveTrain extends Subsystem {
 		rightFront.setInverted(RobotMap.IS_RIGHT_FRONT_DRIVE_INVERTED);
 		rightMid.setInverted(RobotMap.IS_RIGHT_MID_DRIVE_INVERTED);
 		rightBack.setInverted(RobotMap.IS_RIGHT_BACK_DRIVE_INVERTED);
-		
+
 		encoderRight = new Encoder(RobotMap.RIGHT_WHEEL_ENCODER_PORT_A, RobotMap.RIGHT_WHEEL_ENCODER_PORT_B);
 		encoderLeft = new Encoder(RobotMap.LEFT_WHEEL_ENCODER_PORT_A, RobotMap.LEFT_WHEEL_ENCODER_PORT_B);
 
@@ -48,14 +48,24 @@ public class DriveTrain extends Subsystem {
 		rightFront.setNeutralMode(NeutralMode.Brake);
 		rightMid.setNeutralMode(NeutralMode.Brake);
 		rightBack.setNeutralMode(NeutralMode.Brake);
-		
+
 		left = new SpeedControllerGroup(leftFront, leftMid, leftBack);
 		right = new SpeedControllerGroup(rightFront, rightMid, rightBack);
-		
+
+
 		m_drive = new DifferentialDrive(left, right);
 		m_drive.setRightSideInverted(false);
 	}
 
+	public void testMotor()	{
+		//left.set(0.7);
+		//right.set(0.7);
+		//left.set(0.7);
+		//rightFront.set(0.7);
+		//rightBack.set(0.7);
+		//rightMid.set(0.7);
+		//right.set(0.7);
+	}
 	/**
 	 * Resets both the left and right encoders
 	 */
@@ -63,23 +73,26 @@ public class DriveTrain extends Subsystem {
 		encoderLeft.reset();
 		encoderRight.reset();
 	}
-
 	/**
 	 * Returns the distance in meters from the left encoder
 	 * @return distance in inches travelled by the drive train's left side
 	 */
-	public double getLeftEncoderDistance() {
+	public double getLeftEncoderDistanceInches() {
 		return encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
 	}
-
+	public double getLeftEncoderDistanceMeters() {
+		return encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE*0.0254;
+	}
 	/**
 	 * Returns the distance in meters from the right encoder
 	 * @return distance in inches travelled by the drive train's right side
 	 */
-	public double getRightEncoderDistance() {
+	public double getRightEncoderDistanceInches() {
 		return encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
 	}
-
+	public double getRightEncoderDistanceMeters() {
+		return encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE*0.0254;
+	}
 	public void setBrake() {
 		leftFront.neutralOutput();
 		leftMid.neutralOutput();
@@ -91,7 +104,6 @@ public class DriveTrain extends Subsystem {
 
 	public void tankDrive(double leftSpeed, double rightSpeed) {
 		m_drive.tankDrive(leftSpeed, rightSpeed);
-		
 	}
 
 	/**
@@ -107,7 +119,7 @@ public class DriveTrain extends Subsystem {
 
 	public void rawMotorOutput(double leftSpeed, double rightSpeed) {
 		left.set(leftSpeed);
-		right.set(-rightSpeed);
+		right.set(rightSpeed);
 	}
 
 	public void initDefaultCommand() {

@@ -89,6 +89,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
+		//System.out.println(Robot.driveTrain.getLeftEncoderDistanceMeters());
 		// SystemLog.flushLogData(); // this slows down the loop
 	}
 
