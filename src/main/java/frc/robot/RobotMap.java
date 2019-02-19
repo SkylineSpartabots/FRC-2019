@@ -28,7 +28,7 @@ public class RobotMap {
 
 	public static final int INNER_INTAKE_MOTOR = 5;
 	public static final int INTAKE_SENSOR = 0; //TODO
-	public static final int INTAKE_SENSOR_THRESHOLD = 0; //TODO
+	public static final int INTAKE_SENSOR_THRESHOLD = 50; //TODO
 
 	public static final int INTAKE_SOLENOID = 2;
 

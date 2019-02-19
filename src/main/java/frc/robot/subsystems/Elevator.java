@@ -20,7 +20,7 @@ public class Elevator extends Subsystem {
 	private DigitalInput elevatorLimitSwitch;
 
 	public final static int MAX_ENCODER_LIMIT = 1400; // TODO: Add limit
-	public final static int MIN_ENCODER_LIMIT = 100;
+	public final static int MIN_ENCODER_LIMIT = 10;
 
 	public Elevator() {
 		elevatorMaster = new WPI_TalonSRX(RobotMap.RIGHT_ELEVATOR);
@@ -49,9 +49,6 @@ public class Elevator extends Subsystem {
 	 * @param power power <= 0
 	 */
 	public void setRawPower(double power) {
-		if (power > 0) {
-			throw new IllegalArgumentException("Power must be negative");
-		}
 		
 		elevatorMaster.set(power);
 
@@ -110,7 +107,7 @@ public class Elevator extends Subsystem {
 		 * @return position to put the elevator at
 		 */
 		public int getPosition() {
-			return (Robot.intake.containsCargo() ? cargoPosition : hatchPosition);
+			return (Robot.intake.isCargo() ? cargoPosition : hatchPosition);
 		}
 	}
 

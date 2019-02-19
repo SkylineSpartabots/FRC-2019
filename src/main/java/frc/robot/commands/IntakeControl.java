@@ -25,7 +25,6 @@ public class IntakeControl extends Command {
 			Robot.intake.extendIntake();
 		} else if (Robot.oi.secondStick.isPOVDownish() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT) {
 			Robot.intake.retractIntake();
-			return;
 		}
 
 		double rTrigger = Robot.oi.secondStick.getRTrigger();

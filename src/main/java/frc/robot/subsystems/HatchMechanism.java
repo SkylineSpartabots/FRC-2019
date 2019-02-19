@@ -17,22 +17,20 @@ public class HatchMechanism extends Subsystem {
 		sliderSolenoid = new Solenoid(RobotMap.HATCH_SLIDER_SOLENOID);
 
 		// ensures neutral position of closed lotus in back position
-		releaseLotus();
-		slideIn();
 	}
 
 	/**
 	 * Closes the lotus. This is the default position: no hatch panel inside.
 	 */
 	public void releaseLotus() {
-		lotusSolenoid.set(false);
+		lotusSolenoid.set(true);
 	}
 
 	/**
 	 * Opens the lotus to secure a hatch panel.
 	 */
 	public void graspLotus() {
-		lotusSolenoid.set(true);
+		lotusSolenoid.set(false);
 	}
 
 	/**

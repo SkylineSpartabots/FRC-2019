@@ -59,10 +59,6 @@ public class Robot extends TimedRobot {
 		try (Compressor compressor = new Compressor(RobotMap.COMPRESSOR)) {
 			compressor.start();
 		}
-
-		hatchMechanism.graspLotus();
-		hatchMechanism.slideIn();
-		intake.retractIntake();
 		
 		SmartDashboard.putData("Auto mode", m_chooser);
 		//chooser.addOption("My Auto", new MyAutoCommand());
@@ -92,7 +88,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
-		System.out.println(rps.getXDisplacementToVisionTarget());
+	//	System.out.println(rps.getXDisplacementToVisionTarget());
 		// SystemLog.flushLogData(); // this slows down the loop
 	}
 
@@ -103,9 +99,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
-		hatchMechanism.graspLotus();
-		hatchMechanism.slideIn();
-		intake.retractIntake();
 	}
 
 	@Override
@@ -154,10 +147,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		// Vishal, dont freak out, it will be removed promptly
-		hatchMechanism.graspLotus();
-		hatchMechanism.slideIn();
-		intake.retractIntake();
-		rps.reset();
+		
 
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
@@ -166,6 +156,11 @@ public class Robot extends TimedRobot {
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.cancel();
 		}
+
+		hatchMechanism.graspLotus();
+		hatchMechanism.slideIn();
+		intake.retractIntake();
+		rps.reset();
 	}
 
 	/**
@@ -174,7 +169,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		// System.out.println(rps.getAngle());
+		System.out.println(intake.isCargo());
 	}
 
 	/**

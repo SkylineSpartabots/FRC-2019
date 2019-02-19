@@ -10,15 +10,11 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.IntakeControl;
 
-/**
- * Subsystem for the kebab intakes and the inner intake.
- * Only intakes cargo balls.
- */
 public class Intake extends Subsystem {
 
-	private WPI_TalonSRX masterIntakeMotor, slaveIntakeMotor, innerIntakeMotor;
-	private Solenoid intakeSolenoid, slaveIntakeSolenoid;
-	private AnalogInput distanceSensor;
+	WPI_TalonSRX masterIntakeMotor, slaveIntakeMotor, innerIntakeMotor;
+	Solenoid intakeSolenoid, slaveIntakeSolenoid;
+	AnalogInput beamBreak;
 
 	public Intake() {
 		masterIntakeMotor = new WPI_TalonSRX(RobotMap.RIGHT_INTAKE_MOTOR);
@@ -30,70 +26,65 @@ public class Intake extends Subsystem {
 		masterIntakeMotor.setInverted(true);
 		slaveIntakeMotor.setInverted(false);
 
-		//slaveIntakeMotor.follow(masterIntakeMotor);
+		slaveIntakeMotor.follow(masterIntakeMotor);
 
 		innerIntakeMotor = new WPI_TalonSRX(RobotMap.INNER_INTAKE_MOTOR);
-		innerIntakeMotor.setInverted(false);
+		innerIntakeMotor.setInverted(true);
 
-		distanceSensor = new AnalogInput(RobotMap.INTAKE_SENSOR);
+		beamBreak = new AnalogInput(RobotMap.INTAKE_SENSOR);
 
 		intakeSolenoid = new Solenoid(RobotMap.INTAKE_SOLENOID);
+
 	}
 
-	/**
-	 * Places intake kebabs down, ready to intake a cargo ball
-	 */
 	public void extendIntake() {
 		intakeSolenoid.set(true);
 	}
 
-	/**
-	 * Moves intake kebabs up, out of the way of the elevator
-	 */
 	public void retractIntake() {
 		intakeSolenoid.set(false);
 	}
 
-	/**
-	 * Returns whether the intake kebabs are down (extended) or up (retracted)
-	 * 
-	 * @return true if intake kebabs are down, else false
-	 */
-	public boolean areIntakeKebabsExtended() {
+	public boolean getIntakeSolenoidState() {
 		return intakeSolenoid.get();
 	}
 
 	/**
-	 * Sets power to all three intake motors, looking at conditions of whether there
-	 * is cargo and elevator position
-	 * 
-	 * @param power power to run the motors at, power > 0
+	 * @return sets power to all three intake motors, looking at conditions of
+	 *         whether there is cargo and elevator position
+	 * @param power
 	 */
 	public void setIntakePower(double power) {
-		// Stop intake if there is cargo
-		/* if (containsCargo() && power > 0) {
-			power = 0;
-		} */
 
-		// Stop outer intake if elevator is up
-		if (Robot.elevator.elevatorEncoder.getDistance() > Elevator.MIN_ENCODER_LIMIT || !areIntakeKebabsExtended()) {
+		if (isCargo() || !getIntakeSolenoidState()
+				|| Robot.elevator.elevatorEncoder.getDistance() > Elevator.MIN_ENCODER_LIMIT) {
 			masterIntakeMotor.set(0);
-			slaveIntakeMotor.set(0);
 		} else {
 			masterIntakeMotor.set(power);
-			slaveIntakeMotor.set(power);
 		}
 
-		innerIntakeMotor.set(power);
+		if (power != 0) {
+			if (isCargo()) {
+				retractIntake();
+				if (power < 0) {
+					innerIntakeMotor.set(0);
+				} else {
+					innerIntakeMotor.set(power);
+				}
+			} else {
+				innerIntakeMotor.set(power);
+			}
+		} else {
+			innerIntakeMotor.set(0);
+		}
+
 	}
 
 	/**
-	 * Returns whether a cargo ball is inside the inner intake
-	 * 
-	 * @return true if cargo is inside, else false
+	 * @return if cargo is in the intake it returns true, if false there is a hatch.
 	 */
-	public boolean containsCargo() {
-		return distanceSensor.getValue() > RobotMap.INTAKE_SENSOR_THRESHOLD;
+	public boolean isCargo() {
+		return beamBreak.getValue() < RobotMap.INTAKE_SENSOR_THRESHOLD;
 	}
 
 	@Override
