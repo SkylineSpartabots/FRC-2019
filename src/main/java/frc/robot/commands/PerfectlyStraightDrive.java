@@ -65,7 +65,7 @@ public class PerfectlyStraightDrive extends Command {
 
 
     
-		turnPID = new SimplePID(NavxSource, this.angle, kP, kI, kD, timer, false);
+		turnPID = new SimplePID(NavxSource, this.angle, kP, kI, kD, false);
 		turnPID.setOutputLimits(-0.5, 0.5);
 
   }
@@ -73,8 +73,8 @@ public class PerfectlyStraightDrive extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    rightTarget = this.distanceInches + Robot.driveTrain.getRightEncoderDistance();
-    leftTarget =  this.distanceInches + Robot.driveTrain.getLeftEncoderDistance();
+    rightTarget = this.distanceInches + Robot.driveTrain.getRightEncoderDistanceInches();
+    leftTarget =  this.distanceInches + Robot.driveTrain.getLeftEncoderDistanceInches();
     Robot.driveTrain.tankDrive(0, 0);
     this.direction = distanceInches > 0;
     turnPID.resetPID();
@@ -96,7 +96,7 @@ public class PerfectlyStraightDrive extends Command {
   @Override
   protected boolean isFinished() {
     if(direction){
-      if(leftTarget <= Robot.driveTrain.getLeftEncoderDistance() || rightTarget <= Robot.driveTrain.getRightEncoderDistance()){
+      if(leftTarget <= Robot.driveTrain.getLeftEncoderDistanceInches() || rightTarget <= Robot.driveTrain.getRightEncoderDistance()){
         turnPID.resetPID();
         return true;
       } else{
@@ -104,7 +104,7 @@ public class PerfectlyStraightDrive extends Command {
       }
         
     } else{
-      if(leftTarget >= Robot.driveTrain.getLeftEncoderDistance() || rightTarget >= Robot.driveTrain.getRightEncoderDistance()){
+      if(leftTarget >= Robot.driveTrain.getLeftEncoderDistanceInches() || rightTarget >= Robot.driveTrain.getRightEncoderDistance()){
         turnPID.resetPID();
         return true;
       } else{
