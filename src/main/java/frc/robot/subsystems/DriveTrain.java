@@ -1,13 +1,19 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoystick;
@@ -24,6 +30,9 @@ public class DriveTrain extends Subsystem {
 	private DifferentialDrive m_drive;
 	private SpeedControllerGroup left, right;
 	
+
+	private static final ShuffleboardTab TAB = Shuffleboard.getTab("SmartDashboard");
+	private static NetworkTableEntry kP, kI, kD;
 
 	public DriveTrain() {
 		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
@@ -57,6 +66,18 @@ public class DriveTrain extends Subsystem {
 
 		m_drive = new DifferentialDrive(left, right);
 		m_drive.setRightSideInverted(false);
+
+		//Shuffleboard inputs
+		kP = TAB.add("Proportion", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 0.1)).getEntry();
+		kI = TAB.add("Integral", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 0.1)).getEntry();
+		kD = TAB.add("Derivative", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 0.1)).getEntry();
+
+	}
+
+	public double[] getPID() {
+		double[] pid = {kP.getDouble(0.001), kI.getDouble(0.0001), kD.getDouble(0.0001)};
+
+		return pid;
 	}
 
 	public void testMotor()	{
