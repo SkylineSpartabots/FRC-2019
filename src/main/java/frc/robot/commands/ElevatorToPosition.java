@@ -41,7 +41,7 @@ public class ElevatorToPosition extends Command {
 		elevatorTarget = elevatorPosition.getPosition();
 
 		timer = new Timer();
-		elevatorPID = new SimplePID(elevatorSource, elevatorTarget, kP, kI, kD, false);
+		elevatorPID = new SimplePID(elevatorSource, elevatorTarget, kP, kI, kD, "ElevatorPositionPID",false);
 		elevatorPID.setOutputLimits(-0.4, 0.4);
 	}
 
@@ -57,7 +57,7 @@ public class ElevatorToPosition extends Command {
 	protected void execute() {
 		output = elevatorPID.compute();
 		error = elevatorPID.getError();
-
+		
 		Robot.elevator.setPower(output);
 
 		/**

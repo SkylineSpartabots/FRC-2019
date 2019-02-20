@@ -44,17 +44,17 @@ public class SimplePID {
 	 * @param ki         integral gain
 	 * @param kd         derivative gain
 	 */
-	public SimplePID(Object pidsource, double setpoint, double kp, double ki, double kd, boolean b) {
+	public SimplePID(Object pidsource, double setpoint, double kp, double ki, double kd, String filename, boolean log) {
 		this.pidsource = (PIDSource) pidsource;
 		this.setpoint = setpoint;
 		this.kp = kp;
 		this.ki = ki;
 		this.kd = kd;
-		this.log = b;
+		this.log = log;
 
-		if (b) {
+		if (this.log) {
 			try {
-				PIDlog = new Logger(b + ".txt");
+				PIDlog = new Logger("PIDLoops//" + filename);
 			} catch (NullPointerException ex) {
 				System.out.println("SimplePID File Exception: Log Enabled without Valid FilePath" + ex.getMessage());
 				this.log = false;
@@ -68,7 +68,6 @@ public class SimplePID {
 			PIDlog.writeNewData("Data Set");
 			PIDlog.writeNewData("Time	Input	Output	Error");
 			PIDlog.writeNewData("x	y	z	w\n");
-			PIDlog.flushLogData();
 		}
 	}
 
@@ -120,19 +119,10 @@ public class SimplePID {
 		PIDlog.writeNewData("" + seconds + "\t" + input + "\t" + output + "\t" + error);
 	}
 
-	public void flushLogData() {
-		if (this.log)
-			PIDlog.flushLogData();
-	}
-
 	public void resetPID() {
 		proportional = 0;
 		integral = 0;
 		derivative = 0;
-
-		if (log) {
-			flushLogData();
-		}
 	}
 
 	public double compute() {

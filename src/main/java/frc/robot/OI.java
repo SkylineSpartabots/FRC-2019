@@ -26,7 +26,7 @@ public class OI {
 			new Waypoint(0, 0, 0),
 			new Waypoint(5, 5, Math.PI/2),
 		};
-		driveStick.buttonA.whenPressed(new PathExecuter(test, "test"));
+		driveStick.buttonA.whenPressed(new PathExecuter(test, "TestPath"));
 
 		//secondStick.buttonB.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.CARGO_SHIP));
 		//secondStick.buttonA.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_FIRST));

@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.DriveStraightTest;
-import frc.robot.commands.TurnPIDTest;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchMechanism;
@@ -49,6 +48,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		NetworkInst = NetworkTableInstance.getDefault();
 		JetsonTable = NetworkInst.getTable("JetsonData");
+		SystemLog = new Logger("SystemLog");
 		rps = new RPS();
 		driveTrain = new DriveTrain();
 		intake = new Intake();
@@ -63,8 +63,8 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putData("Auto mode", m_chooser);
 		//chooser.addOption("My Auto", new MyAutoCommand());
-
-		System.out.println("Starting Jetson");
+		
+		SystemLog.writeWithTimeStamp("Starting Jetson");
 		String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
 		ProcessBuilder jetsonProcessStart = new ProcessBuilder();
 		jetsonProcessStart.command("sh", "-c", jetsonCmd);
@@ -72,10 +72,9 @@ public class Robot extends TimedRobot {
 		try{
 			jetsonProcessStart.start();
 		}	catch (IOException e){
-			System.out.println("IOException at Jetson Start");
-			System.out.println(e.getMessage());
+			SystemLog.writeWithTimeStamp("IOException at Jetson Start: " + e.getMessage());
 		}
-		System.out.println("Jetson Process Start Attempted | Did not Block");
+		SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
 	}
 
 	/**
@@ -88,9 +87,8 @@ public class Robot extends TimedRobot {
 	 * and SmartDashboard integrated updating.
 	 */
 	@Override
-	public void robotPeriodic() {
+	public void robotPeriodic() {	
 		//System.out.println(Robot.driveTrain.getLeftEncoderDistanceMeters());
-		// SystemLog.flushLogData(); // this slows down the loop
 	}
 
 	/**
@@ -104,6 +102,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
+		Logger.flushAllLogs();
 		Scheduler.getInstance().run();
 	}
 

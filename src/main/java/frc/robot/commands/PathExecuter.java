@@ -50,24 +50,23 @@ public class PathExecuter extends Command {
 				}
 			};
 			timer = new Timer();
-			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, false);
-			PathingLog = new Logger(FileName + "-Log.txt");
+			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",true);
+			PathingLog = new Logger(FileName + "Log");
 		} catch (Exception e) {
 			
 		}
 	}
-
 	public PathExecuter(String FileName) {
 		requires(Robot.driveTrain);
 		try {
 			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
-			Trajectory trajectory = Pathfinder.readFromFile(f);
+			Trajectory trajectory = Pathfinder.readFromCSV(f);
+			Robot.SystemLog.writeWithTimeStamp("PathExecuter: Trajectory Loaded From File");
 			initPathExecuter(trajectory, FileName);
 		} catch (Exception e) {
-			
+			Robot.SystemLog.writeWithTimeStamp("PathExecuter: Trajectory Could Not Be Loaded");
 		}
 	}
-
 	public PathExecuter(Waypoint[] points, String FileName) {
 		requires(Robot.driveTrain);
 		try {
@@ -77,32 +76,26 @@ public class PathExecuter extends Command {
 			
 			Trajectory trajectory = Pathfinder.generate(points, config);
 			System.out.println("Trajectory Length: " + trajectory.length());
-			//System.out.println(trajectory.get(72).x);
-			//System.out.println(trajectory.get(72).y);
-			//File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
-			//Pathfinder.writeToFile(f, trajectory);
-			//Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
+			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
+			Pathfinder.writeToCSV(f, trajectory);
+			Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
 			initPathExecuter(trajectory, FileName);
 		} catch (Exception e) {
-			//Robot.SystemLog.writeNewData("PathExecuter Line 39: Error Creating Trajectory Path");
+			Robot.SystemLog.writeNewData("PathExecuter Line 39: Error Creating Trajectory Path"  +e.getMessage());
 		}
 	}
-
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
 		double l = left.calculate(LeftEncoderDistance);
 		double r = left.calculate(RightEncoderDistance);
 		double desired_heading = Pathfinder.boundHalfDegrees(Pathfinder.r2d(left.getHeading()));
 		turnPID.setSetpoint(desired_heading);
 		double turn = turnPID.compute();
-		System.out.println("LeftDesiredPosition" + left.getSegment().position + "ActualPosition:" + Robot.driveTrain.getLeftEncoderDistanceMeters());
-		System.out.println("RightDesiredPosition" + right.getSegment().position + "ActualPosition:" + Robot.driveTrain.getRightEncoderDistanceMeters());
-		
-		System.out.println("Heading Error: " + turnPID.getError());
 		LeftMotorOutput = l/100 - turn;
 		RightMotorOutput = r/100 + turn;
 		PathingLog.writeNewData(
-				"Pathing Update: LeftMotorOutput: " + LeftMotorOutput + " RightMotorOutput: " + RightMotorOutput
-						+ " DesiredHeading: " + desired_heading + " Actual Heading: " + Robot.rps.getNavxAngle());
+			Timer.getFPGATimestamp()+","+desired_heading+","+left.getSegment().position+","+right.getSegment().position+","+
+			turnPID.getInput()+","+Robot.driveTrain.getLeftEncoderDistanceMeters()+","+Robot.driveTrain.getRightEncoderDistanceMeters()+","+
+			LeftMotorOutput+","+RightMotorOutput);
 	}
 
 	/**
@@ -116,21 +109,14 @@ public class PathExecuter extends Command {
 		Robot.driveTrain.resetEncoders();
 		left.reset();
 		right.reset();
-
-		//Robot.SystemLog.writeNewData("Path Executer Initialized: Angle=" + Robot.rps.getNavxAngle());
-		System.out.println("Path Executer Initialize \n\n Angle=" + Robot.rps.getNavxAngle());
+		Robot.SystemLog.writeWithTimeStamp("Path Executer Initialized: Angle=" + Robot.rps.getNavxAngle());
+		PathingLog.writeNewData("Time, Desired Heading, Desired Left Position, Desired Right Position, Heading, Left Position, Right Posiion, LeftPower, RightPower");
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
 		updateMotorOutputs(Robot.driveTrain.getLeftEncoderDistanceMeters(), Robot.driveTrain.getRightEncoderDistanceMeters());
-		System.out.println("PathExecuter Motor Power: " + LeftMotorOutput + ", " + RightMotorOutput);
-		System.out.println("Encoder Values:" + Robot.driveTrain.getRightEncoderDistanceMeters() + ", " + Robot.driveTrain.getLeftEncoderDistanceMeters());
-		SmartDashboard.putNumber("Heading", Robot.rps.getNavxAngle());
-		//System.out.println(left.getSegment().x);
-		
-		
 		Robot.driveTrain.rawMotorOutput(LeftMotorOutput, RightMotorOutput);
 	}
 
@@ -155,7 +141,7 @@ public class PathExecuter extends Command {
 	// is scheduled to run
 	@Override
 	protected void interrupted() {
-		//Robot.SystemLog.writeNewData("Path Executer Interrupted");
+		Robot.SystemLog.writeWithTimeStamp("Path Executer Interrupted");
 		end();
 	}
 }

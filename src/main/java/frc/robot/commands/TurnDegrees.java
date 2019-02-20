@@ -2,11 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import frc.robot.Robot;
 import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
@@ -45,7 +40,7 @@ public class TurnDegrees extends Command {
 			}
 		};
 
-		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, false);
+		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, "TurnDegreesPID",true);
 		turnPID.setOutputLimits(-0.6, 0.6);
 	}
 

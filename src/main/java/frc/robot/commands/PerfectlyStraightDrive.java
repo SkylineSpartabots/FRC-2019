@@ -5,14 +5,9 @@ import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import java.io.IOException;
-import java.util.Map;
 
-import com.sun.javadoc.RootDoc;
 
 public class PerfectlyStraightDrive extends Command {
 
@@ -65,7 +60,7 @@ public class PerfectlyStraightDrive extends Command {
 
 
     
-		turnPID = new SimplePID(NavxSource, this.angle, kP, kI, kD, false);
+		turnPID = new SimplePID(NavxSource, this.angle, kP, kI, kD, "DriveStraingTurnPID" ,true);
 		turnPID.setOutputLimits(-0.5, 0.5);
 
   }
