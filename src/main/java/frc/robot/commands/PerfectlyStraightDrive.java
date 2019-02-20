@@ -60,11 +60,7 @@ public class PerfectlyStraightDrive extends Command {
 
 
     
-<<<<<<< HEAD
 		turnPID = new SimplePID(NavxSource, this.angle, kP, kI, kD, "DriveStraingTurnPID" ,true);
-=======
-		turnPID = new SimplePID(NavxSource, this.angle, kP, kI, kD, false);
->>>>>>> Make elevator organied, simpler, and easy to debug
 		turnPID.setOutputLimits(-0.5, 0.5);
 
   }

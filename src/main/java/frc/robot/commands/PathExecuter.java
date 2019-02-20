@@ -50,13 +50,8 @@ public class PathExecuter extends Command {
 				}
 			};
 			timer = new Timer();
-<<<<<<< HEAD
 			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",true);
 			PathingLog = new Logger(FileName + "Log");
-=======
-			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, false);
-			PathingLog = new Logger(FileName + "-Log.txt");
->>>>>>> Make elevator organied, simpler, and easy to debug
 		} catch (Exception e) {
 			
 		}

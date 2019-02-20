@@ -40,11 +40,7 @@ public class TurnDegrees extends Command {
 			}
 		};
 
-<<<<<<< HEAD
 		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, "TurnDegreesPID",true);
-=======
-		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, false);
->>>>>>> Make elevator organied, simpler, and easy to debug
 		turnPID.setOutputLimits(-0.6, 0.6);
 	}
 
