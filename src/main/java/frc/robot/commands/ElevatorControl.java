@@ -21,8 +21,12 @@ public class ElevatorControl extends Command {
 	@Override
 	protected void execute() {
 		
-		double joyVal = Robot.oi.secondStick.getRY();
-		Robot.elevator.setPower(-joyVal); 
+		double joyVal = -Robot.oi.secondStick.getRY();
+		if(joyVal <= -0.5)	{
+			Robot.elevator.setStallPower();
+		}	else{
+			Robot.elevator.setPower(Math.abs(joyVal)); 
+		}
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

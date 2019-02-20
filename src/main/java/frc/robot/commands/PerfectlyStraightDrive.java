@@ -80,7 +80,7 @@ public class PerfectlyStraightDrive extends Command {
   protected void execute() {
 
     output = turnPID.compute();
-    Robot.driveTrain.tankDrive(leftPower - output, rightPower + output);
+    Robot.driveTrain.tankDrive(leftPower + output, rightPower - output);
   
     System.out.println(output);
   

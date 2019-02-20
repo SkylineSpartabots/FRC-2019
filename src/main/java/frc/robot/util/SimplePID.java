@@ -103,7 +103,9 @@ public class SimplePID {
 		this.setpoint = setpoint;
 		resetPID();
 	}
-
+	public void setSetpointRamp(double setpoint) {
+		this.setpoint = setpoint;
+	}
 	public void setOutputLimits(double min, double max) {
 		outputMax = max;
 		outputMin = min;
@@ -134,7 +136,7 @@ public class SimplePID {
 		double dt = (currentTime - prevTime);
 
 		input = pidsource.getInput();
-		error = input - setpoint;
+		error = setpoint - input; 
 		proportional = kp * error;
 		integral += ki * error;
 

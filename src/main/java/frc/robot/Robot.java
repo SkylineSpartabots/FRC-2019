@@ -88,6 +88,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {	
+		
 		//System.out.println(Robot.driveTrain.getLeftEncoderDistanceMeters());
 	}
 
@@ -102,7 +103,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		Logger.flushAllLogs();
+		
 		Scheduler.getInstance().run();
 	}
 
@@ -166,6 +167,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		Logger.flushAllLogs();
 		Scheduler.getInstance().run();
 	}
 

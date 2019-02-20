@@ -22,9 +22,9 @@ public class PathExecuter extends Command {
 	private final double D = 0;
 	private final double k_a = 2;
 
-	private final double TurnP = 0.03;
+	private final double TurnP = 0.02;
 	private final double TurnI = 0;
-	private final double TurnD = 0.05;
+	private final double TurnD = 0.0;
 
 	private Timer timer;
 
@@ -72,7 +72,7 @@ public class PathExecuter extends Command {
 		try {
 			System.out.println("Generating Trajectory");
 			Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-					Trajectory.Config.SAMPLES_FAST, 0.02, RobotMap.MAX_VELOCITY, 2.0, 60.0);
+					Trajectory.Config.SAMPLES_LOW, 0.02, RobotMap.MAX_VELOCITY, 2.0, 60.0);
 			
 			Trajectory trajectory = Pathfinder.generate(points, config);
 			System.out.println("Trajectory Length: " + trajectory.length());
@@ -90,12 +90,14 @@ public class PathExecuter extends Command {
 		double desired_heading = Pathfinder.boundHalfDegrees(Pathfinder.r2d(left.getHeading()));
 		turnPID.setSetpoint(desired_heading);
 		double turn = turnPID.compute();
-		LeftMotorOutput = l/100 - turn;
-		RightMotorOutput = r/100 + turn;
+		LeftMotorOutput = l/100 + turn;
+		RightMotorOutput = r/100 - turn;
 		PathingLog.writeNewData(
 			Timer.getFPGATimestamp()+","+desired_heading+","+left.getSegment().position+","+right.getSegment().position+","+
 			turnPID.getInput()+","+Robot.driveTrain.getLeftEncoderDistanceMeters()+","+Robot.driveTrain.getRightEncoderDistanceMeters()+","+
 			LeftMotorOutput+","+RightMotorOutput);
+		PathingLog.flushLogData();
+		Robot.SystemLog.flushLogData();
 	}
 
 	/**

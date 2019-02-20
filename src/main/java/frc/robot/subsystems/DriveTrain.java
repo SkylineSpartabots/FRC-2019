@@ -68,13 +68,13 @@ public class DriveTrain extends Subsystem {
 		m_drive.setRightSideInverted(false);
 
 		//Shuffleboard inputs
-		kP = TAB.add("Proportion", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 0.1)).getEntry();
-		kI = TAB.add("Integral", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 0.1)).getEntry();
-		kD = TAB.add("Derivative", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 0.1)).getEntry();
+		kP = TAB.add("ProportionPathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		kI = TAB.add("IntegralPathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		kD = TAB.add("DerivativePathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 
 	}
 
-	public double[] getPID() {
+	public double[] getPIDPathing() {
 		double[] pid = {kP.getDouble(0.001), kI.getDouble(0.0001), kD.getDouble(0.0001)};
 
 		return pid;

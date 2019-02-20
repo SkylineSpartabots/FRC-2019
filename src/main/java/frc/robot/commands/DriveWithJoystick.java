@@ -24,6 +24,7 @@ public class DriveWithJoystick extends Command {
 		
 		//Robot.driveTrain.rawMotorOutput(-left, -right);
 		Robot.driveTrain.arcadeDrive(-forward, turn);
+		//System.out.println("Driving: " + forward);
 		//Robot.driveTrain.testMotor();
 		//Robot.driveTrain.tankDrive(-left, -right);
 	}

@@ -72,7 +72,7 @@ public class TurnDegrees extends Command {
 		System.out.println("INSIDE EXECUTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		System.out.println(output);
 
-		Robot.driveTrain.tankDrive(-output, output);
+		Robot.driveTrain.tankDrive(output, -output);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

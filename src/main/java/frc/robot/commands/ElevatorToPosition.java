@@ -9,8 +9,8 @@ import frc.robot.util.SimplePID;
 
 public class ElevatorToPosition extends Command {
 
-	private final static int ELEVATOR_THRESHOLD = 50;
-	private final static int CLOCK_MAX = 5;;
+	private final static int ELEVATOR_THRESHOLD = 5;
+	private final static int CLOCK_MAX = 10;
 
 	private SimplePID elevatorPID;
 	private PIDSource elevatorSource;
@@ -20,12 +20,17 @@ public class ElevatorToPosition extends Command {
 	private int clockCounter = 0;
 	private boolean isFinished = false;
 
+	private int countsPerSecond = 300;
 	private Timer timer;
 
-	private double kP = 0; // TODO: add values
-	private double kI = 0;
+	private double kP = 0.035; // TODO: add values
+	private double kI = 0.002;
 	private double kD = 0;
 
+	//Setpoint ramp
+	private double startTime;
+	private double elapsedTime;
+	private double setpoint;
 	/**
 	 * Specify an elevator position using the "Elevator Position" enum and the robot
 	 * will autonomously proceed to that position
@@ -35,14 +40,14 @@ public class ElevatorToPosition extends Command {
 	public ElevatorToPosition(Elevator.ElevatorPosition elevatorPosition) {
 		requires(Robot.elevator);
 
-		elevatorSource = () -> Robot.elevator.elevatorEncoder.getDistance();
+		elevatorSource = () -> Robot.elevator.getElevatorEncoderOutput();
 
 		// returns value whether it is in the cargo or hatch position
 		elevatorTarget = elevatorPosition.getPosition();
 
 		timer = new Timer();
 		elevatorPID = new SimplePID(elevatorSource, elevatorTarget, kP, kI, kD, "ElevatorPositionPID",false);
-		elevatorPID.setOutputLimits(-0.4, 0.4);
+		elevatorPID.setOutputLimits(0, 0.55);
 	}
 
 	// Called just before this Command runs the first time
@@ -50,41 +55,52 @@ public class ElevatorToPosition extends Command {
 	protected void initialize() {
 		Robot.elevator.setPower(0);
 		elevatorPID.resetPID();
+		elevatorPID.setSetpoint(0);
+		startTime = Timer.getFPGATimestamp();
+		setpoint = 0;
+		isFinished = false;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		output = elevatorPID.compute();
-		error = elevatorPID.getError();
-		
-		Robot.elevator.setPower(output);
-
-		/**
-		 * logic for ending the the command, if it is within a certain range for a
-		 * period of time meaning its velocity isn't too high, then end the command
-		 */
-		if (error < ELEVATOR_THRESHOLD) {
-			clockCounter++;
-			if (clockCounter > CLOCK_MAX) {
-				isFinished = true;
+		if(isFinished)	{
+			Robot.elevator.setStallPower();
+		}	else	{
+			elapsedTime = Timer.getFPGATimestamp()-startTime;
+			if(elapsedTime*countsPerSecond < elevatorTarget)	{	
+				setpoint = elapsedTime*countsPerSecond;		
+				elevatorPID.setSetpointRamp(setpoint);
 			}
-		} else {
-			clockCounter = 0;
+			output = elevatorPID.compute();
+			error = elevatorPID.getError();
+			System.out.println(output + "," + error + "," + setpoint + "," + elevatorPID.getInput());
+			Robot.elevator.setPower(output);
+			/**
+			 * logic for ending the the command, if it is within a certain range for a
+			 * period of time meaning its velocity isn't too high, then end the command
+			 */
+			if (Math.abs(elevatorPID.getInput()-elevatorTarget) < ELEVATOR_THRESHOLD) {
+				System.out.println("Counting: " + elevatorTarget);
+				clockCounter++;
+				if (clockCounter > CLOCK_MAX) {
+					isFinished = true;
+				}
+			} else {
+				clockCounter = 0;
+			}
 		}
-
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return isFinished;
+		return Math.abs(Robot.oi.secondStick.getRY())>0.1;
 	}
 
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-		Robot.elevator.setPower(0);
 		elevatorPID.resetPID();
 	}
 

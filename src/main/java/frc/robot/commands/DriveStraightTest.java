@@ -14,6 +14,6 @@ public class DriveStraightTest extends CommandGroup {
    * Add your docs here.
    */
   public DriveStraightTest() {
-    addSequential(new PerfectlyStraightDrive(100, 0.25, 0.25));
+    addSequential(new PerfectlyStraightDrive(100, 0.5, 0.5));
   }
 }

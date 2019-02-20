@@ -36,7 +36,7 @@ public class Elevator extends Subsystem {
 		leftElevatorMotor.configContinuousCurrentLimit(amps, timeoutMs);
 
 		rightElevatorMotor.setInverted(true);
-		leftElevatorMotor.setInverted(false);
+		leftElevatorMotor.setInverted(true);
 
 
 		elevatorEncoder = new Encoder(RobotMap.ELEVATOR_ENCODER_PORT_A, RobotMap.ELEVATOR_ENCODER_PORT_B);
@@ -54,8 +54,11 @@ public class Elevator extends Subsystem {
 	 * 
 	 * @param power power <= 0
 	 */
+	public void setStallPower()	{
+		setRawPower(0.10);
+	}
 	private void setRawPower(double power) {
-		//rightElevatorMotor.set(power);
+		rightElevatorMotor.set(power);
 		leftElevatorMotor.set(power);
 		SmartDashboard.putNumber("LeftElevatorCurrent", leftElevatorMotor.getOutputCurrent());
 		SmartDashboard.putNumber("RightElevatorCurrent", rightElevatorMotor.getOutputCurrent());
@@ -68,9 +71,11 @@ public class Elevator extends Subsystem {
 		boolean minReached = getElevatorEncoderOutput() <= MIN_ENCODER_LIMIT && power < 0;
 		SmartDashboard.putNumber("ElevatorEncoderCount", getElevatorEncoderOutput());
 		SmartDashboard.putBoolean("Elevator Limit Switch", getLimitSwitchState());
-		if (maxReached || minReached) {
+		if (maxReached) {
+			setStallPower();
+		}else if(minReached)	{
 			setRawPower(0);
-		} else {
+		} 	else {
 			setRawPower(power);
 		}
 
@@ -98,7 +103,7 @@ public class Elevator extends Subsystem {
 	 * TODO: NEED TO ADD ACTUAL VALUES
 	 */
 	public enum ElevatorPosition {
-		CARGO_SHIP(0, 0), ROCKET_FIRST(0, 0), ROCKET_SECOND(0, 0), ROCKET_THIRD(0, 0);
+		CARGO_SHIP(0, 0), ROCKET_FIRST(0, 0), ROCKET_SECOND(480, 480), ROCKET_THIRD(900, 900);
 
 		private final int cargoPosition;
 		private final int hatchPosition;
