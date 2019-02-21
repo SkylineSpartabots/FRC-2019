@@ -67,4 +67,13 @@ public class RobotMap {
 	public static final int HATCH_SOLENOID = 0;
 
 	public static final int HATCH_SLIDER_SOLENOID = 1;
+
+	//hatch mechanism limit switch port
+	public static final int HATCH_LIMIT_SWTICH = 2;
+
+	//Threshold for analog limit switch
+	public static final int HATCH_LIMIT_SWTICH_THRESHOLD = 425; //TODO: need to add proper value
+
+	//USB Camera Port
+	public static final int CAMERA_PORT = 0;
 }

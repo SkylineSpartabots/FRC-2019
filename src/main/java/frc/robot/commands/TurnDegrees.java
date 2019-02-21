@@ -69,7 +69,7 @@ public class TurnDegrees extends Command {
 			clockCounter = 0;
 		}
 
-		System.out.println("INSIDE EXECUTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		
 		System.out.println(output);
 
 		Robot.driveTrain.tankDrive(output, -output);

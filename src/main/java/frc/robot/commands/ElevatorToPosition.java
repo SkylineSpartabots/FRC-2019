@@ -27,10 +27,11 @@ public class ElevatorToPosition extends Command {
 	private double kI = 0.002;
 	private double kD = 0;
 
-	//Setpoint ramp
+	// Setpoint ramp
 	private double startTime;
 	private double elapsedTime;
 	private double setpoint;
+
 	/**
 	 * Specify an elevator position using the "Elevator Position" enum and the robot
 	 * will autonomously proceed to that position
@@ -46,7 +47,9 @@ public class ElevatorToPosition extends Command {
 		elevatorTarget = elevatorPosition.getPosition();
 
 		timer = new Timer();
-		elevatorPID = new SimplePID(elevatorSource, elevatorTarget, kP, kI, kD, "ElevatorPositionPID",false);
+		double[] pidConstants = Robot.elevator.getPIDElevatorConstants();
+		elevatorPID = new SimplePID(elevatorSource, elevatorTarget, pidConstants[0], pidConstants[1], pidConstants[2],
+				"ElevatorPositionPID", false);
 		elevatorPID.setOutputLimits(0, 0.55);
 	}
 
@@ -64,12 +67,12 @@ public class ElevatorToPosition extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		if(isFinished)	{
+		if (isFinished) {
 			Robot.elevator.setStallPower();
-		}	else	{
-			elapsedTime = Timer.getFPGATimestamp()-startTime;
-			if(elapsedTime*countsPerSecond < elevatorTarget)	{	
-				setpoint = elapsedTime*countsPerSecond;		
+		} else {
+			elapsedTime = Timer.getFPGATimestamp() - startTime;
+			if (elapsedTime * countsPerSecond < elevatorTarget) {
+				setpoint = elapsedTime * countsPerSecond;
 				elevatorPID.setSetpointRamp(setpoint);
 			}
 			output = elevatorPID.compute();
@@ -80,7 +83,7 @@ public class ElevatorToPosition extends Command {
 			 * logic for ending the the command, if it is within a certain range for a
 			 * period of time meaning its velocity isn't too high, then end the command
 			 */
-			if (Math.abs(elevatorPID.getInput()-elevatorTarget) < ELEVATOR_THRESHOLD) {
+			if (Math.abs(elevatorPID.getInput() - elevatorTarget) < ELEVATOR_THRESHOLD) {
 				System.out.println("Counting: " + elevatorTarget);
 				clockCounter++;
 				if (clockCounter > CLOCK_MAX) {
@@ -95,7 +98,7 @@ public class ElevatorToPosition extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return Math.abs(Robot.oi.secondStick.getRY())>0.1;
+		return Math.abs(Robot.oi.secondStick.getRY()) > 0.1;
 	}
 
 	// Called once after isFinished returns true

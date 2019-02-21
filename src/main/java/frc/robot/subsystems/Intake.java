@@ -6,15 +6,23 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.IntakeControl;
+import frc.robot.util.Debouncer;
+import frc.robot.util.RawInput;
 
 public class Intake extends Subsystem {
 
 	WPI_TalonSRX masterIntakeMotor, slaveIntakeMotor, innerIntakeMotor;
 	Solenoid intakeSolenoid, slaveIntakeSolenoid;
+	
 	AnalogInput beamBreak;
+	private RawInput cargoRawInput;
+	private Debouncer cargoDebouncer;
+	
+
 
 	public Intake() {
 		masterIntakeMotor = new WPI_TalonSRX(RobotMap.RIGHT_INTAKE_MOTOR);
@@ -31,9 +39,12 @@ public class Intake extends Subsystem {
 		innerIntakeMotor = new WPI_TalonSRX(RobotMap.INNER_INTAKE_MOTOR);
 		innerIntakeMotor.setInverted(true);
 
+		
 		beamBreak = new AnalogInput(RobotMap.INTAKE_SENSOR);
 
-		intakeSolenoid = new Solenoid(RobotMap.INTAKE_SOLENOID);
+		cargoRawInput = () -> getCargoState();
+		cargoDebouncer = new Debouncer(cargoRawInput, 0);
+		
 
 	}
 
@@ -55,8 +66,9 @@ public class Intake extends Subsystem {
 	 * @param power
 	 */
 	public void setIntakePower(double power) {
+		boolean cargoState = cargoDebouncer.compute();
 
-		if (isCargo() || !getIntakeSolenoidState()
+		if (cargoState || !getIntakeSolenoidState()
 				|| Robot.elevator.elevatorEncoder.getDistance() > Elevator.MIN_ENCODER_LIMIT) {
 			masterIntakeMotor.set(0);
 		} else {
@@ -64,7 +76,7 @@ public class Intake extends Subsystem {
 		}
 
 		if (power != 0) {
-			if (isCargo()) {
+			if (cargoState) {
 				retractIntake();
 				if (power < 0) {
 					innerIntakeMotor.set(0);
@@ -80,13 +92,23 @@ public class Intake extends Subsystem {
 
 	}
 
+	
 	/**
-	 * @return if cargo is in the intake it returns true, if false there is a hatch.
+	 * 
+	 * @return returns true if there is cargo, false if there isn't
 	 */
-	public boolean isCargo() {
+	public boolean getCargoState() {
 		return beamBreak.getValue() < RobotMap.INTAKE_SENSOR_THRESHOLD;
 	}
 
+
+	public void setIntakeDataOnDisplay(){
+		SmartDashboard.putBoolean("Is Cargo Inside", getCargoState());
+		SmartDashboard.putBoolean("Are Intake Kebabs Extended", getIntakeSolenoidState());
+		SmartDashboard.putNumber("Intake Kebabs Power", masterIntakeMotor.get());
+		SmartDashboard.putNumber("Inner Intake Power", innerIntakeMotor.get());
+
+	}
 	@Override
 	public void initDefaultCommand() {
 		setDefaultCommand(new IntakeControl());

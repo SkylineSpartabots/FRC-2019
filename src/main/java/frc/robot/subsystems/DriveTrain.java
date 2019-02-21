@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoystick;
 
@@ -159,5 +160,11 @@ public class DriveTrain extends Subsystem {
 
 	public void initDefaultCommand() {
 		setDefaultCommand(new DriveWithJoystick());
+	}
+
+	public void setDriveTrainDataOnDisplay() {
+		SmartDashboard.putNumber("Right Drive Encoder In Inches", getRightEncoderDistanceInches());
+		SmartDashboard.putNumber("Left Drive Encoder In Inches", getLeftEncoderDistanceInches());
+		SmartDashboard.putNumber("Heading", Robot.rps.getNavxAngle());
 	}
 }

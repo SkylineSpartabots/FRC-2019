@@ -3,6 +3,7 @@ package frc.robot;
 import java.io.IOException;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -62,19 +63,21 @@ public class Robot extends TimedRobot {
 		}
 
 		SmartDashboard.putData("Auto mode", m_chooser);
-		//chooser.addOption("My Auto", new MyAutoCommand());
-		
+		CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_PORT);
+		// chooser.addOption("My Auto", new MyAutoCommand());
+
 		SystemLog.writeWithTimeStamp("Starting Jetson");
 		String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
 		ProcessBuilder jetsonProcessStart = new ProcessBuilder();
 		jetsonProcessStart.command("sh", "-c", jetsonCmd);
 		jetsonProcessStart.inheritIO();
-		try{
+		try {
 			jetsonProcessStart.start();
-		}	catch (IOException e){
+		} catch (IOException e) {
 			SystemLog.writeWithTimeStamp("IOException at Jetson Start: " + e.getMessage());
 		}
 		SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
+
 	}
 
 	/**
@@ -87,9 +90,13 @@ public class Robot extends TimedRobot {
 	 * and SmartDashboard integrated updating.
 	 */
 	@Override
-	public void robotPeriodic() {	
-		
-		//System.out.println(Robot.driveTrain.getLeftEncoderDistanceMeters());
+	public void robotPeriodic() {
+
+		// Information displayed on the driver station shuffleboard gui
+		driveTrain.setDriveTrainDataOnDisplay();
+		elevator.setElevatorDataOnDisplay();
+		intake.setIntakeDataOnDisplay();
+		hatchMechanism.setHatchMechanismDataOnDisplay();
 	}
 
 	/**
@@ -103,7 +110,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		
+
 		Scheduler.getInstance().run();
 	}
 
@@ -122,7 +129,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		rps.reset();
-		//m_autonomousCommand = new TurnPIDTest();
+		driveTrain.resetEncoders();
+		// m_autonomousCommand = new TurnPIDTest();
 		m_autonomousCommand = new DriveStraightTest();
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
@@ -156,7 +164,7 @@ public class Robot extends TimedRobot {
 			m_autonomousCommand.cancel();
 		}
 
-		hatchMechanism.graspLotus();
+		hatchMechanism.graspHatch();
 		hatchMechanism.slideIn();
 		intake.retractIntake();
 		rps.reset();
@@ -177,4 +185,5 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 	}
+
 }

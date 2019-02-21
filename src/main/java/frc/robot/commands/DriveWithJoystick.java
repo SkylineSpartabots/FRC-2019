@@ -17,16 +17,10 @@ public class DriveWithJoystick extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		double left = Robot.oi.driveStick.getLY();
-		double right = Robot.oi.driveStick.getRY();
 		double turn = Robot.oi.driveStick.getRX();
 		double forward = Robot.oi.driveStick.getLY();
 		
-		//Robot.driveTrain.rawMotorOutput(-left, -right);
-		Robot.driveTrain.arcadeDrive(-forward, turn);
-		//System.out.println("Driving: " + forward);
-		//Robot.driveTrain.testMotor();
-		//Robot.driveTrain.tankDrive(-left, -right);
+		Robot.driveTrain.arcadeDrive(-forward, turn); //-forward because the y-axis on joysticks are inverted
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

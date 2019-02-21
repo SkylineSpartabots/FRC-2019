@@ -41,7 +41,7 @@ public class IntakeForDuration extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return (timer.get() > (duration / 1000)) || Robot.intake.isCargo();
+		return (timer.get() > (duration / 1000)) || Robot.intake.getCargoState();
 	}
 
 	// Called once after isFinished returns true
