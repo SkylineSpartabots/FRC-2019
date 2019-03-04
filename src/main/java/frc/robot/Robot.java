@@ -88,8 +88,9 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {	
-		
-		//System.out.println(Robot.driveTrain.getLeftEncoderDistanceMeters());
+		SmartDashboard.putNumber("RobotHeading", Robot.rps.getNavxAngle());
+		Robot.driveTrain.getLeftEncoderDistanceMeters();
+		Robot.driveTrain.getRightEncoderDistanceMeters();
 	}
 
 	/**

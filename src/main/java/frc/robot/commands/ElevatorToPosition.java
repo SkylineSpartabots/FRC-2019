@@ -14,17 +14,17 @@ public class ElevatorToPosition extends Command {
 
 	private SimplePID elevatorPID;
 	private PIDSource elevatorSource;
-	private int elevatorTarget;
+	private int elevatorTarget;	
 	private double output;
 	private double error;
 	private int clockCounter = 0;
 	private boolean isFinished = false;
 
-	private int countsPerSecond = 300;
+	private int countsPerSecond = 350;
 	private Timer timer;
 
-	private double kP = 0.035; // TODO: add values
-	private double kI = 0.002;
+	private double kP = 0.04; // TODO: add values
+	private double kI = 0.005;
 	private double kD = 0;
 
 	//Setpoint ramp
@@ -47,7 +47,7 @@ public class ElevatorToPosition extends Command {
 
 		timer = new Timer();
 		elevatorPID = new SimplePID(elevatorSource, elevatorTarget, kP, kI, kD, "ElevatorPositionPID",false);
-		elevatorPID.setOutputLimits(0, 0.55);
+		elevatorPID.setOutputLimits(-0.1, 0.55);
 	}
 
 	// Called just before this Command runs the first time

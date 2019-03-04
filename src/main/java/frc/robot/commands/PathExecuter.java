@@ -18,13 +18,13 @@ import jaci.pathfinder.modifiers.TankModifier;
 
 public class PathExecuter extends Command {
 
-	private final double P = 20;
+	private final double P = 0.7;
 	private final double D = 0;
-	private final double k_a = 2;
+	private final double k_a = 0;
 
 	private final double TurnP = 0.02;
-	private final double TurnI = 0;
-	private final double TurnD = 0.0;
+	private final double TurnI = 0.0;
+	private final double TurnD = 0.00;
 
 	private Timer timer;
 
@@ -35,10 +35,34 @@ public class PathExecuter extends Command {
 
 	private double LeftMotorOutput = 0;
 	private double RightMotorOutput = 0;
-
+	public void initPathExecuter(String left_s, String right_s, String FileName) {
+		try {			
+			File left_f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + left_s);
+			File right_f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + right_s);
+			
+			left = new DistanceFollower(Pathfinder.readFromCSV(left_f));
+			right = new DistanceFollower(Pathfinder.readFromCSV(right_f));
+			left.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
+			right.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
+			
+			NAVXSource = new PIDSource() {
+				public double getInput() {
+					return Robot.rps.getNavxAngle();
+				}
+			};
+			timer = new Timer();
+			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",true);
+			PathingLog = new Logger(FileName + "Log");
+		} catch (Exception e) {			
+		}
+	}
 	public void initPathExecuter(Trajectory traj, String FileName) {
 		try {
 			TankModifier modifier = new TankModifier(traj).modify(RobotMap.TRACK_WIDTH);
+			File _f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + "lefttraj");
+			Pathfinder.writeToCSV(_f, modifier.getLeftTrajectory());
+			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + "righttraj");
+			Pathfinder.writeToCSV(f, modifier.getRightTrajectory());
 			left = new DistanceFollower(modifier.getLeftTrajectory());
 			right = new DistanceFollower(modifier.getRightTrajectory());
 			left.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
@@ -56,6 +80,10 @@ public class PathExecuter extends Command {
 			
 		}
 	}
+	public PathExecuter(String left, String right, String fileName)	{
+		requires(Robot.driveTrain);
+		initPathExecuter(left, right, fileName);
+	}
 	public PathExecuter(String FileName) {
 		requires(Robot.driveTrain);
 		try {
@@ -72,7 +100,7 @@ public class PathExecuter extends Command {
 		try {
 			System.out.println("Generating Trajectory");
 			Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-					Trajectory.Config.SAMPLES_LOW, 0.02, RobotMap.MAX_VELOCITY, 2.0, 60.0);
+					Trajectory.Config.SAMPLES_LOW, 0.02, 0.5*RobotMap.MAX_VELOCITY, 2.0, 60.0);
 			
 			Trajectory trajectory = Pathfinder.generate(points, config);
 			System.out.println("Trajectory Length: " + trajectory.length());
@@ -89,15 +117,24 @@ public class PathExecuter extends Command {
 		double r = left.calculate(RightEncoderDistance);
 		double desired_heading = Pathfinder.boundHalfDegrees(Pathfinder.r2d(left.getHeading()));
 		turnPID.setSetpoint(desired_heading);
+		System.out.println(desired_heading);
 		double turn = turnPID.compute();
-		LeftMotorOutput = l/100 + turn;
-		RightMotorOutput = r/100 - turn;
-		PathingLog.writeNewData(
-			Timer.getFPGATimestamp()+","+desired_heading+","+left.getSegment().position+","+right.getSegment().position+","+
-			turnPID.getInput()+","+Robot.driveTrain.getLeftEncoderDistanceMeters()+","+Robot.driveTrain.getRightEncoderDistanceMeters()+","+
-			LeftMotorOutput+","+RightMotorOutput);
-		PathingLog.flushLogData();
-		Robot.SystemLog.flushLogData();
+		LeftMotorOutput = l + turn;
+		RightMotorOutput = r - turn;
+		
+		try{
+			PathingLog.writeNewData(
+				Timer.getFPGATimestamp()+","+desired_heading+","+left.getSegment().position+","+right.getSegment().position+","+
+				turnPID.getInput()+","+Robot.driveTrain.getLeftEncoderDistanceMeters()+","+Robot.driveTrain.getRightEncoderDistanceMeters()+","+
+				LeftMotorOutput+","+RightMotorOutput);
+		}catch(Exception e)	{
+
+		}
+		
+
+			
+		//PathingLog.flushLogData();
+		//Robot.SystemLog.flushLogData();
 	}
 
 	/**

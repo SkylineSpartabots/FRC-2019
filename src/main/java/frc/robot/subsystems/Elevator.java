@@ -35,8 +35,8 @@ public class Elevator extends Subsystem {
 		rightElevatorMotor.configContinuousCurrentLimit(amps, timeoutMs);
 		leftElevatorMotor.configContinuousCurrentLimit(amps, timeoutMs);
 
-		rightElevatorMotor.setInverted(true);
-		leftElevatorMotor.setInverted(true);
+		rightElevatorMotor.setInverted(false);
+		leftElevatorMotor.setInverted(false);
 
 
 		elevatorEncoder = new Encoder(RobotMap.ELEVATOR_ENCODER_PORT_A, RobotMap.ELEVATOR_ENCODER_PORT_B);

@@ -10,7 +10,7 @@ public class TurnDegrees extends Command {
 
 	private int clockCounter = 0;
 	private double angle;
-	private final double CLOCK_MAX = 5;
+	private final double CLOCK_MAX = 10;
 	private boolean isFinished = false;
 	private double error;
 
@@ -19,8 +19,8 @@ public class TurnDegrees extends Command {
 	private PIDSource turnSource;
 	private SimplePID turnPID;
 
-	double kP = 0.005;
-	double kI = 0.0;
+	double kP = 0.01;
+	double kI = 0.000;
 	double kD = 0.0;
 
 	private double turnThreshold;
@@ -41,7 +41,7 @@ public class TurnDegrees extends Command {
 		};
 
 		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, "TurnDegreesPID",true);
-		turnPID.setOutputLimits(-0.6, 0.6);
+		turnPID.setOutputLimits(-1, 1);
 	}
 
 	// Called just before this Command runs the first time
