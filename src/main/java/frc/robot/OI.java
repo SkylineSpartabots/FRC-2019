@@ -9,6 +9,7 @@ import frc.robot.commands.ReleaseHatch;
 import frc.robot.commands.SlideHatchIn;
 import frc.robot.commands.SlideHatchOut;
 import frc.robot.commands.TurnDegrees;
+import frc.robot.commands.VisionAllignment;
 import frc.robot.controllers.Logitech;
 import frc.robot.subsystems.Elevator;
 import jaci.pathfinder.Waypoint;
@@ -41,11 +42,12 @@ public class OI {
 			new Waypoint(3, 1, Math.PI/4),
 			//new Waypoint(0.1, 1.5, 0),	
 		};
-		driveStick.buttonA.whenPressed(new PathExecuter(toCargo, "TestCargoPath"));		
-		driveStick.buttonB.whenPressed(new EncoderDrive(-0.6, -0.6, -0.6));
-		driveStick.buttonY.whenPressed(new TurnDegrees(135, 3));
-		driveStick.buttonX.whenPressed(new PathExecuter(toHatchDispenser, "TestHatchPath"));
+		//driveStick.buttonA.whenPressed(new PathExecuter(toCargo, "TestCargoPath"));		
+		//driveStick.buttonB.whenPressed(new EncoderDrive(-0.6, -0.6, -0.6));
+		//driveStick.buttonY.whenPressed(new TurnDegrees(135, 3));
+		//driveStick.buttonX.whenPressed(new PathExecuter(toHatchDispenser, "TestHatchPath"));
 		//driveStick.buttonA.whenPressed(new PathExecuter("simpleslide_left.csv","simpleslide_right.csv", "TestPath"));
+		driveStick.buttonA.whenPressed(new VisionAllignment());
 
 		secondStick.buttonX.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_SECOND));
 		secondStick.buttonA.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_FIRST));

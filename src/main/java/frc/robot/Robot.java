@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putData("Auto mode", m_chooser);
 		//chooser.addOption("My Auto", new MyAutoCommand());
+		System.out.println("Starting Jetson");
 		
 		SystemLog.writeWithTimeStamp("Starting Jetson");
 		String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
@@ -72,6 +73,7 @@ public class Robot extends TimedRobot {
 		try{
 			jetsonProcessStart.start();
 		}	catch (IOException e){
+			System.out.println("Errpr" + e.getMessage());
 			SystemLog.writeWithTimeStamp("IOException at Jetson Start: " + e.getMessage());
 		}
 		SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
@@ -91,6 +93,9 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("RobotHeading", Robot.rps.getNavxAngle());
 		Robot.driveTrain.getLeftEncoderDistanceMeters();
 		Robot.driveTrain.getRightEncoderDistanceMeters();
+		SmartDashboard.putNumber("XDisp", Robot.rps.getXDisplacementToVisionTarget());
+		SmartDashboard.putNumber("ZDisp", Robot.rps.getZDisplacementToVisionTarget());
+		SmartDashboard.putNumber("Angle", Robot.rps.getYawToVisionTarget());
 	}
 
 	/**
