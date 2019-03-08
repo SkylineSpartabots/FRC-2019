@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.auto_commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
@@ -19,7 +19,7 @@ public class TurnDegrees extends Command {
 	private PIDSource turnSource;
 	private SimplePID turnPID;
 
-	double kP = 0.005;
+	double kP = 0.010;
 	double kI = 0.0;
 	double kD = 0.0;
 
@@ -33,12 +33,7 @@ public class TurnDegrees extends Command {
 		this.angle = angle + Robot.rps.getNavxAngle();
 		this.timeOutSecs = timeOutSecs;
 
-		turnSource = new PIDSource() {
-			@Override
-			public double getInput() {
-				return Robot.rps.getNavxAngle();
-			}
-		};
+		turnSource = () -> Robot.rps.getNavxAngle();
 
 		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, "TurnDegreesPID",true);
 		turnPID.setOutputLimits(-0.6, 0.6);
@@ -57,8 +52,8 @@ public class TurnDegrees extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		error = turnPID.getError();
 		output = turnPID.compute();
+		error = turnPID.getError();
 
 		if (Math.abs(error) < turnThreshold) {
 			clockCounter++;

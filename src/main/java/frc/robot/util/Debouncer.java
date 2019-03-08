@@ -12,12 +12,13 @@ package frc.robot.util;
  */
 public class Debouncer {
 
-    private RawInput rawInput;
+    private Debouncer.RawInput rawInput;
     private int CLOCK_MAX;
     private Boolean deboucedValue = null;
 
     private boolean prevRawState, rawState;
     private int clockCounter = 0;
+    
 
   
    /**
@@ -26,7 +27,7 @@ public class Debouncer {
     * @param CLOCK_MAX Maximum clock count at what point a "debounced" value is recorded
     * @param initDebouncedValue Starting data point for debouncer
     */
-    public Debouncer(RawInput rawInput, int CLOCK_MAX){
+    public Debouncer(Debouncer.RawInput rawInput, int CLOCK_MAX){
         this.rawInput = rawInput;
         this.CLOCK_MAX = CLOCK_MAX;
     }
@@ -55,5 +56,9 @@ public class Debouncer {
             return deboucedValue;
         }
         
+    }
+
+    public interface RawInput{
+        public boolean getBooleanInput();
     }
 }

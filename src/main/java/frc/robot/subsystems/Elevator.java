@@ -1,21 +1,18 @@
 package frc.robot.subsystems;
 
-import java.util.Map;
+
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.commands.ElevatorControl;
+import frc.robot.commands.drive_controls.*;
 
 /**
  * Subsystem for the elevator.
@@ -25,14 +22,16 @@ public class Elevator extends Subsystem {
 	private WPI_TalonSRX rightElevatorMotor, leftElevatorMotor;
 	public Encoder elevatorEncoder;
 	private DigitalInput elevatorLimitSwitch;
+	
 
-	public final static int MAX_ENCODER_LIMIT = 1000;
-	public final static int MIN_ENCODER_LIMIT = 10;
+	public final static int MAX_ENCODER_LIMIT = 1132; // TODO: Add limit
+	public final static int MIN_ENCODER_LIMIT = 5;
 	public final static int amps = 15;
 	public final static int timeoutMs = 5000;
 
-	private ShuffleboardTab TAB = Shuffleboard.getTab("SmartDashboard");
-	private static NetworkTableEntry kP, kI, kD;
+	public final static double STALL_POWER = 0.07;
+
+
 
 	public Elevator() {
 		rightElevatorMotor = new WPI_TalonSRX(RobotMap.RIGHT_ELEVATOR);
@@ -43,30 +42,20 @@ public class Elevator extends Subsystem {
 		rightElevatorMotor.configContinuousCurrentLimit(amps, timeoutMs);
 		leftElevatorMotor.configContinuousCurrentLimit(amps, timeoutMs);
 
-		rightElevatorMotor.setInverted(true);
-		leftElevatorMotor.setInverted(true);
+		rightElevatorMotor.setInverted(false);
+		leftElevatorMotor.setInverted(false);
+
 
 		elevatorEncoder = new Encoder(RobotMap.ELEVATOR_ENCODER_PORT_A, RobotMap.ELEVATOR_ENCODER_PORT_B);
 		elevatorLimitSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH);
 
-		kP = TAB.add("Elevator Proportional Constant", 0.0).withWidget(BuiltInWidgets.kNumberSlider)
-				.withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		
-		kI = TAB.add("Elevator Proportional Constant", 0.0).withWidget(BuiltInWidgets.kNumberSlider)
-				.withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-
-		kD = TAB.add("Elevator Proportional Constant", 0.0).withWidget(BuiltInWidgets.kNumberSlider)
-				.withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-
 	}
-
-	public double[] getPIDElevatorConstants(){
-		double[] pid = {kP.getDouble(0.001), kI.getDouble(0.001), kD.getDouble(0.001)};
-		return pid;
-	}
-	public int getElevatorEncoderOutput() {
+	
+	public int getElevatorEncoderOutput()	{
 		return elevatorEncoder.get();
 	}
+
+
 
 	/**
 	 * Sets the power to the motor. Takes in consideration of the current elevator
@@ -74,35 +63,30 @@ public class Elevator extends Subsystem {
 	 * 
 	 * @param power power <= 0
 	 */
-	public void setStallPower() {
-		setRawPower(0.10);
+	public void setStallPower()	{
+		setRawPower(STALL_POWER);
 	}
-
 	private void setRawPower(double power) {
 		rightElevatorMotor.set(power);
 		leftElevatorMotor.set(power);
 	}
 
 	public void setPower(double power) {
+		System.out.println(power);
 		boolean maxReached = getElevatorEncoderOutput() >= MAX_ENCODER_LIMIT && power > 0;
 		boolean minReached = getElevatorEncoderOutput() <= MIN_ENCODER_LIMIT && power < 0;
-
 		if (maxReached) {
 			setStallPower();
-		} else if (minReached) {
+		} else if(minReached)	{
 			setRawPower(0);
-		} else {
+		} 	else {
 			setRawPower(power);
 		}
 
-		if (getLimitSwitchState()) {
-			elevatorEncoder.reset();
-		}
 	}
 
 	/**
 	 * Returns the state of the limit switch
-	 * 
 	 * @return true is limit switch is active, else false
 	 */
 	public boolean getLimitSwitchState() {
@@ -111,33 +95,7 @@ public class Elevator extends Subsystem {
 
 	@Override
 	public void initDefaultCommand() {
-		setDefaultCommand(new ElevatorControl());
-	}
-
-	/**
-	 * Enum for storing and getting the values for the encoder values for the 8
-	 * different elevator positions TODO: NEED TO ADD ACTUAL VALUES
-	 */
-	public enum ElevatorPosition {
-		CARGO_SHIP(0, 0), ROCKET_FIRST(0, 0), ROCKET_SECOND(480, 480), ROCKET_THIRD(900, 900);
-
-		private final int cargoPosition;
-		private final int hatchPosition;
-
-		private ElevatorPosition(int cargoPosition, int hatchPosition) {
-			this.cargoPosition = cargoPosition;
-			this.hatchPosition = hatchPosition;
-		}
-
-		/**
-		 * Returns the cargo position if cargo is loaded into the intake, else the hatch
-		 * position
-		 * 
-		 * @return position to put the elevator at
-		 */
-		public int getPosition() {
-			return (Robot.intake.getCargoState() ? cargoPosition : hatchPosition);
-		}
+		//setDefaultCommand(new ElevatorControl());
 	}
 
 	public void setElevatorDataOnDisplay() {
@@ -150,4 +108,30 @@ public class Elevator extends Subsystem {
 		SmartDashboard.putNumber("Left Elevator Motor Output Voltage", leftElevatorMotor.getMotorOutputVoltage());
 		SmartDashboard.putNumber("Right Elevator Motor Output Voltage", rightElevatorMotor.getMotorOutputVoltage());
 	}
+
+	/**
+	 * Enum for storing and getting the values for the encoder values for the 8
+	 * different elevator positions
+	 * TODO: NEED TO ADD ACTUAL VALUES
+	 */
+	public enum ElevatorPosition {
+		DOWN(0,0), CARGO_SHIP(557, 557), ROCKET_FIRST(360, 360), ROCKET_SECOND(790, 480), ROCKET_THIRD(1125, 900);
+
+		public final int cargoPosition;
+		public final int hatchPosition;
+
+		private ElevatorPosition(int cargoPosition, int hatchPosition) {
+			this.cargoPosition = cargoPosition;
+			this.hatchPosition = hatchPosition;
+		}
+
+		/**
+		 * Returns the cargo position if cargo is loaded into the intake, else the hatch position
+		 * @return position to put the elevator at
+		 */
+		public int getPosition() {
+			return Robot.intake.isCargo() ? cargoPosition : hatchPosition;
+		}
+	}
+
 }

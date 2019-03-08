@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.auto_commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
@@ -41,7 +41,7 @@ public class IntakeForDuration extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return (timer.get() > (duration / 1000)) || Robot.intake.getCargoState();
+		return (timer.get() > (duration / 1000)) || Robot.intake.isCargo();
 	}
 
 	// Called once after isFinished returns true

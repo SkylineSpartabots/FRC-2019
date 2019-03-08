@@ -1,9 +1,10 @@
 package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
-public class Logitech {
+public class Xbox {
 
 	private static final double JOYSTICK_DEADZONE = 0.05;
 
@@ -34,7 +35,7 @@ public class Logitech {
 
 	private Joystick joystick;
 
-	public Logitech(int port) {
+	public Xbox(int port) {
 		joystick = new Joystick(port);
 		buttonA = new JoystickButton(joystick, BUTTON_A);
 		buttonB = new JoystickButton(joystick, BUTTON_B);
@@ -86,10 +87,28 @@ public class Logitech {
 		return (pov == 225 || pov == 180 || pov == 135);
 	}
 
+	public void vibrate(){
+		joystick.setRumble(RumbleType.kRightRumble, 1);
+		joystick.setRumble(RumbleType.kLeftRumble, 1);
+	}
+
+	public void stopVibrate(){
+		joystick.setRumble(RumbleType.kRightRumble, 0);
+		joystick.setRumble(RumbleType.kLeftRumble, 0);
+	}
+
 	private double clipDeadzone(double rawValue) {
 		if (Math.abs(rawValue) > JOYSTICK_DEADZONE) {
 			return rawValue;
 		}
 		return 0;
+	}
+
+	public static double clipAxis(double rawValue, double clipAmount){
+		if(Math.abs(rawValue) > clipAmount){
+			return rawValue >= 0 ? clipAmount : -clipAmount;
+		} else {
+			return rawValue;
+		}
 	}
 }

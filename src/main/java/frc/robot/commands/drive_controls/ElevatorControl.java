@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.drive_controls;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
@@ -6,6 +6,7 @@ import frc.robot.Robot;
 public class ElevatorControl extends Command {
 
 	
+	double joyVal;
 
 	public ElevatorControl() {
 		requires(Robot.elevator);
@@ -20,13 +21,9 @@ public class ElevatorControl extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		
-		double joyVal = -Robot.oi.secondStick.getRY();
-		if(joyVal <= -0.5)	{
-			Robot.elevator.setStallPower();
-		}	else{
-			Robot.elevator.setPower(Math.abs(joyVal)); 
-		}
+
+		joyVal = -Robot.oi.secondStick.getRY();
+		Robot.elevator.setPower(joyVal); 
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

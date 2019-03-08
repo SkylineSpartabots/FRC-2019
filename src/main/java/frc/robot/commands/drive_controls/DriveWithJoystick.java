@@ -1,7 +1,10 @@
-package frc.robot.commands;
+package frc.robot.commands.drive_controls;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.controllers.Xbox;
 public class DriveWithJoystick extends Command {
+
+	double forwardClipAmount, turnClipAmount;
 
 
 	public DriveWithJoystick() {
@@ -19,8 +22,18 @@ public class DriveWithJoystick extends Command {
 	protected void execute() {
 		double turn = Robot.oi.driveStick.getRX();
 		double forward = Robot.oi.driveStick.getLY();
-		
-		Robot.driveTrain.arcadeDrive(-forward, turn); //-forward because the y-axis on joysticks are inverted
+		if(Robot.elevator.getElevatorEncoderOutput() >= 420 && Robot.elevator.getElevatorEncoderOutput() <= 700){
+			forwardClipAmount = 0.7;
+			turnClipAmount = 0.75;
+		} else if(Robot.elevator.getElevatorEncoderOutput() >= 700){
+			forwardClipAmount = 0.5;
+			turnClipAmount = 0.6;
+		} else{
+			forwardClipAmount = 1;
+			turnClipAmount = 1;
+		}
+
+		Robot.driveTrain.arcadeDrive(-Xbox.clipAxis(forward, forwardClipAmount), 0.75*(Xbox.clipAxis(turn, turnClipAmount)));
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

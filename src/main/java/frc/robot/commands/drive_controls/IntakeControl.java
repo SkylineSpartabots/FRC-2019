@@ -1,12 +1,16 @@
-package frc.robot.commands;
+package frc.robot.commands.drive_controls;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.commands.VibrateControllers;
 import frc.robot.subsystems.Elevator;
 
 public class IntakeControl extends Command {
 
+	boolean hasVibrated = true;
+	VibrateControllers vibrateControllers;
+	
 	public IntakeControl() {
 		requires(Robot.intake);
 	}
@@ -21,20 +25,33 @@ public class IntakeControl extends Command {
 	@Override
 	protected void execute() {
 		// Controls for moving intake down and up using dpad
-		if (Robot.oi.secondStick.isPOVUpish()) {
+
+		if(Robot.intake.isCargo() && !hasVibrated){
+			hasVibrated = true;
+			try {
+				vibrateControllers = new VibrateControllers(0.4, Robot.oi.secondStick);
+				vibrateControllers.start();
+			  } finally {
+				vibrateControllers.close();
+			  }
+		} else if (!Robot.intake.isCargo()){
+			hasVibrated = false;
+		}
+		
+		
+		if (Robot.oi.secondStick.isPOVDownish()) {
 			Robot.intake.extendIntake();
-		} else if (Robot.oi.secondStick.isPOVDownish() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT) {
+		} else if (Robot.oi.secondStick.isPOVUpish() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT) {
 			Robot.intake.retractIntake();
 		}
-
-		double rTrigger = Robot.oi.secondStick.getRTrigger();
-		double lTrigger = Robot.oi.secondStick.getLTrigger();
-
+		
+		boolean rTriggerOn = Robot.oi.secondStick.getRTrigger() > 0.2;
+		boolean lTriggerOn = Robot.oi.secondStick.getLTrigger() > 0.2;
 		// Sets power to the intake motors. Uses whichever trigger is more pressed
-		if (rTrigger > lTrigger) {
-			Robot.intake.setIntakePower(-rTrigger);
-		} else if (rTrigger < lTrigger) {
-			Robot.intake.setIntakePower(lTrigger);
+		if (rTriggerOn) {
+			Robot.intake.setIntakePower(-1);
+		} else if (lTriggerOn) {
+			Robot.intake.setIntakePower(0.75);
 		} else {
 			Robot.intake.setIntakePower(0);
 		}

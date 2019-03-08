@@ -149,7 +149,7 @@ public class SimplePID {
 		}
 
 		derivative = kd * (input - prevInput) / dt;
-		output = proportional + integral + derivative;
+		output = proportional + integral - derivative;
 
 		// constrains output in between outputMin and outputMax
 		if (output > outputMax) {

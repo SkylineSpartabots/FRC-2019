@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.auto_commands;
 
 import frc.robot.Robot;
 import frc.robot.util.PIDSource;

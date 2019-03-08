@@ -1,20 +1,18 @@
 package frc.robot;
 
 import java.io.IOException;
+
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.DriveStraightTest;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.HatchMechanism;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.*;
 import frc.robot.util.Logger;
 import frc.robot.util.RPS;
 
@@ -37,6 +35,8 @@ public class Robot extends TimedRobot {
 	public static HatchMechanism hatchMechanism;
 
 	public static OI oi;
+	public static Joystick unojoy;
+	
 
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -55,7 +55,9 @@ public class Robot extends TimedRobot {
 		intake = new Intake();
 		elevator = new Elevator();
 		hatchMechanism = new HatchMechanism();
+		unojoy = new Joystick(2);
 		oi = new OI();
+	
 
 		// try-with-resource makes sure that there is no resource leak
 		try (Compressor compressor = new Compressor(RobotMap.COMPRESSOR)) {
@@ -63,21 +65,21 @@ public class Robot extends TimedRobot {
 		}
 
 		SmartDashboard.putData("Auto mode", m_chooser);
-		CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_PORT);
-		// chooser.addOption("My Auto", new MyAutoCommand());
-
+		//chooser.addOption("My Auto", new MyAutoCommand());
+		
 		SystemLog.writeWithTimeStamp("Starting Jetson");
 		String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
 		ProcessBuilder jetsonProcessStart = new ProcessBuilder();
 		jetsonProcessStart.command("sh", "-c", jetsonCmd);
 		jetsonProcessStart.inheritIO();
-		try {
+		try{
 			jetsonProcessStart.start();
-		} catch (IOException e) {
+		}	catch (IOException e){
 			SystemLog.writeWithTimeStamp("IOException at Jetson Start: " + e.getMessage());
 		}
 		SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
 
+		CameraServer.getInstance().startAutomaticCapture();
 	}
 
 	/**
@@ -90,13 +92,15 @@ public class Robot extends TimedRobot {
 	 * and SmartDashboard integrated updating.
 	 */
 	@Override
-	public void robotPeriodic() {
-
-		// Information displayed on the driver station shuffleboard gui
+	public void robotPeriodic() {	
 		driveTrain.setDriveTrainDataOnDisplay();
 		elevator.setElevatorDataOnDisplay();
-		intake.setIntakeDataOnDisplay();
 		hatchMechanism.setHatchMechanismDataOnDisplay();
+		intake.setIntakeDataOnDisplay();
+		
+		
+		
+		//System.out.println(Robot.driveTrain.getLeftEncoderDistanceMeters());
 	}
 
 	/**
@@ -110,7 +114,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-
+		//oi.driveStick.stopVibrate();
 		Scheduler.getInstance().run();
 	}
 
@@ -130,8 +134,8 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		rps.reset();
 		driveTrain.resetEncoders();
-		// m_autonomousCommand = new TurnPIDTest();
-		m_autonomousCommand = new DriveStraightTest();
+		//m_autonomousCommand = new TurnPIDTest();
+		//m_autonomousCommand = new TurnPIDTest();
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
 		 * switch(autoSelected) { case "My Auto": autonomousCommand = new
@@ -167,7 +171,12 @@ public class Robot extends TimedRobot {
 		hatchMechanism.graspHatch();
 		hatchMechanism.slideIn();
 		intake.retractIntake();
+		elevator.elevatorEncoder.reset();
 		rps.reset();
+		/*for(int i = 1; i < 33; i++){
+			unojoy.setOutput(i, true);
+		}*/
+		
 	}
 
 	/**
@@ -175,8 +184,10 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		
 		Logger.flushAllLogs();
 		Scheduler.getInstance().run();
+		//oi.driveStick.vibrate();
 	}
 
 	/**
@@ -185,5 +196,4 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 	}
-
 }

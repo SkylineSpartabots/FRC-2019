@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.commands.DriveWithJoystick;
+import frc.robot.commands.drive_controls.DriveWithJoystick;
 
 /**
  * Subsystem for the West-Coast-style drive train.

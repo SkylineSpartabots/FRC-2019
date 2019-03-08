@@ -1,10 +1,9 @@
-package frc.robot.commands;
+package frc.robot.commands.auto_commands;
 
 import java.io.File;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.util.Logger;

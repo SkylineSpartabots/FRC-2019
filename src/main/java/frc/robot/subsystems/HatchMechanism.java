@@ -1,11 +1,12 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
-import frc.robot.commands.HatchMechanismControl;
+import frc.robot.commands.drive_controls.HatchMechanismControl;
 
 /**
  * Subsystem for the lotus mechanism. Controls hatch panels.
@@ -21,7 +22,7 @@ public class HatchMechanism extends Subsystem {
 		lotusSolenoid = new Solenoid(RobotMap.HATCH_SOLENOID);
 		sliderSolenoid = new Solenoid(RobotMap.HATCH_SLIDER_SOLENOID);
 
-		hatchLimitSwitch = new AnalogInput(RobotMap.HATCH_LIMIT_SWTICH);
+		hatchLimitSwitch = new AnalogInput(2);
 
 		// ensures neutral position of closed lotus in back position
 	}
@@ -82,7 +83,7 @@ public class HatchMechanism extends Subsystem {
 
 	@Override
 	public void initDefaultCommand() {
-		setDefaultCommand(new HatchMechanismControl());
+		//setDefaultCommand(new HatchMechanismControl());
 	}
 
 
@@ -90,5 +91,6 @@ public class HatchMechanism extends Subsystem {
 		SmartDashboard.putBoolean("Is the Lotus Open", isLotusOpen());
 		SmartDashboard.putBoolean("Is the Slider Extended", isSliderOut());
 		SmartDashboard.putBoolean("Is a Hatch Obtained", getHatchState());
+		SmartDashboard.putNumber("Limit Switch", hatchLimitSwitch.getValue());
 	}
 }

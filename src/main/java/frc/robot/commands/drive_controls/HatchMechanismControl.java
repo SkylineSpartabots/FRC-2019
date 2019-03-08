@@ -5,13 +5,12 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.drive_controls;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.HatchMechanism;
 import frc.robot.util.Debouncer;
-import frc.robot.util.RawInput;
 
 /**
  * This logic controls the hatch mechanism Gamepad Controls (Second Stick):
@@ -24,7 +23,7 @@ import frc.robot.util.RawInput;
 public class HatchMechanismControl extends Command {
 
   private boolean prevHatchState, currentHatchState;
-  private RawInput hatchRawInput;
+  private Debouncer.RawInput hatchRawInput;
   private Debouncer hatchDebouncer;
 
   public HatchMechanismControl() {
@@ -47,10 +46,10 @@ public class HatchMechanismControl extends Command {
     currentHatchState = hatchDebouncer.compute();
 
     // Controls hatch mechanism taking input from the bumpers and the limit switch
-    if (Robot.oi.secondStick.buttonRBumper.get()) {
+    if (Robot.oi.driveStick.buttonRBumper.get()) {
       Robot.hatchMechanism.releaseHatch();
     } else {
-      if (Robot.oi.secondStick.buttonLBumper.get()) {
+      if (Robot.oi.driveStick.buttonLBumper.get()) {
         Robot.hatchMechanism.graspHatch();
       } else if (currentHatchState && !prevHatchState) { // only take action when the state changes from true to false
         Robot.hatchMechanism.graspHatch();

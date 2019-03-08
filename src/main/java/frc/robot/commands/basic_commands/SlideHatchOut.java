@@ -5,21 +5,20 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.basic_commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class SlideHatchIn extends Command {
+public class SlideHatchOut extends Command {
 
-	public SlideHatchIn() {
-		requires(Robot.hatchMechanism);
+	public SlideHatchOut() {
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		Robot.hatchMechanism.slideIn();
+		Robot.hatchMechanism.slideOut();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -30,7 +29,7 @@ public class SlideHatchIn extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return !Robot.hatchMechanism.isSliderOut();
+		return Robot.hatchMechanism.isSliderOut();
 	}
 
 	// Called once after isFinished returns true
