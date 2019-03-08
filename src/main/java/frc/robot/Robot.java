@@ -173,7 +173,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		Logger.flushAllLogs();
+		//Logger.flushAllLogs();
 		Scheduler.getInstance().run();
 	}
 

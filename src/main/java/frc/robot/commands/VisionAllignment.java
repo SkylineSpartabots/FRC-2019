@@ -17,14 +17,24 @@ import jaci.pathfinder.followers.DistanceFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 
 public class VisionAllignment extends Command {
+	private final double distanceFromCameraToHatchMech = 2; //inches
+	/*
+	private final double P = 1.1;
+	private final double D = 0;
+	private final double k_a = 0.02;
 
+	private final double TurnP = 0.027;
+	private final double TurnI = 0.0;
+	private final double TurnD = 0.00;
+
+	*/
 	private final double P = 1.0;
 	private final double D = 0;
 	private final double k_a = 0.02;
 
-	private final double TurnP = 0.02;
+	private final double TurnP = 0.027;
 	private final double TurnI = 0.0;
-	private final double TurnD = 0.00;
+	private final double TurnD = 0.002;
 
 	private Timer timer;
 
@@ -82,27 +92,8 @@ public class VisionAllignment extends Command {
 	}
 	
 	public VisionAllignment() {
-    //this needs to be moved to init
-    Waypoint[] points = new Waypoint[]{
-			new Waypoint(0, 0, 0),
-			new Waypoint(Robot.rps.getZDisplacementToVisionTarget()*0.0254-0.6, Robot.rps.getXDisplacementToVisionTarget()*0.0254, 0)
-    };
-    
 		requires(Robot.driveTrain);
-		try {
-			System.out.println("Generating Trajectory");
-			Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-					Trajectory.Config.SAMPLES_LOW, 0.02, 0.1*RobotMap.MAX_VELOCITY, 2.0, 60.0);
-			
-			Trajectory trajectory = Pathfinder.generate(points, config);
-			System.out.println("Trajectory Length: " + trajectory.length());
-			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS +  "VisionAllignment");
-			Pathfinder.writeToCSV(f, trajectory);
-			Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
-			initPathExecuter(trajectory, "Vision");
-		} catch (Exception e) {
-			Robot.SystemLog.writeNewData("PathExecuter Line 39: Error Creating Trajectory Path"  +e.getMessage());
-		}
+
 	}
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
 		double l = left.calculate(LeftEncoderDistance);
@@ -135,6 +126,30 @@ public class VisionAllignment extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+		//this needs to be moved to init
+		double x_dist;
+		if(Robot.rps.getXDisplacementToVisionTarget()>0)	{
+			x_dist = Robot.rps.getXDisplacementToVisionTarget()*1.4;
+		}	else {
+			x_dist = Robot.rps.getXDisplacementToVisionTarget()*1.1;
+		}
+		 
+		Waypoint[] points 	= new Waypoint[]{
+				new Waypoint(0, 0, 0),
+				new Waypoint(Robot.rps.getZDisplacementToVisionTarget()*0.0254-0.45, x_dist*0.0254, 0)
+		}; 
+		try {
+			System.out.println("Generating Trajectory");
+			Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+					Trajectory.Config.SAMPLES_LOW, 0.02, 0.15*RobotMap.MAX_VELOCITY, 2.0, 60.0);
+			
+			Trajectory trajectory = Pathfinder.generate(points, config);
+			System.out.println("Trajectory Length: " + trajectory.length());
+			Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
+			initPathExecuter(trajectory, "Vision");
+		} catch (Exception e) {
+			Robot.SystemLog.writeNewData("PathExecuter Line 39: Error Creating Trajectory Path"  +e.getMessage());
+		}
 		turnPID.resetPID();
 		Robot.rps.reset();
 		Robot.driveTrain.resetEncoders();
@@ -154,7 +169,8 @@ public class VisionAllignment extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return left.isFinished() && right.isFinished();
+		return (left.isFinished() && right.isFinished());
+		//|| Robot.rps.getZDisplacementToVisionTarget()<30;
 	}
 
 	// Called once after isFinished returns true

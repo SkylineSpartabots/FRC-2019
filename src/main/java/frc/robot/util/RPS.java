@@ -29,7 +29,7 @@ public class RPS {
 		ahrs.reset();
 	}
 	public double getXDisplacementToVisionTarget()	{
-		return (double) XDisp.getNumber(-1);
+		return ((double) XDisp.getNumber(-1));
 	}
 	public double getYDisplacementToVisionTarget()	{
 		return (double) YDisp.getNumber(-1);

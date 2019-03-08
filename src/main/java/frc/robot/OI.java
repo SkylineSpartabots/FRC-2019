@@ -9,6 +9,7 @@ import frc.robot.commands.ReleaseHatch;
 import frc.robot.commands.SlideHatchIn;
 import frc.robot.commands.SlideHatchOut;
 import frc.robot.commands.TurnDegrees;
+import frc.robot.commands.TurnDegreesVision;
 import frc.robot.commands.VisionAllignment;
 import frc.robot.controllers.Logitech;
 import frc.robot.subsystems.Elevator;
@@ -48,6 +49,7 @@ public class OI {
 		//driveStick.buttonX.whenPressed(new PathExecuter(toHatchDispenser, "TestHatchPath"));
 		//driveStick.buttonA.whenPressed(new PathExecuter("simpleslide_left.csv","simpleslide_right.csv", "TestPath"));
 		driveStick.buttonA.whenPressed(new VisionAllignment());
+		driveStick.buttonB.whenPressed(new TurnDegreesVision(20));
 
 		secondStick.buttonX.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_SECOND));
 		secondStick.buttonA.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_FIRST));
