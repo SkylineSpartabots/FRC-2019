@@ -33,6 +33,7 @@ public class DriveTrain extends Subsystem {
 
 	private static final ShuffleboardTab TAB = Shuffleboard.getTab("SmartDashboard");
 	private static NetworkTableEntry kP, kI, kD;
+	private static NetworkTableEntry turnkP, turnkI, turnkD, desiredAngle;
 
 	public DriveTrain() {
 		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
@@ -68,14 +69,31 @@ public class DriveTrain extends Subsystem {
 		m_drive.setRightSideInverted(false);
 
 		//Shuffleboard inputs
+		
+
 		kP = TAB.add("ProportionPathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		kI = TAB.add("IntegralPathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		kD = TAB.add("DerivativePathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-
+		
+		turnkP = TAB.add("ProportionTurn", 0.02).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkI = TAB.add("IntegralTurn", 0.0025).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkD = TAB.add("DerivativeTurn", 0.003).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+	
+		desiredAngle = TAB.add("DesiredAngle", 90).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", -360, "Max", 360)).getEntry();
 	}
 
 	public double[] getPIDPathing() {
 		double[] pid = {kP.getDouble(0.001), kI.getDouble(0.0001), kD.getDouble(0.0001)};
+
+		return pid;
+	}
+
+	public double getDesiredAngle(){
+		return (double) desiredAngle.getNumber(0);
+	}
+
+	public double[] getTurnPID(){
+		double[] pid = {turnkP.getDouble(0.001), turnkI.getDouble(0.0001), turnkD.getDouble(0.0001)};
 
 		return pid;
 	}

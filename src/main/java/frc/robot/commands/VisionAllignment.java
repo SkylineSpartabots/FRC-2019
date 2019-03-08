@@ -17,7 +17,6 @@ import jaci.pathfinder.followers.DistanceFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 
 public class VisionAllignment extends Command {
-	private final double distanceFromCameraToHatchMech = 2; //inches
 	/*
 	private final double P = 1.1;
 	private final double D = 0;
@@ -169,8 +168,7 @@ public class VisionAllignment extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return (left.isFinished() && right.isFinished());
-		//|| Robot.rps.getZDisplacementToVisionTarget()<30;
+		return (left.isFinished() && right.isFinished()) || Robot.rps.getZDisplacementToVisionTarget() < 20;
 	}
 
 	// Called once after isFinished returns true

@@ -30,7 +30,6 @@ public class TurnDegrees extends Command {
 		requires(Robot.driveTrain);
 
 		timer = new Timer();
-		this.angle = angle + Robot.rps.getNavxAngle();
 		this.timeOutSecs = timeOutSecs;
 
 		turnSource = new PIDSource() {
@@ -40,13 +39,22 @@ public class TurnDegrees extends Command {
 			}
 		};
 
-		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, "TurnDegreesPID",true);
-		turnPID.setOutputLimits(-1, 1);
+		
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+
+		this.angle = Robot.driveTrain.getDesiredAngle() + Robot.rps.getNavxAngle();
+		double[] pidConstants = Robot.driveTrain.getTurnPID();
+
+		System.out.println("PROPORTIONAL:   " + pidConstants[0]);
+		System.out.println("INTEGRAL:    " + pidConstants[1]);
+		System.out.println("DEREVATIVE    " + pidConstants[2]);
+		turnPID = new SimplePID(turnSource, this.angle, pidConstants[0], pidConstants[1], pidConstants[2], "TurnDegreesPID",true);
+		turnPID.setOutputLimits(-1, 1);
+
 		timer.reset();
 		timer.start();
 		turnPID.resetPID();
@@ -69,8 +77,8 @@ public class TurnDegrees extends Command {
 			clockCounter = 0;
 		}
 
-		System.out.println("INSIDE EXECUTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(output);
+		//System.out.println("INSIDE EXECUTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		//System.out.println(output);
 
 		Robot.driveTrain.tankDrive(output, -output);
 	}

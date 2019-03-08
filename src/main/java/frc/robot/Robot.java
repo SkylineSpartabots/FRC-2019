@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.DriveStraightTest;
+import frc.robot.commands.TurnPIDTest;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchMechanism;
@@ -96,6 +97,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("XDisp", Robot.rps.getXDisplacementToVisionTarget());
 		SmartDashboard.putNumber("ZDisp", Robot.rps.getZDisplacementToVisionTarget());
 		SmartDashboard.putNumber("Angle", Robot.rps.getYawToVisionTarget());
+		SmartDashboard.putNumber("Navx", Robot.rps.getNavxAngle());
 	}
 
 	/**
@@ -129,7 +131,7 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		rps.reset();
 		//m_autonomousCommand = new TurnPIDTest();
-		m_autonomousCommand = new DriveStraightTest();
+		m_autonomousCommand = new TurnPIDTest();
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
 		 * switch(autoSelected) { case "My Auto": autonomousCommand = new

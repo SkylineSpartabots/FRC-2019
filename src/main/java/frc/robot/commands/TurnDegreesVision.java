@@ -19,9 +19,9 @@ public class TurnDegreesVision extends Command {
 	private PIDSource turnSource;
 	private SimplePID turnPID;
 
-	double kP = 0.02;
-	double kI = 0.0025;
-	double kD = 0.003;
+	double kP = 0.016;
+	double kI = 0.00056;
+	double kD = 0.0012;
 
 	private double turnThreshold;
 	private double timeOutSecs;
@@ -38,6 +38,9 @@ public class TurnDegreesVision extends Command {
 				return Robot.rps.getNavxAngle();
 			}
 		};
+
+
+		double[] pidConstants = Robot.driveTrain.getTurnPID();
 
 		turnPID = new SimplePID(turnSource, 0, kP, kI, kD, "TurnDegreesPID",true);
 		turnPID.setOutputLimits(-1, 1);
