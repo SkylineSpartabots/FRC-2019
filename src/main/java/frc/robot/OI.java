@@ -2,6 +2,8 @@ package frc.robot;
 
 import frc.robot.commands.drive_controls.*;
 import frc.robot.commands.auto_commands.AllignAndPathToTarget;
+import frc.robot.commands.auto_commands.OutakeWithVision;
+import frc.robot.commands.auto_commands.PickUpHatch;
 import frc.robot.commands.auto_commands.TurnDegreesVision;
 import frc.robot.commands.auto_commands.VisionAllignment;
 import frc.robot.commands.basic_commands.*;
@@ -46,12 +48,18 @@ public class OI {
 		secondStick.buttonStart.whenPressed(new SlideHatchOut());
 		secondStick.buttonBack.whenPressed(new SlideHatchIn());
 
-		driveStick.buttonRBumper.whenPressed(new ReleaseHatch());
-		driveStick.buttonLBumper.whenPressed(new GraspHatch());
+		driveStick.buttonLBumper.whenPressed(new ReleaseHatch());
+		driveStick.buttonRBumper.whenPressed(new GraspHatch());
 		
-		driveStick.buttonA.whenPressed(new AllignAndPathToTarget());
+		/*driveStick.buttonA.whenPressed(new AllignAndPathToTarget());
 		driveStick.buttonB.whenPressed(new VisionAllignment());
+		*/
 		driveStick.buttonX.whenPressed(new TurnDegreesVision(3));
+
+		//THis is good
+		//driveStick.buttonB.whenPressed(new PickUpHatch());
+		///driveStick.buttonA.whenPressed(new OutakeWithVision());
+		//driveStick.buttonX.whenPressed(new AllignAndPathToTarget());
 		
 
 		// TODO: need to add controls for extending and retracting intake

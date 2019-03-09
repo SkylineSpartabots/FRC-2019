@@ -27,15 +27,15 @@ public class VisionAllignment extends Command {
 	*/
 	public boolean prematureTermination = false;
 	public boolean log = true;
-	private final double proportionOfMaxVelocity = 0.15;
-
-	private final double P = 1.0;
+	private final double proportionOfMaxVelocity = 0.4;
+	private final double P = 1.1;
 	private final double D = 0;
 	private final double k_a = 0.02;
 
-	private final double TurnP = 0.027;
+	private final double TurnP = 0.03;
 	private final double TurnI = 0.0;
 	private final double TurnD = 0.002;
+
 
 
 	private DistanceFollower left, right;
@@ -85,29 +85,30 @@ public class VisionAllignment extends Command {
 			prematureTermination = true;
 			return;
 		}
-		
-		Waypoint[] points 	= new Waypoint[]{
-				new Waypoint(0, 0, 0),
-				new Waypoint(z_dist, x_dist, 0)
-		}; 
-		try {
-			System.out.println("Generating Trajectory");
-			Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-					Trajectory.Config.SAMPLES_LOW, 0.02, proportionOfMaxVelocity*RobotMap.MAX_VELOCITY, 2.0, 60.0);			
-			Trajectory trajectory = Pathfinder.generate(points, config);
-			System.out.println("Trajectory Length: " + trajectory.length());			
-			initPathExecuter(trajectory, "Vision", true);
-		} catch (Exception e) {
-			prematureTermination = true;
+		if(!prematureTermination)	{
+			Waypoint[] points 	= new Waypoint[]{
+					new Waypoint(0, 0, 0),
+					new Waypoint(z_dist, x_dist, 0)
+			}; 
+			try {
+				System.out.println("Generating Trajectory");
+				Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+						Trajectory.Config.SAMPLES_LOW, 0.02, proportionOfMaxVelocity*RobotMap.MAX_VELOCITY, 2.0, 60.0);			
+				Trajectory trajectory = Pathfinder.generate(points, config);
+				System.out.println("Trajectory Length: " + trajectory.length());			
+				initPathExecuter(trajectory, "Vision", true);
+				turnPID.resetPID();
+				Robot.rps.reset();
+				Robot.driveTrain.resetEncoders();
+				left.reset();
+				right.reset();
+				Robot.SystemLog.writeWithTimeStamp("Path Executer Initialized: Angle=" + Robot.rps.getNavxAngle());
+				PathingLog.writeNewData("Time, Desired Heading, Desired Left Position, Desired Right Position, Heading, Left Position, Right Posiion, LeftPower, RightPower");
+				
+			} catch (Exception e) {
+				prematureTermination = true;
+			}
 		}
-
-		turnPID.resetPID();
-		Robot.rps.reset();
-		Robot.driveTrain.resetEncoders();
-		left.reset();
-		right.reset();
-		Robot.SystemLog.writeWithTimeStamp("Path Executer Initialized: Angle=" + Robot.rps.getNavxAngle());
-		PathingLog.writeNewData("Time, Desired Heading, Desired Left Position, Desired Right Position, Heading, Left Position, Right Posiion, LeftPower, RightPower");
 	}
 
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
@@ -151,10 +152,11 @@ public class VisionAllignment extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
+		
 		Robot.rps.reset();
-		left.reset();
-		right.reset();
-		turnPID.resetPID();
+		if(!prematureTermination)	{
+			turnPID.resetPID();
+		}
 		Robot.driveTrain.rawMotorOutput(0,0);
 		Robot.driveTrain.setBrake();
 	}

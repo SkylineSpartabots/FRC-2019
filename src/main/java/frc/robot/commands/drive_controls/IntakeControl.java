@@ -10,6 +10,7 @@ public class IntakeControl extends Command {
 
 	boolean hasVibrated = true;
 	VibrateControllers vibrateControllers;
+	boolean manualOverride;
 	
 	public IntakeControl() {
 		requires(Robot.intake);
@@ -19,6 +20,7 @@ public class IntakeControl extends Command {
 	@Override
 	protected void initialize() {
 		Robot.intake.setIntakePower(0);
+		manualOverride = false;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -38,23 +40,46 @@ public class IntakeControl extends Command {
 			hasVibrated = false;
 		}
 		
+		manualOverride = true;
 		
-		if (Robot.oi.secondStick.isPOVDownish()) {
-			Robot.intake.extendIntake();
-		} else if (Robot.oi.secondStick.isPOVUpish() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT) {
-			Robot.intake.retractIntake();
-		}
 		
-		boolean rTriggerOn = Robot.oi.secondStick.getRTrigger() > 0.2;
-		boolean lTriggerOn = Robot.oi.secondStick.getLTrigger() > 0.2;
-		// Sets power to the intake motors. Uses whichever trigger is more pressed
-		if (rTriggerOn) {
-			Robot.intake.setIntakePower(-1);
-		} else if (lTriggerOn) {
-			Robot.intake.setIntakePower(0.75);
+		if(!manualOverride){
+			if (Robot.oi.secondStick.isPOVDownish()) {
+				Robot.intake.extendIntake();
+			} else if (Robot.oi.secondStick.isPOVUpish()) {
+				Robot.intake.retractIntake();
+			}
+			
+			boolean rTriggerOn = Robot.oi.secondStick.getRTrigger() > 0.2;
+			boolean lTriggerOn = Robot.oi.secondStick.getLTrigger() > 0.2;
+			// Sets power to the intake motors. Uses whichever trigger is more pressed
+			if (rTriggerOn) {
+				Robot.intake.setIntakePower(-1);
+			} else if (lTriggerOn) {
+				Robot.intake.setRawIntakePower(0.75);
+			} else {
+				Robot.intake.setRawIntakePower(0);
+			}
 		} else {
-			Robot.intake.setIntakePower(0);
+			if(Robot.oi.secondStick.isPOVDownish()){
+				Robot.intake.extendIntake();
+			} else if(Robot.oi.secondStick.isPOVUpish()){
+				Robot.intake.retractIntake();
+			}
+
+			boolean rTriggerOn = Robot.oi.secondStick.getRTrigger() > 0.2;
+			boolean lTriggerOn = Robot.oi.secondStick.getLTrigger() > 0.2;
+			// Sets power to the intake motors. Uses whichever trigger is more pressed
+			if (rTriggerOn) {
+				Robot.intake.setRawIntakePower(-1);
+			} else if (lTriggerOn) {
+				Robot.intake.setRawIntakePower(0.75);
+			} else {
+				Robot.intake.setRawIntakePower(0);
+			}
+			
 		}
+		
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

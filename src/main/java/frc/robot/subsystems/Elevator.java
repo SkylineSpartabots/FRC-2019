@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.commands.drive_controls.*;
+import frc.robot.commands.drive_controls.ElevatorControl;
 
 /**
  * Subsystem for the elevator.
@@ -29,14 +29,14 @@ public class Elevator extends Subsystem {
 	private DigitalInput elevatorLimitSwitch;
 	
 
-	public final static int MAX_ENCODER_LIMIT = 1132; // TODO: Add limit
+	public final static int MAX_ENCODER_LIMIT = 1132;
 	public final static int MIN_ENCODER_LIMIT = 5;
 	public final static int amps = 15;
 	public final static int timeoutMs = 5000;
 
-	public final static double MAX_STALL_POWER = 0.07;
 
-	private NetworkTableEntry kP, kI, kD, stallPower;
+	private NetworkTableEntry kP, kI, kD, stallPowerMin, stallPowerMax;
+	private double slope, stallPowerMinVal, stallPowerMaxVal;
 	private static final ShuffleboardTab TAB = Shuffleboard.getTab("ElevatorConstants");
 
 
@@ -60,15 +60,16 @@ public class Elevator extends Subsystem {
 		kP = TAB.add("Elevator kP", 0.028).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		kI = TAB.add("Elevator kI", 0.002).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		kD = TAB.add("Elevator kD", 0.001).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		stallPower = TAB.add("Elevator Stall Power", 0.07).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		stallPowerMin = TAB.add("Min Stall Power", 0.07).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 1)).getEntry();
+		stallPowerMax = TAB.add("Max Stall Power", 0.09).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 1)).getEntry();
 	}
 
 	/**
 	 * 
-	 * @return kp, ki, kd, stallPower
+	 * @return kp, ki, kd
 	 */
 	public double[] getElevatorConstants(){
-		double[] constants = {kP.getDouble(0.001), kI.getDouble(0.0001), kD.getDouble(0.0001), stallPower.getDouble(0.001)};
+		double[] constants = {kP.getDouble(0.001), kI.getDouble(0.0001), kD.getDouble(0.0001)};
 		return constants;
 	}
 	
@@ -76,7 +77,27 @@ public class Elevator extends Subsystem {
 		return elevatorEncoder.get();
 	}
 
+	
+	/**
+	 * 
+	 * @return generates stall power using through a linear relationship
+	 */
+	public double getStallPower(){
+		stallPowerMinVal = stallPowerMin.getDouble(0.001);
+		stallPowerMaxVal = stallPowerMax.getDouble(0.001);
+		slope = (stallPowerMaxVal - stallPowerMinVal)/MAX_ENCODER_LIMIT;
+		return stallPowerMinVal + (slope * getElevatorEncoderOutput());
+	}
 
+
+	
+	public void setStallPower()	{
+		setRawPower(getStallPower());
+	}
+	private void setRawPower(double power) {
+		rightElevatorMotor.set(power);
+		leftElevatorMotor.set(power);
+	}
 
 	/**
 	 * Sets the power to the motor. Takes in consideration of the current elevator
@@ -84,20 +105,12 @@ public class Elevator extends Subsystem {
 	 * 
 	 * @param power power <= 0
 	 */
-	public void setStallPower(double stallPower)	{
-		setRawPower(stallPower);
-	}
-	private void setRawPower(double power) {
-		rightElevatorMotor.set(power);
-		leftElevatorMotor.set(power);
-	}
-
 	public void setPower(double power) {
 		System.out.println(power);
 		boolean maxReached = getElevatorEncoderOutput() >= MAX_ENCODER_LIMIT && power > 0;
 		boolean minReached = getElevatorEncoderOutput() <= MIN_ENCODER_LIMIT && power < 0;
 		if (maxReached) {
-			setStallPower(getElevatorConstants()[3]);
+			setStallPower();
 		} else if(minReached)	{
 			setRawPower(0);
 		} 	else {
@@ -116,7 +129,7 @@ public class Elevator extends Subsystem {
 
 	@Override
 	public void initDefaultCommand() {
-		//setDefaultCommand(new ElevatorControl());
+		setDefaultCommand(new ElevatorControl());
 	}
 
 	public void setElevatorDataOnDisplay() {
@@ -128,6 +141,8 @@ public class Elevator extends Subsystem {
 
 		SmartDashboard.putNumber("Left Elevator Motor Output Voltage", leftElevatorMotor.getMotorOutputVoltage());
 		SmartDashboard.putNumber("Right Elevator Motor Output Voltage", rightElevatorMotor.getMotorOutputVoltage());
+
+		SmartDashboard.putNumber("Stall Power", getStallPower());
 	}
 
 	/**
@@ -136,7 +151,7 @@ public class Elevator extends Subsystem {
 	 * TODO: NEED TO ADD ACTUAL VALUES
 	 */
 	public enum ElevatorPosition {
-		DOWN(0,0), CARGO_SHIP(557, 557), ROCKET_FIRST(360, 360), ROCKET_SECOND(790, 480), ROCKET_THIRD(1125, 900);
+		DOWN(-5,-5), CARGO_SHIP(557, 557), ROCKET_FIRST(360, 360), ROCKET_SECOND(790, 480), ROCKET_THIRD(1125, 900);
 
 		public final int cargoPosition;
 		public final int hatchPosition;

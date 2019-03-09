@@ -86,7 +86,7 @@ public class ElevatorToPosition extends Command {
       if(isBottom){
         Robot.elevator.setPower(0);
       } else{
-        Robot.elevator.setStallPower(elevatorConstants[3]);
+        Robot.elevator.setStallPower();
       }
     } else {
       output = elevatorPID.compute();

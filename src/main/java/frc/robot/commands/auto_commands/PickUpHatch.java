@@ -8,15 +8,16 @@
 package frc.robot.commands.auto_commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.Robot;
+import frc.robot.commands.basic_commands.GraspHatch;
 import frc.robot.commands.basic_commands.ReleaseHatch;
 
-public class AllignAndPathToTarget extends CommandGroup {
+public class PickUpHatch extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public AllignAndPathToTarget() {
-    addSequential(new TurnDegreesVision(2));
-    addSequential(new VisionAllignment());
+  public PickUpHatch() {
+    addSequential(new ReleaseHatch());
+    addSequential(new AllignAndPathToTarget());
+    addSequential(new GraspHatch());
   }
 }

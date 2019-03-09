@@ -7,7 +7,7 @@ import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 
 public class TurnDegreesVision extends Command {
-	private double angleFudgeFactor = 0.8; //TODO
+	private double angleFudgeFactor = -0.8; //TODO
 	private int clockCounter = 0;
 	private double angle;
 	private final double CLOCK_MAX = 10;
@@ -23,7 +23,7 @@ public class TurnDegreesVision extends Command {
 	double kI = 0.00056;
 	double kD = 0.0012;
 
-	private double turnThreshold;
+	private double turnThreshold = 7;
 	private double timeOutSecs;
 
 	public TurnDegreesVision(double timeOutSecs) {
@@ -49,11 +49,12 @@ public class TurnDegreesVision extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+		turnPID.resetPID();
 		this.angle = Robot.rps.getYawToVisionTargetRawDegrees()*angleFudgeFactor + Robot.rps.getNavxAngle();
 		turnPID.setSetpoint(this.angle);
 		timer.reset();
 		timer.start();
-		turnPID.resetPID();
+		
 		clockCounter = 0;
 		timeOutSecs += timer.get();
 	}
@@ -72,10 +73,7 @@ public class TurnDegreesVision extends Command {
 		} else {
 			clockCounter = 0;
 		}
-
-		//System.out.println("INSIDE EXECUTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		//System.out.println(output + " Error: " + error);
-
+		System.out.println("Turn Power" + output);
 		Robot.driveTrain.tankDrive(output, -output);
 	}
 

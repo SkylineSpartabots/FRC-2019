@@ -23,12 +23,12 @@ import jaci.pathfinder.modifiers.TankModifier;
 public class PathExecuter extends Command {
 	public boolean prematureTermination = false;
 
-	private final double proportionOfMaxVelocity = 0.15;
-	private final double P = 1.0;
+	private final double proportionOfMaxVelocity = 0.4;
+	private final double P = 1.1;
 	private final double D = 0;
 	private final double k_a = 0.02;
 
-	private final double TurnP = 0.027;
+	private final double TurnP = 0.03;
 	private final double TurnI = 0.0;
 	private final double TurnD = 0.002;
 

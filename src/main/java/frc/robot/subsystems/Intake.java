@@ -96,6 +96,11 @@ public class Intake extends Subsystem {
 
 	}
 
+	public void setRawIntakePower(double power){
+		masterIntakeMotor.set(power);
+		innerIntakeMotor.set(power);
+	}
+
 	/**
 	 * @return if cargo is in the intake it returns true, if false there is a hatch.
 	 */

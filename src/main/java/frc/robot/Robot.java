@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.auto_commands.TurnDegreesVision;
+import frc.robot.commands.auto_commands.VisionAllignment;
 import frc.robot.commands.autonomous.PlaceHatch;
 import frc.robot.subsystems.*;
 import frc.robot.util.Logger;
@@ -63,6 +65,8 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putData("Auto mode", m_chooser);
 		m_chooser.addOption("OneHatchAuto", new PlaceHatch());
+		m_chooser.addOption("visiona", new VisionAllignment());
+		m_chooser.addOption("turnv", new TurnDegreesVision(15));
 		m_chooser.setDefaultOption("OneHatchAuto", new PlaceHatch());
 
 		System.out.println("Starting Jetson");	
@@ -134,8 +138,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		rps.reset();
-		driveTrain.resetEncoders();		
-		m_autonomousCommand = m_chooser.getSelected();
+		driveTrain.resetEncoders();	
+		Robot.hatchMechanism.slideOut();	
+		//m_autonomousCommand = m_chooser.getSelected();
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.start();
 		}
@@ -160,7 +165,6 @@ public class Robot extends TimedRobot {
 		}
 
 		hatchMechanism.graspHatch();
-		hatchMechanism.slideIn();
 		intake.retractIntake();
 		elevator.elevatorEncoder.reset();
 		rps.reset();

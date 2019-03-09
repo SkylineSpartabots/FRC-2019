@@ -72,10 +72,6 @@ public class DriveTrain extends Subsystem {
 		turnkP = TAB.add("Turn kP", 0.016).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		turnkI = TAB.add("Turn kI", 0.0012).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		turnkD = TAB.add("Turn kD", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-
-		pathkA = TAB.add("Pathing kA", 0.02).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		pathkP = TAB.add("Pathing P", 1.0).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		pathkD = TAB.add("Pathing D", 0).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 	}
 
 	/**
@@ -87,14 +83,6 @@ public class DriveTrain extends Subsystem {
 		return constants;
 	}
 
-	/**
-	 * 
-	 * @return returns double array of pathing pid constants in form of kp, kd, ka
-	 */
-	public double[] getPathingConstants(){
-		double[] constants = {pathkP.getDouble(0.00001), pathkD.getDouble(0.00001), pathkA.getDouble(0.00001)};
-		return constants;
-	}
 
 	/**
 	 * Resets both the left and right encoders
@@ -121,6 +109,7 @@ public class DriveTrain extends Subsystem {
 	 */
 	public double getRightEncoderDistanceInches() {
 		double inches = encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
+		//System.out.println("RightENcoder " + inches);
 		return inches;
 	}
 	public double getRightEncoderDistanceMeters() {

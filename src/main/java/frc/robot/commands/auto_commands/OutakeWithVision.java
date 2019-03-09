@@ -11,12 +11,16 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot;
 import frc.robot.commands.basic_commands.ReleaseHatch;
 
-public class AllignAndPathToTarget extends CommandGroup {
+public class OutakeWithVision extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public AllignAndPathToTarget() {
-    addSequential(new TurnDegreesVision(2));
-    addSequential(new VisionAllignment());
+  public OutakeWithVision() {
+    addSequential(new AllignAndPathToTarget());
+    if(!Robot.intake.isCargo()){
+      addSequential(new ReleaseHatch());
+    } else {
+      addSequential(new OutakeForDuration(0.75));
+    }
   }
 }

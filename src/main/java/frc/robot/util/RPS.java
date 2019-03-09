@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.SPI;
  */
 public class RPS {
 	private double z_axis_offset = 0.45;
-	private double positive_x_fudgefactor = 1.4;
-	private double negative_x_fudgefactor = 1.1;
+	private double positive_x_fudgefactor = 1;
+	private double negative_x_fudgefactor = 1;
 
 
 	private AHRS ahrs;
