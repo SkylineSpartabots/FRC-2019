@@ -10,7 +10,7 @@ public class RobotMap {
 
 	// Robot physical metrics
 	public static final double TRACK_WIDTH = 0.68; // in meters
-	public static final double MAX_VELOCITY = 3.7; // in m/s
+	public static final double MAX_VELOCITY = 3.3; // in m/s
 	public static final double ENCODER_DISTANCE_PER_PULSE = Math.PI * 4 / 1000; // Distance in inches robot travels in one pulse
 
 	// Path trajectories for sandstorm modes

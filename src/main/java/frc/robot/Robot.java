@@ -6,7 +6,6 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -35,7 +34,6 @@ public class Robot extends TimedRobot {
 	public static HatchMechanism hatchMechanism;
 
 	public static OI oi;
-	public static Joystick unojoy;
 	
 
 	Command m_autonomousCommand;
@@ -55,18 +53,17 @@ public class Robot extends TimedRobot {
 		intake = new Intake();
 		elevator = new Elevator();
 		hatchMechanism = new HatchMechanism();
-		unojoy = new Joystick(2);
 		oi = new OI();
 	
-
 		// try-with-resource makes sure that there is no resource leak
 		try (Compressor compressor = new Compressor(RobotMap.COMPRESSOR)) {
 			compressor.start();
 		}
 
 		SmartDashboard.putData("Auto mode", m_chooser);
-		//chooser.addOption("My Auto", new MyAutoCommand());
+		//m_chooser.addOption("My Auto", new MyAutoCommand());
 		
+		System.out.println("Starting Jetson");	
 		SystemLog.writeWithTimeStamp("Starting Jetson");
 		String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
 		ProcessBuilder jetsonProcessStart = new ProcessBuilder();
@@ -75,6 +72,7 @@ public class Robot extends TimedRobot {
 		try{
 			jetsonProcessStart.start();
 		}	catch (IOException e){
+			System.out.println("Errpr" + e.getMessage());
 			SystemLog.writeWithTimeStamp("IOException at Jetson Start: " + e.getMessage());
 		}
 		SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
@@ -98,9 +96,10 @@ public class Robot extends TimedRobot {
 		hatchMechanism.setHatchMechanismDataOnDisplay();
 		intake.setIntakeDataOnDisplay();
 		
-		
-		
-		//System.out.println(Robot.driveTrain.getLeftEncoderDistanceMeters());
+		SmartDashboard.putNumber("XDisp", Robot.rps.getXDisplacementToVisionTargetRawInches());
+		SmartDashboard.putNumber("ZDisp", Robot.rps.getZDisplacementToVisionTargetRawInches());
+		SmartDashboard.putNumber("Angle", Robot.rps.getYawToVisionTargetRawDegrees());
+		SmartDashboard.putNumber("Navx", Robot.rps.getNavxAngle());		
 	}
 
 	/**
@@ -173,19 +172,14 @@ public class Robot extends TimedRobot {
 		intake.retractIntake();
 		elevator.elevatorEncoder.reset();
 		rps.reset();
-		/*for(int i = 1; i < 33; i++){
-			unojoy.setOutput(i, true);
-		}*/
-		
 	}
 
 	/**
 	 * This function is called periodically during operator control.
 	 */
 	@Override
-	public void teleopPeriodic() {
-		
-		Logger.flushAllLogs();
+	public void teleopPeriodic() {	
+		//Logger.flushAllLogs();
 		Scheduler.getInstance().run();
 		//oi.driveStick.vibrate();
 	}

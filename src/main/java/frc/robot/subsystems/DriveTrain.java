@@ -34,6 +34,7 @@ public class DriveTrain extends Subsystem {
 
 	private static final ShuffleboardTab TAB = Shuffleboard.getTab("SmartDashboard");
 	private static NetworkTableEntry kP, kI, kD;
+	private static NetworkTableEntry turnkP, turnkI, turnkD;
 
 	public DriveTrain() {
 		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
@@ -72,11 +73,18 @@ public class DriveTrain extends Subsystem {
 		kP = TAB.add("ProportionPathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		kI = TAB.add("IntegralPathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		kD = TAB.add("DerivativePathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-
+		turnkP = TAB.add("ProportionTurn", 0.02).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkI = TAB.add("IntegralTurn", 0.0025).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkD = TAB.add("DerivativeTurn", 0.003).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+	
 	}
 
 	public double[] getPIDPathing() {
 		double[] pid = {kP.getDouble(0.001), kI.getDouble(0.0001), kD.getDouble(0.0001)};
+		return pid;
+	}
+	public double[] getTurnPID(){
+		double[] pid = {turnkP.getDouble(0.001), turnkI.getDouble(0.0001), turnkD.getDouble(0.0001)};
 
 		return pid;
 	}
@@ -103,12 +111,10 @@ public class DriveTrain extends Subsystem {
 	 */
 	public double getLeftEncoderDistanceInches() {
 		double inches = encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
-		SmartDashboard.putNumber("Left Encoder In Inches", inches);
 		return inches;
 	}
 	public double getLeftEncoderDistanceMeters() {
 		double meters = encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE*0.0254;
-		SmartDashboard.putNumber("Left Encoder In Meters", meters);
 		return meters;
 	}
 	/**
@@ -117,12 +123,10 @@ public class DriveTrain extends Subsystem {
 	 */
 	public double getRightEncoderDistanceInches() {
 		double inches = encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
-		SmartDashboard.putNumber("Right Encoder In Inches", inches);
 		return inches;
 	}
 	public double getRightEncoderDistanceMeters() {
 		double meters = encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE*0.0254;
-		SmartDashboard.putNumber("Right Encoder In Meters", meters);
 		return meters;
 	}
 	public void setBrake() {
@@ -135,8 +139,6 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void tankDrive(double leftSpeed, double rightSpeed) {
-		getLeftEncoderDistanceInches();
-		getRightEncoderDistanceInches();
 		m_drive.tankDrive(leftSpeed, rightSpeed);
 	}
 
@@ -148,8 +150,6 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void arcadeDrive(double forward, double turn) {
-		getLeftEncoderDistanceInches();
-		getRightEncoderDistanceInches();
 		m_drive.arcadeDrive(forward, turn);
 	}
 

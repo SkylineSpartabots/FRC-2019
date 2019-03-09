@@ -1,16 +1,18 @@
 package frc.robot.util;
-
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.Robot;
 
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * @author NeilHazra
  */
 public class RPS {
+	private double z_axis_offset = 0.45;
+	private double positive_x_fudgefactor = 1.4;
+	private double negative_x_fudgefactor = 1.1;
+
 
 	private AHRS ahrs;
 	private NetworkTableEntry XDisp;
@@ -28,19 +30,46 @@ public class RPS {
 	public void reset() {
 		ahrs.reset();
 	}
-	public double getXDisplacementToVisionTarget()	{
-		return (double) XDisp.getNumber(-1);
+
+	//todo check for old data
+	public double getXDisplacementToVisionTargetRawInches()	{
+		return ((double) XDisp.getNumber(-3000));
 	}
-	public double getYDisplacementToVisionTarget()	{
-		return (double) YDisp.getNumber(-1);
+	public double getYDisplacementToVisionTargetRawInches()	{
+		return (double) YDisp.getNumber(-3000);
 	}
-	public double getZDisplacementToVisionTarget()	{
-		return (double) ZDisp.getNumber(-1);
+	public double getZDisplacementToVisionTargetRawInches()	{
+		return (double) ZDisp.getNumber(-3000);
 	}
+
+	public double getXDisplacementToVisionTargetRawMeters()	{
+		return getXDisplacementToVisionTargetRawInches()*0.0254;
+	}
+	public double getYDisplacementToVisionTargetRawMeters()	{
+		return getYDisplacementToVisionTargetRawInches()*0.0254;
+	}
+	public double getZDisplacementToVisionTargetRawMeters()	{
+		return getZDisplacementToVisionTargetRawInches()*0.0254;
+	}
+
+	public double getZDisplacementEditedForCameraPositionMeters()	{
+		return getZDisplacementToVisionTargetRawMeters() - z_axis_offset; 
+	} 
+	public double getXDisplacementEditedForCameraPositionMeters()	{
+		double x_dist;		
+		if(Robot.rps.getXDisplacementToVisionTargetRawMeters() > 0)	{
+			x_dist = getXDisplacementToVisionTargetRawMeters()*positive_x_fudgefactor;
+		}	else {
+			x_dist = getXDisplacementToVisionTargetRawMeters()*negative_x_fudgefactor;
+		}
+		return x_dist;
+	} 
+
 	//will return degrees
-	public double getYawToVisionTarget()	{
-		return (double) Yaw.getNumber(-1);
+	public double getYawToVisionTargetRawDegrees()	{
+		return (double) Yaw.getNumber(0);
 	}
+
 
 	// Will return degrees
 	public double getNavxAngle() {

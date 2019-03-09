@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.Timer;
  * sampleTime, double kp, double ki, double kd)
  * 
  * @author NeilHazra
- * @author Mustafa
- * @author Vibhav Peri
  */
 public class SimplePID {
 
