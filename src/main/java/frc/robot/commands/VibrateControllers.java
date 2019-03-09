@@ -73,7 +73,7 @@ public class VibrateControllers extends Command {
 
   private void vibrate(){
     for(int i = 0; i < controllers.length; i++){
-      controllers[i].vibrate();
+      controllers[i].vibrate(1);
     }
   }
 
