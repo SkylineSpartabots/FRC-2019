@@ -145,7 +145,7 @@ public class VisionAllignment extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return prematureTermination || (left.isFinished() && right.isFinished());
+		return prematureTermination || (left.isFinished() && right.isFinished()) || Math.abs(Robot.oi.driveStick.getLY()) > 0.1;
 	}
 
 	// Called once after isFinished returns true

@@ -55,7 +55,7 @@ public class EncoderDrive extends Command {
         return true;
       } 
     }    
-    return false;
+    return Math.abs(Robot.oi.driveStick.getLY()) > 0.1;
   }
 
   // Called once after isFinished returns true

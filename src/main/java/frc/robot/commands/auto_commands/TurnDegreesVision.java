@@ -7,7 +7,7 @@ import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 
 public class TurnDegreesVision extends Command {
-
+	private double angleFudgeFactor = 0.8; //TODO
 	private int clockCounter = 0;
 	private double angle;
 	private final double CLOCK_MAX = 10;
@@ -49,7 +49,7 @@ public class TurnDegreesVision extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		this.angle = Robot.rps.getYawToVisionTargetRawDegrees()*0.8 + Robot.rps.getNavxAngle();
+		this.angle = Robot.rps.getYawToVisionTargetRawDegrees()*angleFudgeFactor + Robot.rps.getNavxAngle();
 		turnPID.setSetpoint(this.angle);
 		timer.reset();
 		timer.start();

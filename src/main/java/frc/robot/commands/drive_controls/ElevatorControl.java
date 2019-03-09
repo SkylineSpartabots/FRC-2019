@@ -21,7 +21,6 @@ public class ElevatorControl extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-
 		joyVal = -Robot.oi.secondStick.getRY();
 		Robot.elevator.setPower(joyVal); 
 	}

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.autonomous.PlaceHatch;
 import frc.robot.subsystems.*;
 import frc.robot.util.Logger;
 import frc.robot.util.RPS;
@@ -61,8 +62,9 @@ public class Robot extends TimedRobot {
 		}
 
 		SmartDashboard.putData("Auto mode", m_chooser);
-		//m_chooser.addOption("My Auto", new MyAutoCommand());
-		
+		m_chooser.addOption("OneHatchAuto", new PlaceHatch());
+		m_chooser.setDefaultOption("OneHatchAuto", new PlaceHatch());
+
 		System.out.println("Starting Jetson");	
 		SystemLog.writeWithTimeStamp("Starting Jetson");
 		String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
@@ -132,17 +134,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		rps.reset();
-		driveTrain.resetEncoders();
-		//m_autonomousCommand = new TurnPIDTest();
-		//m_autonomousCommand = new TurnPIDTest();
-		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
-		 * switch(autoSelected) { case "My Auto": autonomousCommand = new
-		 * MyAutoCommand(); break; case "Default Auto": default: autonomousCommand = new
-		 * ExampleCommand(); break; }
-		 */
-
-		// schedule the autonomous command (example)
+		driveTrain.resetEncoders();		
+		m_autonomousCommand = m_chooser.getSelected();
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.start();
 		}
@@ -158,7 +151,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
@@ -181,7 +173,6 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {	
 		//Logger.flushAllLogs();
 		Scheduler.getInstance().run();
-		//oi.driveStick.vibrate();
 	}
 
 	/**
