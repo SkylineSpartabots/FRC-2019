@@ -16,6 +16,10 @@ import jaci.pathfinder.Trajectory.Segment;
 import jaci.pathfinder.followers.DistanceFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 
+/**
+ * @author Neil (the great) Hazra
+ */
+
 public class PathExecuter extends Command {
 	public boolean prematureTermination = false;
 

@@ -19,10 +19,6 @@ public class TurnDegrees extends Command {
 	private PIDSource turnSource;
 	private SimplePID turnPID;
 
-	double kP = 0.010;
-	double kI = 0.0;
-	double kD = 0.0;
-
 	private double turnThreshold;
 	private double timeOutSecs;
 
@@ -34,14 +30,17 @@ public class TurnDegrees extends Command {
 		this.timeOutSecs = timeOutSecs;
 
 		turnSource = () -> Robot.rps.getNavxAngle();
-
-		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, "TurnDegreesPID",true);
-		turnPID.setOutputLimits(-0.6, 0.6);
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+
+		double[] pidConstants = Robot.driveTrain.getTurnPID();
+		
+		turnPID = new SimplePID(turnSource, this.angle, pidConstants[0], pidConstants[1], pidConstants[2], "TurnDegreesPID", false);
+		turnPID.setOutputLimits(-1, 1);
+
 		timer.reset();
 		timer.start();
 		turnPID.resetPID();

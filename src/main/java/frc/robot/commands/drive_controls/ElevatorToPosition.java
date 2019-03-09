@@ -1,6 +1,5 @@
 package frc.robot.commands.drive_controls;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.commands.VibrateControllers;
@@ -21,13 +20,6 @@ public class ElevatorToPosition extends Command {
   private int clockCounter = 0;
   private boolean isFinished = false;
 
-  private int countsPerSecond = 300;
-  private Timer timer;
-
-  private double kP = 0.028; // TODO: add values
-  private double kI = 0.002;
-  private double kD = 0.001;
-
   
   private double setpoint;
   private boolean isBottom;
@@ -35,6 +27,7 @@ public class ElevatorToPosition extends Command {
 
   private VibrateControllers vibrateControllers;
   private boolean hasVibrated;
+  private double[] elevatorConstants;
 
   /**
    * Specify an elevator position using the "Elevator Position" enum and the robot
@@ -47,11 +40,18 @@ public class ElevatorToPosition extends Command {
 
     elevatorSource = () -> Robot.elevator.getElevatorEncoderOutput();
     this.elevatorPosition = elevatorPosition;
-    // returns value whether it is in the cargo or hatch position
-    elevatorTarget = elevatorPosition.getPosition();
 
-    timer = new Timer();
-    elevatorPID = new SimplePID(elevatorSource, elevatorTarget, kP, kI, kD, "ElevatorPositionPID", false);
+  }
+
+  // Called just before this Command runs the first time
+  @Override
+  protected void initialize() {
+
+    elevatorConstants = Robot.elevator.getElevatorConstants();
+
+    elevatorTarget = this.elevatorPosition.getPosition();
+
+    elevatorPID = new SimplePID(elevatorSource, elevatorTarget, elevatorConstants[0], elevatorConstants[1], elevatorConstants[2], "ElevatorPositionPID", false);
     
     isBottom = elevatorTarget == Elevator.ElevatorPosition.DOWN.getPosition();
 
@@ -61,11 +61,6 @@ public class ElevatorToPosition extends Command {
       elevatorPID.setOutputLimits(0, 0.60);
     }
 
-  }
-
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {
     Robot.elevator.setPower(0);
     elevatorPID.setSetpoint(elevatorPosition.getPosition());
     isFinished = false;
@@ -75,26 +70,23 @@ public class ElevatorToPosition extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-
-    System.out.println("RUNNING!");
   
     if(isFinished){
       if(!hasVibrated){
         try {
-          vibrateControllers = new VibrateControllers(0.75, Robot.oi.driveStick, Robot.oi.secondStick);
+          vibrateControllers = new VibrateControllers(0.4, Robot.oi.secondStick);
           vibrateControllers.start();
         } finally {
           vibrateControllers.close();
         }
         hasVibrated = true;
       }
-      System.out.println("Finished - stalling");
       
       
       if(isBottom){
         Robot.elevator.setPower(0);
       } else{
-        Robot.elevator.setStallPower();
+        Robot.elevator.setStallPower(elevatorConstants[3]);
       }
     } else {
       output = elevatorPID.compute();

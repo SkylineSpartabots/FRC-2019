@@ -3,7 +3,6 @@ package frc.robot.commands.auto_commands;
 import frc.robot.Robot;
 import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -11,12 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PerfectlyStraightDrive extends Command {
 
-  
-
-  private final static double COUNTS_PER_REV = 1000;
-  private final static double WHEEL_DIAMETER = 4;
-  private final static double DRIVE_WHEEL_REDUCTION = 1;
-  private final static double COUNTS_PER_INCH = (COUNTS_PER_REV/DRIVE_WHEEL_REDUCTION)/(WHEEL_DIAMETER*Math.PI);
 
   private double distanceInches;
   private boolean direction;
@@ -26,11 +19,9 @@ public class PerfectlyStraightDrive extends Command {
   private double rightTarget, leftTarget;
 
 	private double angle;
-	private boolean isFinished = false;
-	private double error;
-	
+
   private double output = 0;
-  private Timer timer;
+ 
 	PIDSource NavxSource;
 	SimplePID turnPID;
 
@@ -38,14 +29,11 @@ public class PerfectlyStraightDrive extends Command {
 	public double kI = 0.00001;
 	public double kD = 0.00135;
 
-
-
   public PerfectlyStraightDrive(double distanceInches, double leftPower, double rightPower){
     
     this.distanceInches = distanceInches;
     this.leftPower = leftPower;
     this.rightPower = rightPower;
-    timer = new Timer();
     requires(Robot.driveTrain);
     angle = Robot.rps.getNavxAngle();
     
