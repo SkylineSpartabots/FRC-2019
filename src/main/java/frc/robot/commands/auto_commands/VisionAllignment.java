@@ -18,18 +18,23 @@ import jaci.pathfinder.modifiers.TankModifier;
 /**
  * @author Neil (the great) Hazra
  */
-
-public class PathExecuter extends Command {
-
-	private final double P = 0.7;
+public class VisionAllignment extends Command {
+	/*
+	private final double P = 1.1;
 	private final double D = 0;
-	private final double k_a = 0;
-
-	private final double TurnP = 0.02;
+	private final double k_a = 0.02;
+	private final double TurnP = 0.027;
 	private final double TurnI = 0.0;
 	private final double TurnD = 0.00;
+	*/
+	private final double P = 1.0;
+	private final double D = 0;
+	private final double k_a = 0.02;
 
-	private Timer timer;
+	private final double TurnP = 0.027;
+	private final double TurnI = 0.0;
+	private final double TurnD = 0.002;
+
 
 	private DistanceFollower left, right;
 	private PIDSource NAVXSource;
@@ -53,7 +58,6 @@ public class PathExecuter extends Command {
 					return Robot.rps.getNavxAngle();
 				}
 			};
-			timer = new Timer();
 			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",true);
 			PathingLog = new Logger(FileName + "Log");
 		} catch (Exception e) {			
@@ -76,44 +80,16 @@ public class PathExecuter extends Command {
 					return Robot.rps.getNavxAngle();
 				}
 			};
-			timer = new Timer();
 			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",true);
 			PathingLog = new Logger(FileName + "Log");
 		} catch (Exception e) {
 			
 		}
 	}
-	public PathExecuter(String left, String right, String fileName)	{
+	
+	public VisionAllignment() {
 		requires(Robot.driveTrain);
-		initPathExecuter(left, right, fileName);
-	}
-	public PathExecuter(String FileName) {
-		requires(Robot.driveTrain);
-		try {
-			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
-			Trajectory trajectory = Pathfinder.readFromCSV(f);
-			Robot.SystemLog.writeWithTimeStamp("PathExecuter: Trajectory Loaded From File");
-			initPathExecuter(trajectory, FileName);
-		} catch (Exception e) {
-			Robot.SystemLog.writeWithTimeStamp("PathExecuter: Trajectory Could Not Be Loaded");
-		}
-	}
-	public PathExecuter(Waypoint[] points, String FileName) {
-		requires(Robot.driveTrain);
-		try {
-			System.out.println("Generating Trajectory");
-			Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-					Trajectory.Config.SAMPLES_LOW, 0.02, 0.5*RobotMap.MAX_VELOCITY, 2.0, 60.0);
-			
-			Trajectory trajectory = Pathfinder.generate(points, config);
-			System.out.println("Trajectory Length: " + trajectory.length());
-			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
-			Pathfinder.writeToCSV(f, trajectory);
-			Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
-			initPathExecuter(trajectory, FileName);
-		} catch (Exception e) {
-			Robot.SystemLog.writeNewData("PathExecuter Line 39: Error Creating Trajectory Path"  +e.getMessage());
-		}
+
 	}
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
 		double l = left.calculate(LeftEncoderDistance);
@@ -146,6 +122,30 @@ public class PathExecuter extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+		//this needs to be moved to init
+		double x_dist;
+		if(Robot.rps.getXDisplacementToVisionTarget()>0)	{
+			x_dist = Robot.rps.getXDisplacementToVisionTarget()*1.4;
+		}	else {
+			x_dist = Robot.rps.getXDisplacementToVisionTarget()*1.1;
+		}
+		 
+		Waypoint[] points 	= new Waypoint[]{
+				new Waypoint(0, 0, 0),
+				new Waypoint(Robot.rps.getZDisplacementToVisionTarget()*0.0254-0.45, x_dist*0.0254, 0)
+		}; 
+		try {
+			System.out.println("Generating Trajectory");
+			Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+					Trajectory.Config.SAMPLES_LOW, 0.02, 0.15*RobotMap.MAX_VELOCITY, 2.0, 60.0);
+			
+			Trajectory trajectory = Pathfinder.generate(points, config);
+			System.out.println("Trajectory Length: " + trajectory.length());
+			Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
+			initPathExecuter(trajectory, "Vision");
+		} catch (Exception e) {
+			Robot.SystemLog.writeNewData("PathExecuter Line 39: Error Creating Trajectory Path"  +e.getMessage());
+		}
 		turnPID.resetPID();
 		Robot.rps.reset();
 		Robot.driveTrain.resetEncoders();
@@ -153,7 +153,8 @@ public class PathExecuter extends Command {
 		right.reset();
 		Robot.SystemLog.writeWithTimeStamp("Path Executer Initialized: Angle=" + Robot.rps.getNavxAngle());
 		PathingLog.writeNewData("Time, Desired Heading, Desired Left Position, Desired Right Position, Heading, Left Position, Right Posiion, LeftPower, RightPower");
-	}
+    Robot.oi.driveStick.vibrate(0.3);
+  }
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
@@ -165,7 +166,7 @@ public class PathExecuter extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return left.isFinished() && right.isFinished();
+		return (left.isFinished() && right.isFinished()) || Robot.rps.getZDisplacementToVisionTarget() < 20;
 	}
 
 	// Called once after isFinished returns true
@@ -176,7 +177,8 @@ public class PathExecuter extends Command {
 		right.reset();
 		turnPID.resetPID();
 		Robot.driveTrain.rawMotorOutput(0,0);
-		Robot.driveTrain.setBrake();
+    Robot.driveTrain.setBrake();
+    Robot.oi.driveStick.stopVibrate();
 	}
 
 	// Called when another command which requires one or more of the same subsystems

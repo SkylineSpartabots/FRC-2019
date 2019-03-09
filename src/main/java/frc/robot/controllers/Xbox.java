@@ -87,9 +87,9 @@ public class Xbox {
 		return (pov == 225 || pov == 180 || pov == 135);
 	}
 
-	public void vibrate(){
-		joystick.setRumble(RumbleType.kRightRumble, 1);
-		joystick.setRumble(RumbleType.kLeftRumble, 1);
+	public void vibrate(double vibrationLevel){
+		joystick.setRumble(RumbleType.kRightRumble, vibrationLevel);
+		joystick.setRumble(RumbleType.kLeftRumble, vibrationLevel);
 	}
 
 	public void stopVibrate(){

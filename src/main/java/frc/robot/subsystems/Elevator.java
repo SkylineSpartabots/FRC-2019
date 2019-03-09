@@ -2,13 +2,18 @@ package frc.robot.subsystems;
 
 
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
-
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -29,7 +34,10 @@ public class Elevator extends Subsystem {
 	public final static int amps = 15;
 	public final static int timeoutMs = 5000;
 
-	public final static double STALL_POWER = 0.07;
+	public final static double MAX_STALL_POWER = 0.07;
+
+	private NetworkTableEntry kP, kI, kD, stallPower;
+	private static final ShuffleboardTab TAB = Shuffleboard.getTab("ElevatorConstants");
 
 
 
@@ -49,6 +57,19 @@ public class Elevator extends Subsystem {
 		elevatorEncoder = new Encoder(RobotMap.ELEVATOR_ENCODER_PORT_A, RobotMap.ELEVATOR_ENCODER_PORT_B);
 		elevatorLimitSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH);
 
+		kP = TAB.add("Elevator kP", 0.028).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		kI = TAB.add("Elevator kI", 0.002).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		kD = TAB.add("Elevator kD", 0.001).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		stallPower = TAB.add("Elevator Stall Power", 0.07).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+	}
+
+	/**
+	 * 
+	 * @return kp, ki, kd, stallPower
+	 */
+	public double[] getElevatorConstants(){
+		double[] constants = {kP.getDouble(0.001), kI.getDouble(0.0001), kD.getDouble(0.0001), stallPower.getDouble(0.001)};
+		return constants;
 	}
 	
 	public int getElevatorEncoderOutput()	{
@@ -63,8 +84,8 @@ public class Elevator extends Subsystem {
 	 * 
 	 * @param power power <= 0
 	 */
-	public void setStallPower()	{
-		setRawPower(STALL_POWER);
+	public void setStallPower(double stallPower)	{
+		setRawPower(stallPower);
 	}
 	private void setRawPower(double power) {
 		rightElevatorMotor.set(power);
@@ -76,7 +97,7 @@ public class Elevator extends Subsystem {
 		boolean maxReached = getElevatorEncoderOutput() >= MAX_ENCODER_LIMIT && power > 0;
 		boolean minReached = getElevatorEncoderOutput() <= MIN_ENCODER_LIMIT && power < 0;
 		if (maxReached) {
-			setStallPower();
+			setStallPower(getElevatorConstants()[3]);
 		} else if(minReached)	{
 			setRawPower(0);
 		} 	else {

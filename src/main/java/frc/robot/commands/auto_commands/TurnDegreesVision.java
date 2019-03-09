@@ -6,11 +6,15 @@ import frc.robot.Robot;
 import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 
-public class TurnDegrees extends Command {
+
+/**
+ * @author Neil (the great) Hazra
+ */
+public class TurnDegreesVision extends Command {
 
 	private int clockCounter = 0;
 	private double angle;
-	private final double CLOCK_MAX = 5;
+	private final double CLOCK_MAX = 10;
 	private boolean isFinished = false;
 	private double error;
 
@@ -19,28 +23,38 @@ public class TurnDegrees extends Command {
 	private PIDSource turnSource;
 	private SimplePID turnPID;
 
+	double kP = 0.016;
+	double kI = 0.00056;
+	double kD = 0.0012;
+
 	private double turnThreshold;
 	private double timeOutSecs;
 
-	public TurnDegrees(double angle, double timeOutSecs) {
+	public TurnDegreesVision(double timeOutSecs) {
 		requires(Robot.driveTrain);
 
 		timer = new Timer();
-		this.angle = angle + Robot.rps.getNavxAngle();
 		this.timeOutSecs = timeOutSecs;
 
-		turnSource = () -> Robot.rps.getNavxAngle();
+		turnSource = new PIDSource() {
+			@Override
+			public double getInput() {
+				return Robot.rps.getNavxAngle();
+			}
+		};
+
+
+		double[] pidConstants = Robot.driveTrain.getTurnPID();
+
+		turnPID = new SimplePID(turnSource, 0, pidConstants[0], pidConstants[1], pidConstants[2], "TurnDegreesPID",true);
+		turnPID.setOutputLimits(-1, 1);
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-
-		double[] pidConstants = Robot.driveTrain.getTurnPID();
-		
-		turnPID = new SimplePID(turnSource, this.angle, pidConstants[0], pidConstants[1], pidConstants[2], "TurnDegreesPID", false);
-		turnPID.setOutputLimits(-1, 1);
-
+		this.angle = Robot.rps.getYawToVisionTarget()*0.8 + Robot.rps.getNavxAngle();
+		turnPID.setSetpoint(this.angle);
 		timer.reset();
 		timer.start();
 		turnPID.resetPID();
@@ -51,8 +65,8 @@ public class TurnDegrees extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		output = turnPID.compute();
 		error = turnPID.getError();
+		output = turnPID.compute();
 
 		if (Math.abs(error) < turnThreshold) {
 			clockCounter++;
@@ -62,9 +76,6 @@ public class TurnDegrees extends Command {
 		} else {
 			clockCounter = 0;
 		}
-
-		
-		System.out.println(output);
 
 		Robot.driveTrain.tankDrive(output, -output);
 	}

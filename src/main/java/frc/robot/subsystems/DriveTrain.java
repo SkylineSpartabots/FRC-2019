@@ -32,8 +32,8 @@ public class DriveTrain extends Subsystem {
 	private SpeedControllerGroup left, right;
 	
 
-	private static final ShuffleboardTab TAB = Shuffleboard.getTab("SmartDashboard");
-	private static NetworkTableEntry kP, kI, kD;
+	private static final ShuffleboardTab TAB = Shuffleboard.getTab("DriveConstants");
+	private static NetworkTableEntry turnkP, turnkI, turnkD, pathkA, pathkP, pathkD;
 
 	public DriveTrain() {
 		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
@@ -69,27 +69,33 @@ public class DriveTrain extends Subsystem {
 		m_drive.setRightSideInverted(false);
 
 		//Shuffleboard inputs
-		kP = TAB.add("ProportionPathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		kI = TAB.add("IntegralPathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		kD = TAB.add("DerivativePathing", 0.0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkP = TAB.add("Turn kP", 0.016).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkI = TAB.add("Turn kI", 0.0012).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkD = TAB.add("Turn kD", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 
+		pathkA = TAB.add("Pathing kA", 0.02).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		pathkP = TAB.add("Pathing P", 1.0).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		pathkD = TAB.add("Pathing D", 0).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 	}
 
-	public double[] getPIDPathing() {
-		double[] pid = {kP.getDouble(0.001), kI.getDouble(0.0001), kD.getDouble(0.0001)};
-
-		return pid;
+	/**
+	 * 
+	 * @return returns double array of turn pid constants in form of kp, ki, kd
+	 */
+	public double[] getTurnPID() {
+		double[] constants = {turnkP.getDouble(0.00001), turnkI.getDouble(0.00001), turnkD.getDouble(0.00001)};
+		return constants;
 	}
 
-	public void testMotor()	{
-		//left.set(0.7);
-		//right.set(0.7);
-		//left.set(0.7);
-		//rightFront.set(0.7);
-		//rightBack.set(0.7);
-		//rightMid.set(0.7);
-		//right.set(0.7);
+	/**
+	 * 
+	 * @return returns double array of pathing pid constants in form of kp, kd, ka
+	 */
+	public double[] getPathingConstants(){
+		double[] constants = {pathkP.getDouble(0.00001), pathkD.getDouble(0.00001), pathkA.getDouble(0.00001)};
+		return constants;
 	}
+
 	/**
 	 * Resets both the left and right encoders
 	 */
@@ -103,12 +109,10 @@ public class DriveTrain extends Subsystem {
 	 */
 	public double getLeftEncoderDistanceInches() {
 		double inches = encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
-		SmartDashboard.putNumber("Left Encoder In Inches", inches);
 		return inches;
 	}
 	public double getLeftEncoderDistanceMeters() {
 		double meters = encoderLeft.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE*0.0254;
-		SmartDashboard.putNumber("Left Encoder In Meters", meters);
 		return meters;
 	}
 	/**
@@ -117,12 +121,10 @@ public class DriveTrain extends Subsystem {
 	 */
 	public double getRightEncoderDistanceInches() {
 		double inches = encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE;
-		SmartDashboard.putNumber("Right Encoder In Inches", inches);
 		return inches;
 	}
 	public double getRightEncoderDistanceMeters() {
 		double meters = encoderRight.getRaw() * RobotMap.ENCODER_DISTANCE_PER_PULSE*0.0254;
-		SmartDashboard.putNumber("Right Encoder In Meters", meters);
 		return meters;
 	}
 	public void setBrake() {

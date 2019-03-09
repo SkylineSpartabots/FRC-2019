@@ -1,11 +1,11 @@
 package frc.robot;
 
 import frc.robot.commands.drive_controls.*;
-import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.commands.auto_commands.TurnDegreesVision;
+import frc.robot.commands.auto_commands.VisionAllignment;
 import frc.robot.commands.basic_commands.*;
 import frc.robot.controllers.Xbox;
 import frc.robot.subsystems.Elevator;
-import jaci.pathfinder.Waypoint;
 
 
 /**
@@ -37,6 +37,9 @@ public class OI {
 		driveStick.buttonLBumper.whenPressed(new GraspHatch());
 
 		// TODO: need to add controls for extending and retracting intake
+		driveStick.buttonA.whenPressed(new VisionAllignment());
+		driveStick.buttonB.whenPressed(new TurnDegreesVision(10));
+
 		
 
 	}
