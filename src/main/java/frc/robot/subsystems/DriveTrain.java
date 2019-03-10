@@ -33,7 +33,7 @@ public class DriveTrain extends Subsystem {
 	
 
 	private static final ShuffleboardTab TAB = Shuffleboard.getTab("DriveConstants");
-	private static NetworkTableEntry turnkP, turnkI, turnkD, pathkA, pathkP, pathkD;
+	private static NetworkTableEntry turnkP, turnkI, turnkD, proportionVelocity, pathkP, pathkD, pathkA;
 
 	public DriveTrain() {
 		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
@@ -72,6 +72,12 @@ public class DriveTrain extends Subsystem {
 		turnkP = TAB.add("Turn kP", 0.016).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		turnkI = TAB.add("Turn kI", 0.0012).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		turnkD = TAB.add("Turn kD", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+
+
+		pathkP = TAB.add("Path kP", 1.1).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		proportionVelocity = TAB.add("Path velo", 0.0012).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		pathkD = TAB.add("Path kD", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		pathkA = TAB.add("Path kA", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 	}
 
 	/**
@@ -80,6 +86,11 @@ public class DriveTrain extends Subsystem {
 	 */
 	public double[] getTurnPID() {
 		double[] constants = {turnkP.getDouble(0.00001), turnkI.getDouble(0.00001), turnkD.getDouble(0.00001)};
+		return constants;
+	}
+
+	public double[] getPathPID(){
+		double[] constants = {pathkP.getDouble(0.00001), pathkD.getDouble(0.00001), proportionVelocity.getDouble(0.00001), pathkA.getDouble(0.00001)};
 		return constants;
 	}
 

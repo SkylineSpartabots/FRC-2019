@@ -17,14 +17,14 @@ public class PlaceHatch extends CommandGroup {
 
   Waypoint[] toCargo = new Waypoint[]{
     new Waypoint(0, 0, 0),
-    new Waypoint(2, -0.5, 0),
+    new Waypoint(3.4, 1.2, 0),
   };
 
   public PlaceHatch() {
-    //addSequential(new PathExecuter(toCargo, "TestCargoPath", true));
-    addSequential(new AllignAndPathToTarget());
+    addSequential(new PathExecuter(toCargo, "TestCargoPath", true));
+    //addSequential(new AllignAndPathToTarget());
     //addSequential(new );
-    addSequential(new EncoderDrive(-0.6, -0.6, -0.6));
+    //addSequential(new EncoderDrive(-0.6, -0.6, -0.6));
     //dispense 
 
   }

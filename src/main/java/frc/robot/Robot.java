@@ -101,7 +101,7 @@ public class Robot extends TimedRobot {
 		elevator.setElevatorDataOnDisplay();
 		hatchMechanism.setHatchMechanismDataOnDisplay();
 		intake.setIntakeDataOnDisplay();
-		
+		System.out.println("");
 		SmartDashboard.putNumber("XDisp", Robot.rps.getXDisplacementToVisionTargetRawInches());
 		SmartDashboard.putNumber("ZDisp", Robot.rps.getZDisplacementToVisionTargetRawInches());
 		SmartDashboard.putNumber("Angle", Robot.rps.getYawToVisionTargetRawDegrees());

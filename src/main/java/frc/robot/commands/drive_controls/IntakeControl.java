@@ -1,6 +1,7 @@
 package frc.robot.commands.drive_controls;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.commands.VibrateControllers;
@@ -20,7 +21,7 @@ public class IntakeControl extends Command {
 	@Override
 	protected void initialize() {
 		Robot.intake.setIntakePower(0);
-		manualOverride = false;
+		manualOverride = true;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -40,8 +41,13 @@ public class IntakeControl extends Command {
 			hasVibrated = false;
 		}
 		
-		manualOverride = true;
-		
+		if(Robot.oi.secondStick.getLY() > 0.2){
+			manualOverride = false;
+		} else if(Robot.oi.secondStick.getLY() < -0.2){
+			manualOverride = true;
+		}
+		SmartDashboard.putBoolean("manualoveride", manualOverride);
+		//manualOverride = true;
 		
 		if(!manualOverride){
 			if (Robot.oi.secondStick.isPOVDownish() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT) {
@@ -56,14 +62,14 @@ public class IntakeControl extends Command {
 			if (rTriggerOn) {
 				Robot.intake.setIntakePower(-1);
 			} else if (lTriggerOn) {
-				Robot.intake.setRawIntakePower(0.75);
+				Robot.intake.setIntakePower(0.75);
 			} else {
-				Robot.intake.setRawIntakePower(0);
+				Robot.intake.setIntakePower(0);
 			}
 		} else {
 			if(Robot.oi.secondStick.isPOVDownish()){
 				Robot.intake.extendIntake();
-			} else if(Robot.oi.secondStick.isPOVUpish() ){
+			} else if(Robot.oi.secondStick.isPOVUpish()){
 				Robot.intake.retractIntake();
 			}
 

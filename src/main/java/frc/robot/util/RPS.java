@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RPS {
 	private double z_axis_offset = 0.45;
-	private double positive_x_fudgefactor = 1;
-	private double negative_x_fudgefactor = 1;
+	private double positive_x_fudgefactor = 1.5;
+	private double negative_x_fudgefactor = 1.35;
 
 
 	private AHRS ahrs;
@@ -40,7 +40,7 @@ public class RPS {
 		return (double) YDisp.getNumber(-3000);
 	}
 	public double getZDisplacementToVisionTargetRawInches()	{
-		SmartDashboard.putNumber("LastVisionUpdate", ZDisp.getLastChange());
+		//System.out.println("Line 43 vision updated:" + ZDisp.getLastChange());
 		return (double) ZDisp.getNumber(-3000);
 	}
 
@@ -55,14 +55,14 @@ public class RPS {
 	}
 
 	public double getZDisplacementEditedForCameraPositionMeters()	{
-		return getZDisplacementToVisionTargetRawMeters() - z_axis_offset; 
+		return getZDisplacementToVisionTargetRawMeters()*1.1 - z_axis_offset; 
 	} 
 	public double getXDisplacementEditedForCameraPositionMeters()	{
 		double x_dist;		
 		if(Robot.rps.getXDisplacementToVisionTargetRawMeters() > 0)	{
-			x_dist = getXDisplacementToVisionTargetRawMeters()*positive_x_fudgefactor;
+			x_dist = getXDisplacementToVisionTargetRawMeters()*positive_x_fudgefactor+0.1;
 		}	else {
-			x_dist = getXDisplacementToVisionTargetRawMeters()*negative_x_fudgefactor;
+			x_dist = getXDisplacementToVisionTargetRawMeters()*negative_x_fudgefactor+0.08;
 		}
 		return x_dist;
 	} 

@@ -6,6 +6,7 @@ import frc.robot.commands.auto_commands.OutakeWithVision;
 import frc.robot.commands.auto_commands.PickUpHatch;
 import frc.robot.commands.auto_commands.TurnDegreesVision;
 import frc.robot.commands.auto_commands.VisionAllignment;
+import frc.robot.commands.autonomous.PlaceHatch;
 import frc.robot.commands.basic_commands.*;
 import frc.robot.controllers.Xbox;
 import frc.robot.subsystems.Elevator;
@@ -51,9 +52,9 @@ public class OI {
 		driveStick.buttonLBumper.whenPressed(new ReleaseHatch());
 		driveStick.buttonRBumper.whenPressed(new GraspHatch());
 		
-		/*driveStick.buttonA.whenPressed(new AllignAndPathToTarget());
+		driveStick.buttonA.whenPressed(new PlaceHatch());
 		driveStick.buttonB.whenPressed(new VisionAllignment());
-		*/
+		
 		driveStick.buttonX.whenPressed(new TurnDegreesVision(3));
 
 		//THis is good

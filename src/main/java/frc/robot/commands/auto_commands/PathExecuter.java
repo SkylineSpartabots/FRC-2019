@@ -23,14 +23,14 @@ import jaci.pathfinder.modifiers.TankModifier;
 public class PathExecuter extends Command {
 	public boolean prematureTermination = false;
 
-	private final double proportionOfMaxVelocity = 0.4;
-	private final double P = 1.1;
-	private final double D = 0;
-	private final double k_a = 0.02;
+	private double proportionOfMaxVelocity = 0.7;
+	private double P = 1.1;
+	private double D = 0;
+	private double k_a = 0.02;
 
-	private final double TurnP = 0.03;
-	private final double TurnI = 0.0;
-	private final double TurnD = 0.002;
+	private double TurnP = 0.03;
+	private double TurnI = 0.0;
+	private double TurnD = 0.002;
 
 	private DistanceFollower left, right;
 	private PIDSource NAVXSource;
@@ -41,7 +41,22 @@ public class PathExecuter extends Command {
 	private double RightMotorOutput = 0;
 	private boolean log = true;
 
+	private double[] pathConstants, turnConstants;
+
 	public void initPathExecuter(String FileName) {
+		
+		pathConstants = Robot.driveTrain.getPathPID();
+		turnConstants = Robot.driveTrain.getTurnPID();
+		P = pathConstants[0];
+		D = pathConstants[1];
+		proportionOfMaxVelocity = pathConstants[2];
+		k_a = pathConstants[3];
+
+		TurnP = turnConstants[0];
+		TurnI = turnConstants[1];
+		TurnD = turnConstants[2];
+
+
 		try {
 			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
 			if(!f.exists())	{
