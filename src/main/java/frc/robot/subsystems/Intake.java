@@ -97,7 +97,12 @@ public class Intake extends Subsystem {
 	}
 
 	public void setRawIntakePower(double power){
-		masterIntakeMotor.set(power);
+		if(getIntakeSolenoidState()){
+			masterIntakeMotor.set(power);
+		} else {
+			masterIntakeMotor.set(0);
+		}
+
 		innerIntakeMotor.set(power);
 	}
 

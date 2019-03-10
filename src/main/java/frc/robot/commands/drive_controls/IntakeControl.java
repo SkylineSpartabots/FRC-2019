@@ -44,7 +44,7 @@ public class IntakeControl extends Command {
 		
 		
 		if(!manualOverride){
-			if (Robot.oi.secondStick.isPOVDownish()) {
+			if (Robot.oi.secondStick.isPOVDownish() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT) {
 				Robot.intake.extendIntake();
 			} else if (Robot.oi.secondStick.isPOVUpish()) {
 				Robot.intake.retractIntake();
@@ -63,7 +63,7 @@ public class IntakeControl extends Command {
 		} else {
 			if(Robot.oi.secondStick.isPOVDownish()){
 				Robot.intake.extendIntake();
-			} else if(Robot.oi.secondStick.isPOVUpish()){
+			} else if(Robot.oi.secondStick.isPOVUpish() ){
 				Robot.intake.retractIntake();
 			}
 

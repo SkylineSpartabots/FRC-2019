@@ -30,7 +30,7 @@ public class Elevator extends Subsystem {
 	
 
 	public final static int MAX_ENCODER_LIMIT = 1132;
-	public final static int MIN_ENCODER_LIMIT = 5;
+	public final static int MIN_ENCODER_LIMIT = 60;
 	public final static int amps = 15;
 	public final static int timeoutMs = 5000;
 

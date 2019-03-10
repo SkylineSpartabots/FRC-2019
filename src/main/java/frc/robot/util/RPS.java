@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.Robot;
 
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * @author NeilHazra
@@ -39,6 +40,7 @@ public class RPS {
 		return (double) YDisp.getNumber(-3000);
 	}
 	public double getZDisplacementToVisionTargetRawInches()	{
+		SmartDashboard.putNumber("LastVisionUpdate", ZDisp.getLastChange());
 		return (double) ZDisp.getNumber(-3000);
 	}
 
