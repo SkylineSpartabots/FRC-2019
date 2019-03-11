@@ -9,7 +9,6 @@ package frc.robot.commands.drive_controls;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.HatchMechanism;
 import frc.robot.util.Debouncer;
 
 /**

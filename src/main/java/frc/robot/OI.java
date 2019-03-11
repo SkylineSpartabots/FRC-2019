@@ -52,11 +52,10 @@ public class OI {
 		driveStick.buttonLBumper.whenPressed(new ReleaseHatch());
 		driveStick.buttonRBumper.whenPressed(new GraspHatch());
 		
-		driveStick.buttonA.whenPressed(new PlaceHatch());
-		driveStick.buttonB.whenPressed(new VisionAllignment());
-		
-		driveStick.buttonX.whenPressed(new TurnDegreesVision(3));
-
+		//driveStick.buttonA.whenPressed(new PlaceHatch());
+		//driveStick.buttonB.whenPressed(new VisionAllignment());
+		//driveStick.buttonX.whenPressed(new TurnDegreesVision(3));
+/////////////////////////////////////////////////////////////////////////////////////
 		//THis is good
 		//driveStick.buttonB.whenPressed(new PickUpHatch());
 		///driveStick.buttonA.whenPressed(new OutakeWithVision());

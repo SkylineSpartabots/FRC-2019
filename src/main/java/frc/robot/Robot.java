@@ -51,11 +51,11 @@ public class Robot extends TimedRobot {
 		NetworkInst = NetworkTableInstance.getDefault();
 		JetsonTable = NetworkInst.getTable("JetsonData");
 		SystemLog = new Logger("SystemLog");
-		rps = new RPS();
 		driveTrain = new DriveTrain();
 		intake = new Intake();
 		elevator = new Elevator();
 		hatchMechanism = new HatchMechanism();
+		rps = new RPS();
 		oi = new OI();
 	
 		// try-with-resource makes sure that there is no resource leak
@@ -77,11 +77,14 @@ public class Robot extends TimedRobot {
 		jetsonProcessStart.inheritIO();
 		try{
 			jetsonProcessStart.start();
+			SmartDashboard.putBoolean("Jetson on", true);
 		}	catch (IOException e){
 			System.out.println("Errpr" + e.getMessage());
 			SystemLog.writeWithTimeStamp("IOException at Jetson Start: " + e.getMessage());
+			SmartDashboard.putBoolean("Jetson on", false);
 		}
 		SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
+		
 
 		CameraServer.getInstance().startAutomaticCapture();
 	}
@@ -115,6 +118,8 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
+		Robot.oi.driveStick.stopVibrate();
+		Robot.oi.secondStick.stopVibrate();
 	}
 
 	@Override

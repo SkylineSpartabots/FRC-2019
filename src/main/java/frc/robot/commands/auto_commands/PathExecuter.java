@@ -167,6 +167,7 @@ public class PathExecuter extends Command {
 		if(!prematureTermination)	{
 			updateMotorOutputs(Robot.driveTrain.getLeftEncoderDistanceMeters(), Robot.driveTrain.getRightEncoderDistanceMeters());
 			Robot.driveTrain.rawMotorOutput(LeftMotorOutput, RightMotorOutput);
+			System.out.println("kp:\t" + P + "kd:\t" + D + "maxv:\t" + proportionOfMaxVelocity + "ka:\t" + k_a);
 		}
 	}
 	// Make this return true when this Command no longer needs to run execute()

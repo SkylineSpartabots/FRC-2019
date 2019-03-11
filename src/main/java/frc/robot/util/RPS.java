@@ -10,9 +10,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author NeilHazra
  */
 public class RPS {
-	private double z_axis_offset = 0.45;
+	private double z_axis_offset = 0.18;
+	private double z_scale = 1.1;
 	private double positive_x_fudgefactor = 1.5;
 	private double negative_x_fudgefactor = 1.35;
+	private double positive_x_fudge_offset = 0.24;
+	private double negative_x_fudge_offset = 0.18;
 
 
 	private AHRS ahrs;
@@ -20,6 +23,9 @@ public class RPS {
 	private NetworkTableEntry YDisp;
 	private NetworkTableEntry ZDisp;
 	private NetworkTableEntry Yaw;
+
+	//double[] visionConstants;
+	
 	public RPS() {
 		XDisp = Robot.JetsonTable.getEntry("X Displacement");
 		YDisp = Robot.JetsonTable.getEntry("Y Displacement");
@@ -55,14 +61,14 @@ public class RPS {
 	}
 
 	public double getZDisplacementEditedForCameraPositionMeters()	{
-		return getZDisplacementToVisionTargetRawMeters()*1.1 - z_axis_offset; 
+		return getZDisplacementToVisionTargetRawMeters()*z_scale - z_axis_offset; 
 	} 
 	public double getXDisplacementEditedForCameraPositionMeters()	{
 		double x_dist;		
 		if(Robot.rps.getXDisplacementToVisionTargetRawMeters() > 0)	{
-			x_dist = getXDisplacementToVisionTargetRawMeters()*positive_x_fudgefactor+0.1;
+			x_dist = getXDisplacementToVisionTargetRawMeters()*positive_x_fudgefactor+positive_x_fudge_offset;
 		}	else {
-			x_dist = getXDisplacementToVisionTargetRawMeters()*negative_x_fudgefactor+0.08;
+			x_dist = getXDisplacementToVisionTargetRawMeters()*negative_x_fudgefactor+negative_x_fudge_offset;
 		}
 		return x_dist;
 	} 

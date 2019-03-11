@@ -2,7 +2,6 @@ package frc.robot.commands.drive_controls;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.commands.VibrateControllers;
 import frc.robot.subsystems.Elevator;
@@ -60,7 +59,7 @@ public class IntakeControl extends Command {
 			boolean lTriggerOn = Robot.oi.secondStick.getLTrigger() > 0.2;
 			// Sets power to the intake motors. Uses whichever trigger is more pressed
 			if (rTriggerOn) {
-				Robot.intake.setIntakePower(-1);
+				Robot.intake.setIntakePower(-0.7);
 			} else if (lTriggerOn) {
 				Robot.intake.setIntakePower(0.75);
 			} else {
@@ -77,7 +76,7 @@ public class IntakeControl extends Command {
 			boolean lTriggerOn = Robot.oi.secondStick.getLTrigger() > 0.2;
 			// Sets power to the intake motors. Uses whichever trigger is more pressed
 			if (rTriggerOn) {
-				Robot.intake.setRawIntakePower(-1);
+				Robot.intake.setRawIntakePower(-0.7);
 			} else if (lTriggerOn) {
 				Robot.intake.setRawIntakePower(0.75);
 			} else {

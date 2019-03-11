@@ -3,7 +3,6 @@ package frc.robot.commands.auto_commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.util.Debouncer;
 
 public class OutakeForDuration extends Command {
 

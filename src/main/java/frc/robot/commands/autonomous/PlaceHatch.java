@@ -8,6 +8,7 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.Robot;
 import frc.robot.commands.auto_commands.AllignAndPathToTarget;
 import frc.robot.commands.auto_commands.EncoderDrive;
 import frc.robot.commands.auto_commands.PathExecuter;
@@ -15,12 +16,17 @@ import jaci.pathfinder.Waypoint;
 
 public class PlaceHatch extends CommandGroup {
 
-  Waypoint[] toCargo = new Waypoint[]{
-    new Waypoint(0, 0, 0),
-    new Waypoint(3.4, 1.2, 0),
-  };
+  
 
   public PlaceHatch() {
+
+    double[] distance = Robot.driveTrain.distances();
+
+    Waypoint[] toCargo = new Waypoint[]{
+      new Waypoint(0, 0, 0),
+      new Waypoint(distance[0], distance[1], 0),
+    };
+
     addSequential(new PathExecuter(toCargo, "TestCargoPath", true));
     //addSequential(new AllignAndPathToTarget());
     //addSequential(new );

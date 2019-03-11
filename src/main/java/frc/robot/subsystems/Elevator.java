@@ -151,7 +151,7 @@ public class Elevator extends Subsystem {
 	 * TODO: NEED TO ADD ACTUAL VALUES
 	 */
 	public enum ElevatorPosition {
-		DOWN(-5,-5), CARGO_SHIP(557, 557), ROCKET_FIRST(360, 360), ROCKET_SECOND(790, 480), ROCKET_THIRD(1125, 900);
+		DOWN(-7,-7), CARGO_SHIP(557, 557), ROCKET_FIRST(360, 360), ROCKET_SECOND(790, 480), ROCKET_THIRD(1125, 900);
 
 		public final int cargoPosition;
 		public final int hatchPosition;

@@ -27,14 +27,14 @@ public class VisionAllignment extends Command {
 	*/
 	public boolean prematureTermination = false;
 	public boolean log = true;
-	private final double proportionOfMaxVelocity = 0.4;
-	private final double P = 1.1;
-	private final double D = 0;
-	private final double k_a = 0.02;
+	private double proportionOfMaxVelocity = 0.4;
+	private double P = 1.1;
+	private double D = 0;
+	private double k_a = 0.02;
 
-	private final double TurnP = 0.03;
-	private final double TurnI = 0.0;
-	private final double TurnD = 0.002;
+	private double TurnP = 0.03;
+	private double TurnI = 0.0;
+	private double TurnD = 0.002;
 
 
 
@@ -46,7 +46,23 @@ public class VisionAllignment extends Command {
 	private double LeftMotorOutput = 0;
 	private double RightMotorOutput = 0;
 
+	private double[] turnConstants, pathConstants;
+
 	public void initPathExecuter(Trajectory traj, String FileName, boolean logPID) {
+		
+		/*pathConstants = Robot.driveTrain.getPathPID();
+		turnConstants = Robot.driveTrain.getTurnPID();
+
+		P = pathConstants[0];
+		D = pathConstants[1];
+		proportionOfMaxVelocity = pathConstants[2];
+		k_a = pathConstants[3];
+
+		TurnP = turnConstants[0];
+		TurnI = turnConstants[1];
+		TurnD = turnConstants[2];*/
+		
+		
 		try {
 			TankModifier modifier = new TankModifier(traj).modify(RobotMap.TRACK_WIDTH);
 			left = new DistanceFollower(modifier.getLeftTrajectory());
@@ -140,6 +156,7 @@ public class VisionAllignment extends Command {
 		if(!prematureTermination)	{
 			updateMotorOutputs(Robot.driveTrain.getLeftEncoderDistanceMeters(), Robot.driveTrain.getRightEncoderDistanceMeters());
 			Robot.driveTrain.rawMotorOutput(LeftMotorOutput, RightMotorOutput);
+			//System.out.println("RUNNING!");
 		}
 	}
 

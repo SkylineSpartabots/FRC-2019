@@ -92,6 +92,14 @@ public class Xbox {
 		joystick.setRumble(RumbleType.kLeftRumble, vibrationLevel);
 	}
 
+	public void vibrateRight(double vibrationLevel){
+		joystick.setRumble(RumbleType.kRightRumble, vibrationLevel);
+	}
+
+	public void vibrateLeft(double vibrationLevel){
+		joystick.setRumble(RumbleType.kLeftRumble, vibrationLevel);
+	}
+
 	public void stopVibrate(){
 		joystick.setRumble(RumbleType.kRightRumble, 0);
 		joystick.setRumble(RumbleType.kLeftRumble, 0);
