@@ -20,8 +20,6 @@ public class ElevatorToPosition extends Command {
   private int clockCounter = 0;
   private boolean isFinished = false;
 
-  
-  private double setpoint;
   private boolean isBottom;
   private Elevator.ElevatorPosition elevatorPosition;
 
@@ -56,7 +54,7 @@ public class ElevatorToPosition extends Command {
     isBottom = elevatorTarget == Elevator.ElevatorPosition.DOWN.getPosition();
 
     if (isBottom) {
-      elevatorPID.setOutputLimits(-0.2, 0.60);
+      elevatorPID.setOutputLimits(-0.3, 0.60);
     } else {
       elevatorPID.setOutputLimits(0, 0.60);
     }
@@ -74,33 +72,24 @@ public class ElevatorToPosition extends Command {
     if(isFinished){
       if(!hasVibrated){
         try {
-          vibrateControllers = new VibrateControllers(0.4, Robot.oi.secondStick);
+          vibrateControllers = new VibrateControllers(0.3, Robot.oi.secondStick);
           vibrateControllers.start();
         } finally {
           vibrateControllers.close();
         }
         hasVibrated = true;
       }
-      
-      
-      if(isBottom){
-        Robot.elevator.setPower(0);
-      } else{
-        Robot.elevator.setStallPower();
-      }
+      Robot.elevator.stall();
+
     } else {
       output = elevatorPID.compute();
       error = elevatorPID.getError();
-      System.out.println(output + "," + error + "," + setpoint + "," + elevatorPID.getInput());
       Robot.elevator.setPower(output);
       /*
        * logic for ending the the pid loop, if it is within a certain range for a
        * period of time meaning its velocity isn't too high, then stall the motors
        */
-      System.out.println("Inside Execute");
       if (Math.abs(error) <= ELEVATOR_THRESHOLD) {
-        
-        System.out.println("Counting: " + elevatorTarget);
         clockCounter++;
         if (clockCounter > CLOCK_MAX) {
           isFinished = true;

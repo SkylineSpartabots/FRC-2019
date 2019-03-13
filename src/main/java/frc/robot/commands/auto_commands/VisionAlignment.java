@@ -14,7 +14,7 @@ import jaci.pathfinder.Trajectory.Segment;
 import jaci.pathfinder.followers.DistanceFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 
-public class VisionAllignment extends Command {
+public class VisionAlignment extends Command {
 	/*
 	private final double P = 1.1;
 	private final double D = 0;
@@ -46,7 +46,6 @@ public class VisionAllignment extends Command {
 	private double LeftMotorOutput = 0;
 	private double RightMotorOutput = 0;
 
-	private double[] turnConstants, pathConstants;
 
 	public void initPathExecuter(Trajectory traj, String FileName, boolean logPID) {
 		
@@ -69,11 +68,7 @@ public class VisionAllignment extends Command {
 			right = new DistanceFollower(modifier.getRightTrajectory());
 			left.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
 			right.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);			
-			NAVXSource = new PIDSource() {
-				public double getInput() {
-					return Robot.rps.getNavxAngle();
-				}
-			};
+			NAVXSource = () -> Robot.rps.getNavxAngle();
 			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",logPID);
 			PathingLog = new Logger(FileName + "Log");
 		} catch (Exception e) {
@@ -81,7 +76,7 @@ public class VisionAllignment extends Command {
 		}
 	}
 	
-	public VisionAllignment() {
+	public VisionAlignment() {
 		requires(Robot.driveTrain);
 	}
 

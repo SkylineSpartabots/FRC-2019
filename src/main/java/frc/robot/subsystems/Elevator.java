@@ -27,12 +27,14 @@ public class Elevator extends Subsystem {
 	private WPI_TalonSRX rightElevatorMotor, leftElevatorMotor;
 	public Encoder elevatorEncoder;
 	private DigitalInput elevatorLimitSwitch;
-	
 
 	public final static int MAX_ENCODER_LIMIT = 1132;
 	public final static int MIN_ENCODER_LIMIT = 60;
+	public final static int ELEVATOR_ENCODER_MIN_CUTOFF = -10;
 	public final static int amps = 15;
 	public final static int timeoutMs = 5000;
+
+	public final static double DOWNWARDS_STALL_POWER = 0.05;
 
 
 	private NetworkTableEntry kP, kI, kD, stallPowerMin, stallPowerMax;
@@ -80,7 +82,7 @@ public class Elevator extends Subsystem {
 	
 	/**
 	 * 
-	 * @return generates stall power using through a linear relationship
+	 * @return generates stall power using a linear relationship
 	 */
 	public double getStallPower(){
 		stallPowerMinVal = stallPowerMin.getDouble(0.001);
@@ -91,8 +93,13 @@ public class Elevator extends Subsystem {
 
 
 	
-	public void setStallPower()	{
-		setRawPower(getStallPower());
+	public void stall()	{
+		if(Robot.elevator.getElevatorEncoderOutput() <= ElevatorPosition.DOWN.getPosition()){
+			Robot.elevator.setPower(Elevator.DOWNWARDS_STALL_POWER);
+		} else{
+			setRawPower(getStallPower());
+		}
+		
 	}
 	private void setRawPower(double power) {
 		rightElevatorMotor.set(power);
@@ -106,17 +113,24 @@ public class Elevator extends Subsystem {
 	 * @param power power <= 0
 	 */
 	public void setPower(double power) {
-		System.out.println(power);
-		boolean maxReached = getElevatorEncoderOutput() >= MAX_ENCODER_LIMIT && power > 0;
-		boolean minReached = getElevatorEncoderOutput() <= MIN_ENCODER_LIMIT && power < 0;
+		int encoderVal = getElevatorEncoderOutput();
+		boolean limitSwitchState = getLimitSwitchState();
+
+		if(limitSwitchState){
+			elevatorEncoder.reset();
+		}
+
+		boolean maxReached = encoderVal >= MAX_ENCODER_LIMIT && power > 0;
+		boolean minReached = (encoderVal <= ELEVATOR_ENCODER_MIN_CUTOFF || limitSwitchState)  && power < 0;
+		
 		if (maxReached) {
-			setStallPower();
-		} else if(minReached)	{
+			stall();
+		} else if(minReached){
 			setRawPower(0);
 		} 	else {
 			setRawPower(power);
 		}
-
+		
 	}
 
 	/**
@@ -148,10 +162,9 @@ public class Elevator extends Subsystem {
 	/**
 	 * Enum for storing and getting the values for the encoder values for the 8
 	 * different elevator positions
-	 * TODO: NEED TO ADD ACTUAL VALUES
 	 */
 	public enum ElevatorPosition {
-		DOWN(-7,-7), CARGO_SHIP(557, 557), ROCKET_FIRST(360, 360), ROCKET_SECOND(790, 480), ROCKET_THIRD(1125, 900);
+		DOWN(20,20), CARGO_SHIP(557, 557), ROCKET_FIRST(360, 360), ROCKET_SECOND(790, 480), ROCKET_THIRD(1125, 900);
 
 		public final int cargoPosition;
 		public final int hatchPosition;
