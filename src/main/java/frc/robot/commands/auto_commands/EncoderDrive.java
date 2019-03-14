@@ -1,11 +1,7 @@
 package frc.robot.commands.auto_commands;
 
 import frc.robot.Robot;
-import frc.robot.util.PIDSource;
-import frc.robot.util.SimplePID;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
@@ -13,8 +9,6 @@ public class EncoderDrive extends Command {
 
   private double distanceMeters;
   private double leftPower, rightPower;
-  private Timer timer; 
-	private boolean isFinished = false;
   public boolean isForward = true;
 
   public EncoderDrive(double distanceMeters, double leftPower, double rightPower){
@@ -23,7 +17,6 @@ public class EncoderDrive extends Command {
     this.leftPower = leftPower;
     this.rightPower = rightPower;
     if(distanceMeters<0) isForward = false;
-    timer = new Timer();
     requires(Robot.driveTrain);
   }
 

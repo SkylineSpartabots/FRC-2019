@@ -8,15 +8,14 @@
 package frc.robot.commands.auto_commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.Robot;
-import frc.robot.commands.basic_commands.ReleaseHatch;
 
-public class AllignAndPathToTarget extends CommandGroup {
+
+public class AlignAndPathToTarget extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public AllignAndPathToTarget() {
+  public AlignAndPathToTarget() {
     addSequential(new TurnDegreesVision(2));
-    addSequential(new VisionAllignment());
+    addSequential(new VisionAlignment());
   }
 }

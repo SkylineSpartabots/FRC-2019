@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
@@ -90,5 +91,82 @@ public class HatchMechanism extends Subsystem {
 		SmartDashboard.putBoolean("Is the Slider Extended", isSliderOut());
 		SmartDashboard.putBoolean("Is a Hatch Obtained", getHatchState());
 		SmartDashboard.putNumber("Limit Switch", hatchLimitSwitch.getValue());
+	}
+
+	public boolean checkSubsystem(){
+		System.out.println("\n\nTesting Hatch Mechanism.....................");
+		boolean hatchSolenoidFailure = false;
+		boolean hatchLimitSwitchFailure = false;
+		boolean hatchSliderFailure = false;
+
+		System.out.println("\n\nTesting Hatch Slider.....................");
+		slideOut();
+		Timer.delay(1);
+		if(!isSliderOut()){
+			hatchSliderFailure = true;
+			System.out.println("!!!!!!!! FAILURE: HATCH MECHANISM FAILED TO SLIDE OUT !!!!!!!!");
+		}
+
+		slideIn();
+		Timer.delay(1);
+		if(isSliderOut()){
+			hatchSliderFailure = true;
+			System.out.println("!!!!!!!! FAILURE: HATCH MECHANISM FAILED TO SLIDE IN !!!!!!!!");
+		}
+
+		if(hatchSliderFailure){
+			System.out.println("######## SUCCESSFUL: GO FOR HATCH SLIDER ########");
+		}
+	
+
+		System.out.println("\n\nTesting Hatch Solenoid and Limit Switch.....................");
+
+		if(getHatchState()){
+			hatchLimitSwitchFailure = true;
+			System.out.println("!!!!!!!! FAILURE: HATCH LIMIT SWITCH THINKS THAT HATCH IS PRESENT !!!!!!!!");
+		}
+
+		releaseHatch();
+		System.out.println("Releasing Hatch");
+		Timer.delay(2);
+		if(!isLotusOpen()){
+			hatchSolenoidFailure = true;
+			System.out.println("!!!!!!!! FAILURE: HATCH MECHANISM FAILED TO RELEASE !!!!!!!!");
+		}
+
+		if(!hatchSolenoidFailure){
+			System.out.println("<<<<<<<<<<<<<<< PLEASE PLACE HATCH IN HATCH MECHANISM >>>>>>>>>>>>>>>>>>>>");
+			Timer.delay(4);
+		}
+
+
+		graspHatch();
+		System.out.println("Grasping Hatch");
+		Timer.delay(1);
+		
+		if(!isLotusOpen()){
+			hatchSolenoidFailure = true;
+			System.out.println("!!!!!!!! FAILURE: HATCH MECHANISM FAILED TO GRASP !!!!!!!!");
+		} else {
+			if(!getHatchState() && !hatchLimitSwitchFailure){
+				hatchLimitSwitchFailure = true;
+				System.out.println("!!!!!!!! FAILURE: HATCH LIMIT SWITCH DID NOT DETECT HATCH !!!!!!!!");
+			}
+		}
+
+		if(!hatchSolenoidFailure){
+			System.out.println("<<<<<<<<<<<<<<< PLEASE REMOVE HATCH FROM HATCH MECHANISM >>>>>>>>>>>>>>>>>>>>");
+			releaseHatch();
+			Timer.delay(3);
+			graspHatch();
+			System.out.println("######## SUCCESSFUL: GO FOR HATCH SOLENOIDS ########");
+			if(!hatchLimitSwitchFailure){
+				System.out.println("######## SUCCESSFUL: GO FOR HATCH LIMIT SWITCH ########");
+			}
+		}
+
+
+		return !hatchLimitSwitchFailure && !hatchSolenoidFailure && !hatchSliderFailure;
+
 	}
 }

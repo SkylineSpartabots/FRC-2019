@@ -32,7 +32,7 @@ public class Debouncer {
         this.CLOCK_MAX = CLOCK_MAX;
     }
 
-    public boolean compute(){
+    public boolean getDebouncedValue(){
         
         rawState = rawInput.getBooleanInput();
 

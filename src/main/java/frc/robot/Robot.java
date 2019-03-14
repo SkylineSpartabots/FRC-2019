@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.auto_commands.TurnDegreesVision;
-import frc.robot.commands.auto_commands.VisionAllignment;
+import frc.robot.commands.auto_commands.VisionAlignment;
 import frc.robot.commands.autonomous.PlaceHatch;
 import frc.robot.subsystems.*;
 import frc.robot.util.Logger;
@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putData("Auto mode", m_chooser);
 		m_chooser.addOption("OneHatchAuto", new PlaceHatch());
-		m_chooser.addOption("visiona", new VisionAllignment());
+		m_chooser.addOption("visiona", new VisionAlignment());
 		m_chooser.addOption("turnv", new TurnDegreesVision(15));
 		m_chooser.setDefaultOption("OneHatchAuto", new PlaceHatch());
 
@@ -184,10 +184,27 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 	}
 
+	@Override
+	public void testInit() {
+		boolean intakeFailure = intake.checkSubsystem();
+		boolean hatchMechanismFailure = hatchMechanism.checkSubsystem();;
+		boolean elevatorFailure = elevator.checkSubsystem();;
+		boolean driveTrainFailure = driveTrain.checkSubsystem();;
+
+		System.out.println("\n\n\n\n");
+		if(!elevatorFailure && !intakeFailure && !hatchMechanismFailure && !driveTrainFailure){
+			System.out.println("######## GO FOR LAUNCH! ########");
+		} else {
+			System.out.println("!!!!!!!! NO GO! CHECK LOGS FOR ERROR !!!!!!!!");
+		}
+
+	}
+
 	/**
 	 * This function is called periodically during test mode.
 	 */
 	@Override
 	public void testPeriodic() {
+	
 	}
 }

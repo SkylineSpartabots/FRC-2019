@@ -3,17 +3,15 @@ package frc.robot.commands.auto_commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.util.Debouncer;
 import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 
 public class TurnDegrees extends Command {
 
-	private int clockCounter = 0;
-	private double angle;
-	private final double CLOCK_MAX = 5;
-	private boolean isFinished = false;
-	private double error;
 
+	private double angle;
+	private final int CLOCK_MAX = 5;
 	private Timer timer;
 	private double output = 0;
 	private PIDSource turnSource;
@@ -21,6 +19,9 @@ public class TurnDegrees extends Command {
 
 	private double turnThreshold;
 	private double timeOutSecs;
+
+	private Debouncer pidDebouncer;
+	private Debouncer.RawInput pidDebouncerInput;
 
 	public TurnDegrees(double angle, double timeOutSecs) {
 		requires(Robot.driveTrain);
@@ -41,10 +42,13 @@ public class TurnDegrees extends Command {
 		turnPID = new SimplePID(turnSource, this.angle, pidConstants[0], pidConstants[1], pidConstants[2], "TurnDegreesPID", false);
 		turnPID.setOutputLimits(-1, 1);
 
+		pidDebouncerInput = () -> Math.abs(turnPID.getError()) <= turnThreshold;
+		pidDebouncer = new Debouncer(pidDebouncerInput, CLOCK_MAX);
 		timer.reset();
 		timer.start();
 		turnPID.resetPID();
-		clockCounter = 0;
+
+
 		timeOutSecs += timer.get();
 	}
 
@@ -52,27 +56,13 @@ public class TurnDegrees extends Command {
 	@Override
 	protected void execute() {
 		output = turnPID.compute();
-		error = turnPID.getError();
-
-		if (Math.abs(error) < turnThreshold) {
-			clockCounter++;
-			if (clockCounter >= CLOCK_MAX) {
-				isFinished = true;
-			}
-		} else {
-			clockCounter = 0;
-		}
-
-		
-		System.out.println(output);
-
 		Robot.driveTrain.tankDrive(output, -output);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return isFinished || timer.get() > timeOutSecs;
+		return pidDebouncer.getDebouncedValue() || timer.get() > timeOutSecs;
 	}
 
 	// Called once after isFinished returns true

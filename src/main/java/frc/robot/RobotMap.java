@@ -27,8 +27,8 @@ public class RobotMap {
 	public static final int LEFT_INTAKE_MOTOR = 11;
 
 	public static final int INNER_INTAKE_MOTOR = 5;
-	public static final int INTAKE_SENSOR = 0; //TODO
-	public static final int INTAKE_SENSOR_THRESHOLD = 50; //TODO
+	public static final int INTAKE_SENSOR = 0;
+	public static final int INTAKE_SENSOR_THRESHOLD = 50;
 
 	public static final int INTAKE_SOLENOID = 2;
 
@@ -72,5 +72,5 @@ public class RobotMap {
 	public static final int HATCH_LIMIT_SWTICH = 2;
 
 	//Threshold for analog limit switch
-	public static final int HATCH_LIMIT_SWTICH_THRESHOLD = 1800; //TODO: need to add proper value
+	public static final int HATCH_LIMIT_SWTICH_THRESHOLD = 1800;
 }

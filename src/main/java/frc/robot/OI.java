@@ -1,16 +1,9 @@
 package frc.robot;
 
 import frc.robot.commands.drive_controls.*;
-import frc.robot.commands.auto_commands.AllignAndPathToTarget;
-import frc.robot.commands.auto_commands.OutakeWithVision;
-import frc.robot.commands.auto_commands.PickUpHatch;
-import frc.robot.commands.auto_commands.TurnDegreesVision;
-import frc.robot.commands.auto_commands.VisionAllignment;
-import frc.robot.commands.autonomous.PlaceHatch;
 import frc.robot.commands.basic_commands.*;
 import frc.robot.controllers.Xbox;
 import frc.robot.subsystems.Elevator;
-import jaci.pathfinder.Waypoint;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -62,7 +55,6 @@ public class OI {
 		//driveStick.buttonX.whenPressed(new AllignAndPathToTarget());
 		
 
-		// TODO: need to add controls for extending and retracting intake
 	}
 
 }

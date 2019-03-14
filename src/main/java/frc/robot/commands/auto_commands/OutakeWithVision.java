@@ -16,7 +16,7 @@ public class OutakeWithVision extends CommandGroup {
    * Add your docs here.
    */
   public OutakeWithVision() {
-    addSequential(new AllignAndPathToTarget());
+    addSequential(new AlignAndPathToTarget());
     if(!Robot.intake.isCargo()){
       addSequential(new ReleaseHatch());
     } else {

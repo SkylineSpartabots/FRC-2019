@@ -17,7 +17,7 @@ public class PickUpHatch extends CommandGroup {
    */
   public PickUpHatch() {
     addSequential(new ReleaseHatch());
-    addSequential(new AllignAndPathToTarget());
+    addSequential(new AlignAndPathToTarget());
     addSequential(new GraspHatch());
   }
 }

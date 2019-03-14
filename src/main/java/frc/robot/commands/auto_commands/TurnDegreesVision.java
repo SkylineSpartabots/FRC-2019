@@ -7,7 +7,7 @@ import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 
 public class TurnDegreesVision extends Command {
-	private double angleFudgeFactor = -0.8; //TODO
+	private double angleFudgeFactor = -0.8;
 	private int clockCounter = 0;
 	private double angle;
 	private final double CLOCK_MAX = 10;

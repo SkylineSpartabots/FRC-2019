@@ -42,7 +42,7 @@ public class HatchMechanismControl extends Command {
   @Override
   protected void execute() {
 
-    currentHatchState = hatchDebouncer.compute();
+    currentHatchState = hatchDebouncer.getDebouncedValue();
 
     // Controls hatch mechanism taking input from the bumpers and the limit switch
     if (Robot.oi.driveStick.buttonRBumper.get()) {

@@ -9,8 +9,6 @@ package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot;
-import frc.robot.commands.auto_commands.AllignAndPathToTarget;
-import frc.robot.commands.auto_commands.EncoderDrive;
 import frc.robot.commands.auto_commands.PathExecuter;
 import jaci.pathfinder.Waypoint;
 

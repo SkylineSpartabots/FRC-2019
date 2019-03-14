@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.commands.VibrateControllers;
 import frc.robot.subsystems.Elevator;
+import frc.robot.util.Debouncer;
 import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 
@@ -16,8 +17,6 @@ public class ElevatorToPosition extends Command {
   private PIDSource elevatorSource;
   private int elevatorTarget;
   private double output;
-  private double error;
-  private int clockCounter = 0;
   private boolean isFinished = false;
 
   private boolean isBottom;
@@ -26,6 +25,9 @@ public class ElevatorToPosition extends Command {
   private VibrateControllers vibrateControllers;
   private boolean hasVibrated;
   private double[] elevatorConstants;
+
+  private Debouncer pidDebouncer;
+  private Debouncer.RawInput pidDebouncerInput;
 
   /**
    * Specify an elevator position using the "Elevator Position" enum and the robot
@@ -50,6 +52,9 @@ public class ElevatorToPosition extends Command {
     elevatorTarget = this.elevatorPosition.getPosition();
 
     elevatorPID = new SimplePID(elevatorSource, elevatorTarget, elevatorConstants[0], elevatorConstants[1], elevatorConstants[2], "ElevatorPositionPID", false);
+    
+    pidDebouncerInput = () -> Math.abs(elevatorPID.getError()) <= ELEVATOR_THRESHOLD;
+    pidDebouncer = new Debouncer(pidDebouncerInput, CLOCK_MAX);
     
     isBottom = elevatorTarget == Elevator.ElevatorPosition.DOWN.getPosition();
 
@@ -83,19 +88,10 @@ public class ElevatorToPosition extends Command {
 
     } else {
       output = elevatorPID.compute();
-      error = elevatorPID.getError();
       Robot.elevator.setPower(output);
-      /*
-       * logic for ending the the pid loop, if it is within a certain range for a
-       * period of time meaning its velocity isn't too high, then stall the motors
-       */
-      if (Math.abs(error) <= ELEVATOR_THRESHOLD) {
-        clockCounter++;
-        if (clockCounter > CLOCK_MAX) {
-          isFinished = true;
-        }
-      } else {
-        clockCounter = 0;
+
+      if(pidDebouncer.getDebouncedValue()){
+        isFinished = true;
       }
     }
 
