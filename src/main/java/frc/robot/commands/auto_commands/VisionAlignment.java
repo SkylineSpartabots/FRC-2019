@@ -48,7 +48,7 @@ public class VisionAlignment extends Command {
 
 
 	public void initPathExecuter(Trajectory traj, String FileName, boolean logPID) {
-		
+
 		/*pathConstants = Robot.driveTrain.getPathPID();
 		turnConstants = Robot.driveTrain.getTurnPID();
 
@@ -60,8 +60,8 @@ public class VisionAlignment extends Command {
 		TurnP = turnConstants[0];
 		TurnI = turnConstants[1];
 		TurnD = turnConstants[2];*/
-		
-		
+
+
 		try {
 			TankModifier modifier = new TankModifier(traj).modify(RobotMap.TRACK_WIDTH);
 			left = new DistanceFollower(modifier.getLeftTrajectory());
@@ -82,7 +82,7 @@ public class VisionAlignment extends Command {
 
 	private boolean verifyPathWaypoints(double z, double x)	{
 		if(z < x)	return false; //too tight
-		if(z < 0.2) return false; //too close 
+		if(z < 0.2) return false; //too close
 		if(x < -20) return false; //vision target cannot be seen
 		if(z < -20) return false; //vision target cannot be seen
 		return true;
@@ -100,13 +100,13 @@ public class VisionAlignment extends Command {
 			Waypoint[] points 	= new Waypoint[]{
 					new Waypoint(0, 0, 0),
 					new Waypoint(z_dist, x_dist, 0)
-			}; 
+			};
 			try {
 				System.out.println("Generating Trajectory");
 				Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-						Trajectory.Config.SAMPLES_LOW, 0.02, proportionOfMaxVelocity*RobotMap.MAX_VELOCITY, 2.0, 60.0);			
+						Trajectory.Config.SAMPLES_LOW, 0.02, proportionOfMaxVelocity*RobotMap.MAX_VELOCITY, 2.0, 60.0);
 				Trajectory trajectory = Pathfinder.generate(points, config);
-				System.out.println("Trajectory Length: " + trajectory.length());			
+				System.out.println("Trajectory Length: " + trajectory.length());
 				initPathExecuter(trajectory, "Vision", true);
 				turnPID.resetPID();
 				Robot.rps.reset();
@@ -115,7 +115,7 @@ public class VisionAlignment extends Command {
 				right.reset();
 				Robot.SystemLog.writeWithTimeStamp("Path Executer Initialized: Angle=" + Robot.rps.getNavxAngle());
 				PathingLog.writeNewData("Time, Desired Heading, Desired Left Position, Desired Right Position, Heading, Left Position, Right Posiion, LeftPower, RightPower");
-				
+
 			} catch (Exception e) {
 				prematureTermination = true;
 			}
@@ -164,7 +164,7 @@ public class VisionAlignment extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-		
+
 		Robot.rps.reset();
 		if(!prematureTermination)	{
 			turnPID.resetPID();

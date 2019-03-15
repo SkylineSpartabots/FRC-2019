@@ -4,6 +4,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.Robot;
 
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * @author NeilHazra
@@ -75,6 +77,9 @@ public class RPS {
 	//will return degrees
 	public double getYawToVisionTargetRawDegrees()	{
 		return (double) Yaw.getNumber(0);
+	}
+	public boolean isVisionAlive() {
+		return Timer.getFPGATimestamp()*1000000 - Robot.JetsonTable.getEntry("IsAliveCounter").getLastChange() < 2000000;
 	}
 
 

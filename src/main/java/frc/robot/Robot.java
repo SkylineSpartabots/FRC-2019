@@ -77,11 +77,9 @@ public class Robot extends TimedRobot {
 		jetsonProcessStart.inheritIO();
 		try{
 			jetsonProcessStart.start();
-			SmartDashboard.putBoolean("Jetson on", true);
 		}	catch (IOException e){
 			System.out.println("Errpr" + e.getMessage());
 			SystemLog.writeWithTimeStamp("IOException at Jetson Start: " + e.getMessage());
-			SmartDashboard.putBoolean("Jetson on", false);
 		}
 		SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
 		
@@ -104,11 +102,11 @@ public class Robot extends TimedRobot {
 		elevator.setElevatorDataOnDisplay();
 		hatchMechanism.setHatchMechanismDataOnDisplay();
 		intake.setIntakeDataOnDisplay();
-		System.out.println("");
 		SmartDashboard.putNumber("XDisp", Robot.rps.getXDisplacementToVisionTargetRawInches());
 		SmartDashboard.putNumber("ZDisp", Robot.rps.getZDisplacementToVisionTargetRawInches());
 		SmartDashboard.putNumber("Angle", Robot.rps.getYawToVisionTargetRawDegrees());
-		SmartDashboard.putNumber("Navx", Robot.rps.getNavxAngle());		
+		SmartDashboard.putNumber("Navx", Robot.rps.getNavxAngle());	
+		SmartDashboard.putBoolean("isJetsonAlive", Robot.rps.isVisionAlive());	
 	}
 
 	/**
@@ -144,7 +142,21 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		rps.reset();
 		driveTrain.resetEncoders();	
-		Robot.hatchMechanism.slideOut();	
+		Robot.hatchMechanism.slideOut();
+		if(!Robot.rps.isVisionAlive())	{
+			SystemLog.writeWithTimeStamp("Starting Jetson");
+			String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
+			ProcessBuilder jetsonProcessStart = new ProcessBuilder();
+			jetsonProcessStart.command("sh", "-c", jetsonCmd);
+			jetsonProcessStart.inheritIO();
+			try{
+				jetsonProcessStart.start();
+			}	catch (IOException e){
+				System.out.println("Errpr" + e.getMessage());
+				SystemLog.writeWithTimeStamp("IOException at Jetson Start: " + e.getMessage());
+			}
+			SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
+		}	
 		//m_autonomousCommand = m_chooser.getSelected();
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.start();
