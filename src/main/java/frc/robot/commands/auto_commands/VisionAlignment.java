@@ -68,7 +68,7 @@ public class VisionAlignment extends Command {
 			right = new DistanceFollower(modifier.getRightTrajectory());
 			left.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
 			right.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);			
-			NAVXSource = () -> Robot.rps.getNavxAngle();
+			NAVXSource = () -> -Robot.rps.getNavxAngle(); //negative to bring coordinates to superimpose
 			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",logPID);
 			PathingLog = new Logger(FileName + "Log");
 		} catch (Exception e) {
@@ -81,7 +81,7 @@ public class VisionAlignment extends Command {
 	}
 
 	private boolean verifyPathWaypoints(double z, double x)	{
-		if(z < x)	return false; //too tight
+		if(z < Math.abs(x))	return false; //too tight
 		if(z < 0.2) return false; //too close
 		if(x < -20) return false; //vision target cannot be seen
 		if(z < -20) return false; //vision target cannot be seen
@@ -151,7 +151,6 @@ public class VisionAlignment extends Command {
 		if(!prematureTermination)	{
 			updateMotorOutputs(Robot.driveTrain.getLeftEncoderDistanceMeters(), Robot.driveTrain.getRightEncoderDistanceMeters());
 			Robot.driveTrain.rawMotorOutput(LeftMotorOutput, RightMotorOutput);
-			//System.out.println("RUNNING!");
 		}
 	}
 
@@ -164,7 +163,6 @@ public class VisionAlignment extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-
 		Robot.rps.reset();
 		if(!prematureTermination)	{
 			turnPID.resetPID();

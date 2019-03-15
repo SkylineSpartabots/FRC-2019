@@ -72,7 +72,8 @@ public class PathExecuter extends Command {
 			right.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
 			NAVXSource = new PIDSource() {
 				public double getInput() {
-					return Robot.rps.getNavxAngle();
+					//needs to be negative
+					return -Robot.rps.getNavxAngle();
 				}
 			};			
 			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",log);
