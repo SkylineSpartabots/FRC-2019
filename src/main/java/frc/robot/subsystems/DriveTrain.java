@@ -85,7 +85,7 @@ public class DriveTrain extends Subsystem {
 		forward = TAB.add("forward", 2).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 
 		vibrateProportion = TAB.add("vibrate", 0.2).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 1)).getEntry();
-
+		
 		/*zOffset = TAB.add("Z-Axis Offset", 0.45).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		zScale = TAB.add("Z-Axis Scale", 1.1).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		

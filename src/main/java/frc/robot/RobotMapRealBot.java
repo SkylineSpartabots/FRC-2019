@@ -6,9 +6,8 @@ package frc.robot;
  * the wiring easier and significantly reduces the number of magic numbers
  * floating around.
  */
-
- //Practice Bot
-public class RobotMap {
+//Real bot
+public class RobotMapRealBot {
 
 	// Robot physical metrics
 	public static final double TRACK_WIDTH = 0.68; // in meters
@@ -29,8 +28,8 @@ public class RobotMap {
 	public static final int LEFT_INTAKE_MOTOR = 11;
 
 	public static final int INNER_INTAKE_MOTOR = 5;
-	public static final int INTAKE_SENSOR = 0; //TODO
-	public static final int INTAKE_SENSOR_THRESHOLD = 50; //TODO
+	public static final int INTAKE_SENSOR = 0;
+	public static final int INTAKE_SENSOR_THRESHOLD = 50;
 
 	public static final int INTAKE_SOLENOID = 2;
 
@@ -53,21 +52,26 @@ public class RobotMap {
 	public static final int LEFT_ELEVATOR = 1; // slave
 
 	// encoders on drive train
-	public static final int RIGHT_WHEEL_ENCODER_PORT_A = 4;
-	public static final int RIGHT_WHEEL_ENCODER_PORT_B = 3;
-	public static final int LEFT_WHEEL_ENCODER_PORT_A = 1;
-	public static final int LEFT_WHEEL_ENCODER_PORT_B = 0;
+	public static final int LEFT_WHEEL_ENCODER_PORT_A = 2;
+	public static final int LEFT_WHEEL_ENCODER_PORT_B = 3;
+	public static final int RIGHT_WHEEL_ENCODER_PORT_A = 1;
+	public static final int RIGHT_WHEEL_ENCODER_PORT_B = 0;
 
 	// encoders on elevator
-	public static final int ELEVATOR_ENCODER_PORT_A = 6;
+	public static final int ELEVATOR_ENCODER_PORT_A = 4;
 	public static final int ELEVATOR_ENCODER_PORT_B = 5;
 
 	// elevator limit switch port
-	public static final int ELEVATOR_LIMIT_SWITCH = 2;
+	public static final int ELEVATOR_LIMIT_SWITCH = 6;
 
 	// hatch mechanism solenoid port
-	public static final int HATCH_SOLENOID = 0;
+	public static final int HATCH_SOLENOID = 1;
 
-	public static final int HATCH_SLIDER_SOLENOID = 1;
+	public static final int HATCH_SLIDER_SOLENOID = 0;
+
+	//hatch mechanism limit switch port
+	public static final int HATCH_LIMIT_SWTICH = 2;
+
+	//Threshold for analog limit switch
 	public static final int HATCH_LIMIT_SWTICH_THRESHOLD = 1800;
 }

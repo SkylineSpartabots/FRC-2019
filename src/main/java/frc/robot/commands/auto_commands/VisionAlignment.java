@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.util.Debouncer;
 import frc.robot.util.Logger;
 import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
@@ -25,16 +26,16 @@ public class VisionAlignment extends Command {
 	private final double TurnD = 0.00;
 
 	*/
+	public Debouncer isFinishedDebouncer;
 	public boolean prematureTermination = false;
 	public boolean log = true;
-	private double proportionOfMaxVelocity = 0.4;
-	private double P = 1.1;
-	private double D = 0;
+	private double P = 0.9;
+	private double D = 0.01;
 	private double k_a = 0.02;
-
-	private double TurnP = 0.03;
+	private double proportionOfMaxVelocity = 0.7;
+	private double TurnP = 0.005;
 	private double TurnI = 0.0;
-	private double TurnD = 0.002;
+	private double TurnD = 0.0005;
 
 
 
@@ -45,7 +46,7 @@ public class VisionAlignment extends Command {
 
 	private double LeftMotorOutput = 0;
 	private double RightMotorOutput = 0;
-
+		
 
 	public void initPathExecuter(Trajectory traj, String FileName, boolean logPID) {
 
@@ -68,7 +69,7 @@ public class VisionAlignment extends Command {
 			right = new DistanceFollower(modifier.getRightTrajectory());
 			left.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
 			right.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);			
-			NAVXSource = () -> -Robot.rps.getNavxAngle(); //negative to bring coordinates to superimpose
+			NAVXSource = () -> Robot.rps.getNavxAngle(); //negative to bring coordinates to superimpose
 			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",logPID);
 			PathingLog = new Logger(FileName + "Log");
 		} catch (Exception e) {
@@ -83,13 +84,12 @@ public class VisionAlignment extends Command {
 	private boolean verifyPathWaypoints(double z, double x)	{
 		if(z < Math.abs(x))	return false; //too tight
 		if(z < 0.2) return false; //too close
-		if(x < -20) return false; //vision target cannot be seen
-		if(z < -20) return false; //vision target cannot be seen
+		if(((Double) x).isNaN() || ((Double) z).isNaN()) return false; //vision target cannot be seen
 		return true;
 	}
 	@Override
 	protected void initialize() {
-		double x_dist = Robot.rps.getXDisplacementEditedForCameraPositionMeters();
+		double x_dist = -Robot.rps.getXDisplacementEditedForCameraPositionMeters();
 		double z_dist = Robot.rps.getZDisplacementEditedForCameraPositionMeters();
 
 		if(!verifyPathWaypoints(z_dist, x_dist))	{
@@ -107,6 +107,7 @@ public class VisionAlignment extends Command {
 						Trajectory.Config.SAMPLES_LOW, 0.02, proportionOfMaxVelocity*RobotMap.MAX_VELOCITY, 2.0, 60.0);
 				Trajectory trajectory = Pathfinder.generate(points, config);
 				System.out.println("Trajectory Length: " + trajectory.length());
+				isFinishedDebouncer = new Debouncer(10);
 				initPathExecuter(trajectory, "Vision", true);
 				turnPID.resetPID();
 				Robot.rps.reset();
@@ -123,26 +124,26 @@ public class VisionAlignment extends Command {
 	}
 
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
-		Segment left_s = left.getSegment();
-		Segment right_s = right.getSegment();
-		double l = left.calculate(LeftEncoderDistance);
-		double r = right.calculate(RightEncoderDistance);
+		double l = 0;
+		double r = 0;
+		Segment left_s = null;
+		Segment right_s = null;
+		if(!left.isFinished() && !right.isFinished())	{
+			left_s = left.getSegment();
+			right_s = right.getSegment();
+			l = left.calculate(LeftEncoderDistance);
+			r = right.calculate(RightEncoderDistance);
+		}
 		double desired_heading = Pathfinder.boundHalfDegrees(Pathfinder.r2d(left.getHeading()));
-		turnPID.setSetpoint(desired_heading);
-		//System.out.println(desired_heading);
+		turnPID.setSetpoint(-desired_heading);
 		double turn = turnPID.compute();
 		LeftMotorOutput = l + turn;
 		RightMotorOutput = r - turn;
-		if(log)	{
-			try{
+		if(log && !left.isFinished() && !right.isFinished())	{
 				PathingLog.writeNewData(
 					Timer.getFPGATimestamp()+","+desired_heading+","+left_s.position+","+right_s.position+","+
 					turnPID.getInput()+","+Robot.driveTrain.getLeftEncoderDistanceMeters()+","+Robot.driveTrain.getRightEncoderDistanceMeters()+","+
 					LeftMotorOutput+","+RightMotorOutput);
-			}catch(Exception e)	{
-				System.out.println("Should not be in here anymore");
-				//pass this error
-			}
 		}
 	}
 	// Called repeatedly when this Command is scheduled to run
@@ -151,13 +152,14 @@ public class VisionAlignment extends Command {
 		if(!prematureTermination)	{
 			updateMotorOutputs(Robot.driveTrain.getLeftEncoderDistanceMeters(), Robot.driveTrain.getRightEncoderDistanceMeters());
 			Robot.driveTrain.rawMotorOutput(LeftMotorOutput, RightMotorOutput);
+			System.out.println("kp:\t" + P + "kd:\t" + D + "maxv:\t" + proportionOfMaxVelocity + "ka:\t" + k_a);
 		}
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return prematureTermination || (left.isFinished() && right.isFinished()) || Math.abs(Robot.oi.driveStick.getLY()) > 0.1;
+		return prematureTermination || isFinishedDebouncer.getDebouncedValue((left.isFinished() && right.isFinished())) || Math.abs(Robot.oi.driveStick.getLY()) > 0.1;
 	}
 
 	// Called once after isFinished returns true

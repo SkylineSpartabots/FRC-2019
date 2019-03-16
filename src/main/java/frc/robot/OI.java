@@ -1,9 +1,11 @@
 package frc.robot;
 
 import frc.robot.commands.drive_controls.*;
+import frc.robot.commands.auto_commands.*;
 import frc.robot.commands.basic_commands.*;
 import frc.robot.controllers.Xbox;
 import frc.robot.subsystems.Elevator;
+import jaci.pathfinder.Waypoint;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -44,9 +46,12 @@ public class OI {
 
 		driveStick.buttonLBumper.whenPressed(new ReleaseHatch());
 		driveStick.buttonRBumper.whenPressed(new GraspHatch());
-		
-		//driveStick.buttonA.whenPressed(new PlaceHatch());
-		//driveStick.buttonB.whenPressed(new VisionAllignment());
+		Waypoint[] toCargo = new Waypoint[]{
+			new Waypoint(0, 0, 0),
+			new Waypoint(1, 0.5, 0),
+		  };
+		driveStick.buttonA.whenPressed(new PathExecuter(toCargo ,"test",false));
+		driveStick.buttonB.whenPressed(new VisionAlignment());
 		//driveStick.buttonX.whenPressed(new TurnDegreesVision(3));
 /////////////////////////////////////////////////////////////////////////////////////
 		//THis is good

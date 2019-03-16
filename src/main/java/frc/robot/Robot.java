@@ -143,6 +143,7 @@ public class Robot extends TimedRobot {
 		rps.reset();
 		driveTrain.resetEncoders();	
 		Robot.hatchMechanism.slideOut();
+
 		if(!Robot.rps.isVisionAlive())	{
 			SystemLog.writeWithTimeStamp("Starting Jetson");
 			String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
@@ -157,6 +158,7 @@ public class Robot extends TimedRobot {
 			}
 			SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
 		}	
+		
 		//m_autonomousCommand = m_chooser.getSelected();
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.start();
