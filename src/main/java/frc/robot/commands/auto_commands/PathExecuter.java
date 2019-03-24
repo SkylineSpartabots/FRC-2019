@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.util.Debouncer;
 import frc.robot.util.Logger;
 import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
@@ -21,16 +22,17 @@ import jaci.pathfinder.modifiers.TankModifier;
  */
 
 public class PathExecuter extends Command {
+	public Debouncer isFinishedDebouncer;
 	public boolean prematureTermination = false;
 
 	private double proportionOfMaxVelocity = 0.7;
-	private double P = 1.1;
-	private double D = 0;
+	private double P = 0.9;
+	private double D = 0.01;
 	private double k_a = 0.02;
 
-	private double TurnP = 0.03;
+	private double TurnP = 0.005;
 	private double TurnI = 0.0;
-	private double TurnD = 0.002;
+	private double TurnD = 0.0005;
 
 	private DistanceFollower left, right;
 	private PIDSource NAVXSource;
@@ -43,18 +45,19 @@ public class PathExecuter extends Command {
 
 	private double[] pathConstants, turnConstants;
 
+
 	public void initPathExecuter(String FileName) {
 		
 		pathConstants = Robot.driveTrain.getPathPID();
 		turnConstants = Robot.driveTrain.getTurnPID();
-		P = pathConstants[0];
-		D = pathConstants[1];
-		proportionOfMaxVelocity = pathConstants[2];
-		k_a = pathConstants[3];
+		//P = pathConstants[0];
+		//D = pathConstants[1];
+		//proportionOfMaxVelocity = pathConstants[2];
+		//k_a = pathConstants[3];
 
-		TurnP = turnConstants[0];
-		TurnI = turnConstants[1];
-		TurnD = turnConstants[2];
+		//TurnP = turnConstants[0];
+		//TurnI = turnConstants[1];
+		//TurnD = turnConstants[2];
 
 
 		try {
@@ -72,8 +75,7 @@ public class PathExecuter extends Command {
 			right.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
 			NAVXSource = new PIDSource() {
 				public double getInput() {
-					//needs to be negative
-					return -Robot.rps.getNavxAngle();
+					return Robot.rps.getNavxAngle();
 				}
 			};			
 			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",log);
@@ -114,34 +116,36 @@ public class PathExecuter extends Command {
 	public PathExecuter(String FileName, boolean log) {
 		requires(Robot.driveTrain);	
 		this.log = log;	
+		
 		initPathExecuter(FileName);
+		
 	}
 	public PathExecuter(Waypoint[] points, String FileName, boolean log) {
 		requires(Robot.driveTrain);
 		this.log = log;
-		initPathExecuter(points, FileName);
+			initPathExecuter(points, FileName);
 	}
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
-		Segment left_s = left.getSegment();
-		Segment right_s = right.getSegment();
-		double l = left.calculate(LeftEncoderDistance);
-		double r = right.calculate(RightEncoderDistance);
+		double l = 0;
+		double r = 0;
+		Segment left_s = null;
+		Segment right_s = null;
+		if(!left.isFinished() && !right.isFinished())	{
+			left_s = left.getSegment();
+			right_s = right.getSegment();
+			l = left.calculate(LeftEncoderDistance);
+			r = right.calculate(RightEncoderDistance);
+		}
 		double desired_heading = Pathfinder.boundHalfDegrees(Pathfinder.r2d(left.getHeading()));
-		turnPID.setSetpoint(desired_heading);
-		//System.out.println(desired_heading);
+		turnPID.setSetpoint(-desired_heading);
 		double turn = turnPID.compute();
 		LeftMotorOutput = l + turn;
 		RightMotorOutput = r - turn;
-		if(log)	{
-			try{
+		if(log && !left.isFinished() && !right.isFinished())	{
 				PathingLog.writeNewData(
 					Timer.getFPGATimestamp()+","+desired_heading+","+left_s.position+","+right_s.position+","+
 					turnPID.getInput()+","+Robot.driveTrain.getLeftEncoderDistanceMeters()+","+Robot.driveTrain.getRightEncoderDistanceMeters()+","+
 					LeftMotorOutput+","+RightMotorOutput);
-			}catch(Exception e)	{
-				
-				//pass this error
-			}
 		}
 	}
 
@@ -152,6 +156,7 @@ public class PathExecuter extends Command {
 	@Override
 	protected void initialize() {
 		if(!prematureTermination)	{
+			isFinishedDebouncer = new Debouncer(10);
 			turnPID.resetPID();
 			Robot.rps.reset();
 			Robot.driveTrain.resetEncoders();
@@ -174,7 +179,7 @@ public class PathExecuter extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return prematureTermination || (left.isFinished() && right.isFinished()) || Math.abs(Robot.oi.driveStick.getLY()) > 0.1;
+		return prematureTermination || isFinishedDebouncer.getDebouncedValue((left.isFinished() && right.isFinished())) || Math.abs(Robot.oi.driveStick.getLY()) > 0.1;
 	}
 	// Called once after isFinished returns true
 	@Override

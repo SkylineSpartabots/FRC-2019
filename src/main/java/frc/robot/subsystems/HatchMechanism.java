@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
+import frc.robot.commands.drive_controls.HatchMechanismControl;
 
 /**
  * Subsystem for the lotus mechanism. Controls hatch panels.
@@ -82,7 +83,7 @@ public class HatchMechanism extends Subsystem {
 
 	@Override
 	public void initDefaultCommand() {
-		//setDefaultCommand(new HatchMechanismControl());
+		setDefaultCommand(new HatchMechanismControl());
 	}
 
 

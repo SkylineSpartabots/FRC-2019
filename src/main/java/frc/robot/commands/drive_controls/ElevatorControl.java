@@ -3,7 +3,6 @@ package frc.robot.commands.drive_controls;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-
 public class ElevatorControl extends Command {
 
 	
@@ -23,10 +22,10 @@ public class ElevatorControl extends Command {
 	@Override
 	protected void execute() {
 		joyVal = -Robot.oi.secondStick.getRY();
-		if(Math.abs(joyVal) > 0.1){
-			Robot.elevator.setPower(joyVal);
+		if(Math.abs(joyVal) > 0.05){
+			Robot.elevator.setPower(joyVal); 
 		} else {
-			Robot.elevator.stall();
+			Robot.elevator.setStallPower();
 		}
 	}
 

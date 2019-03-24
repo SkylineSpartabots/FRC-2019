@@ -31,9 +31,33 @@ public class Debouncer {
         this.rawInput = rawInput;
         this.CLOCK_MAX = CLOCK_MAX;
     }
+    public Debouncer(int CLOCK_MAX){
+        this.rawInput = null;
+        this.CLOCK_MAX = CLOCK_MAX;
+    }
+    public boolean getDebouncedValue(boolean rawState) {
+        if(prevRawState == rawState) {
+            clockCounter++;
+            if(clockCounter == CLOCK_MAX){
+                deboucedValue = rawState;
+                clockCounter = 0;
+            }
+        } else {
+            clockCounter = 0;
+        }
 
+        prevRawState = rawState;
+
+        //in the first cycles through the debouncer, when a debounced value hasn't
+        //been set, it returns the raw value
+        if(deboucedValue == null){
+            return rawState;
+        } else{
+            return deboucedValue;
+        }
+    }
     public boolean getDebouncedValue(){
-        
+        if(rawInput == null) return false;
         rawState = rawInput.getBooleanInput();
 
         if(prevRawState == rawState) {

@@ -15,6 +15,7 @@ public class AlignAndPathToTarget extends CommandGroup {
    * Add your docs here.
    */
   public AlignAndPathToTarget() {
+    addSequential(new StopDriveTrain());
     addSequential(new TurnDegreesVision(2));
     addSequential(new VisionAlignment());
   }

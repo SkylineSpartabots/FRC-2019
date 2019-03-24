@@ -26,7 +26,7 @@ public class DriveWithJoystick extends Command {
 			forwardClipAmount = 0.7;
 			turnClipAmount = 0.75;
 		} else if(Robot.elevator.getElevatorEncoderOutput() >= 700){
-			forwardClipAmount = 0.5;
+			forwardClipAmount = 0.65;
 			turnClipAmount = 0.6;
 		} else{
 			forwardClipAmount = 1;

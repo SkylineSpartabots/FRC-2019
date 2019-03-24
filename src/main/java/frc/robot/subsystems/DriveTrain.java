@@ -72,8 +72,8 @@ public class DriveTrain extends Subsystem {
 
 		//Shuffleboard inputs
 		turnkP = TAB.add("Turn kP", 0.016).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		turnkI = TAB.add("Turn kI", 0.0012).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		turnkD = TAB.add("Turn kD", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkI = TAB.add("Turn kI", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkD = TAB.add("Turn kD", 0.0012).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 
 
 		pathkP = TAB.add("Path kP", 1.1).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
@@ -85,7 +85,7 @@ public class DriveTrain extends Subsystem {
 		forward = TAB.add("forward", 2).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 
 		vibrateProportion = TAB.add("vibrate", 0.2).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 1)).getEntry();
-
+		
 		/*zOffset = TAB.add("Z-Axis Offset", 0.45).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		zScale = TAB.add("Z-Axis Scale", 1.1).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		
@@ -201,7 +201,8 @@ public class DriveTrain extends Subsystem {
 	public void setDriveTrainDataOnDisplay() {
 		SmartDashboard.putNumber("Right Drive Encoder In Inches", getRightEncoderDistanceInches());
 		SmartDashboard.putNumber("Left Drive Encoder In Inches", getLeftEncoderDistanceInches());
-		SmartDashboard.putNumber("Heading", Robot.rps.getNavxAngle());
+		SmartDashboard.putNumber("Relative Heading", Robot.rps.getNavxAngle());
+		SmartDashboard.putNumber("Absolute Heading", Robot.rps.getNavxAngle());
 	}
 
 	public boolean checkSubsystem(){

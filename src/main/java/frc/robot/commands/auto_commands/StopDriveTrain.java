@@ -5,60 +5,55 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drive_controls;
+package frc.robot.commands.auto_commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-/**
- * This logic controls the hatch mechanism Gamepad Controls (Second Stick):
- * Right Bumper -> release hatch Left Bumper -> grasp hatch
- * 
- * Also implements the limit swtich, if the limit swich and changed from a false
- * to true state, grasp hatch
- */
-
-public class HatchMechanismControl extends Command {
-
-
-
-  public HatchMechanismControl() {
-    requires(Robot.hatchMechanism);
+public class StopDriveTrain extends Command {
+  
+  private double encoderDiff;
+  private int clockCounter;
+  private int clockMax;
+  private int encoderDiffThreshold = 10;
+  private double prevEncoderVal;
+  
+  public StopDriveTrain() {
+    requires(Robot.driveTrain);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-
+    Robot.driveTrain.setBrake();
+    Robot.driveTrain.tankDrive(0, 0);
+    clockCounter = 0;
+    encoderDiff = 500;
+    prevEncoderVal = Robot.driveTrain.getLeftEncoderDistanceInches();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-
-    if(Robot.oi.driveStick.buttonLBumper.get()){
-      Robot.hatchMechanism.releaseHatch();
-    } else if(Robot.oi.driveStick.buttonRBumper.get()){
-      Robot.hatchMechanism.graspHatch();
-    }
-
-    if (Robot.oi.secondStick.buttonStart.get()) {
-      Robot.hatchMechanism.slideOut();
+    if(clockCounter < clockMax){
+      clockCounter++;
     } else {
-      Robot.hatchMechanism.slideIn();
+      encoderDiff = Robot.driveTrain.getLeftEncoderDistanceInches() - prevEncoderVal;
+      prevEncoderVal = Robot.driveTrain.getLeftEncoderDistanceInches();
+      clockCounter = 0;
     }
-
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return encoderDiff < encoderDiffThreshold;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+
   }
 
   // Called when another command which requires one or more of the same

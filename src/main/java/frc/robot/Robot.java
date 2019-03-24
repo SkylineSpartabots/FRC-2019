@@ -98,6 +98,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {	
+		
 		driveTrain.setDriveTrainDataOnDisplay();
 		elevator.setElevatorDataOnDisplay();
 		hatchMechanism.setHatchMechanismDataOnDisplay();
@@ -107,6 +108,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Angle", Robot.rps.getYawToVisionTargetRawDegrees());
 		SmartDashboard.putNumber("Navx", Robot.rps.getNavxAngle());	
 		SmartDashboard.putBoolean("isJetsonAlive", Robot.rps.isVisionAlive());	
+		SmartDashboard.putNumber("NavxResetOffset", rps.angleResetOffset);
 	}
 
 	/**
@@ -143,6 +145,7 @@ public class Robot extends TimedRobot {
 		rps.reset();
 		driveTrain.resetEncoders();	
 		Robot.hatchMechanism.slideOut();
+
 		if(!Robot.rps.isVisionAlive())	{
 			SystemLog.writeWithTimeStamp("Starting Jetson");
 			String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
@@ -157,7 +160,8 @@ public class Robot extends TimedRobot {
 			}
 			SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
 		}	
-		//m_autonomousCommand = m_chooser.getSelected();
+		
+		//m_autonomousCommand = new VisionAlignment();//m_chooser.getSelected();
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.start();
 		}
@@ -184,7 +188,6 @@ public class Robot extends TimedRobot {
 		hatchMechanism.graspHatch();
 		intake.retractIntake();
 		elevator.elevatorEncoder.reset();
-		rps.reset();
 	}
 
 	/**
@@ -192,23 +195,13 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {	
-		//Logger.flushAllLogs();
+		Logger.flushAllLogs();
 		Scheduler.getInstance().run();
 	}
 
 	@Override
 	public void testInit() {
-		boolean intakeFailure = intake.checkSubsystem();
-		boolean hatchMechanismFailure = hatchMechanism.checkSubsystem();;
-		boolean elevatorFailure = elevator.checkSubsystem();;
-		boolean driveTrainFailure = driveTrain.checkSubsystem();;
-
-		System.out.println("\n\n\n\n");
-		if(!elevatorFailure && !intakeFailure && !hatchMechanismFailure && !driveTrainFailure){
-			System.out.println("######## GO FOR LAUNCH! ########");
-		} else {
-			System.out.println("!!!!!!!! NO GO! CHECK LOGS FOR ERROR !!!!!!!!");
-		}
+	
 
 	}
 

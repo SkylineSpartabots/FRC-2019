@@ -20,13 +20,15 @@ public class IntakeControl extends Command {
 	@Override
 	protected void initialize() {
 		Robot.intake.setIntakePower(0);
-		manualOverride = true;
+		manualOverride = false;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
 		// Controls for moving intake down and up using dpad
+
+		
 
 		if(Robot.intake.isCargo() && !hasVibrated){
 			hasVibrated = true;

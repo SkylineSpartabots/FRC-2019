@@ -1,6 +1,9 @@
 package frc.robot;
 
 import frc.robot.commands.drive_controls.*;
+import frc.robot.commands.auto_commands.StopDriveTrain;
+import frc.robot.commands.auto_commands.TurnDegreesVision;
+import frc.robot.commands.auto_commands.VisionAlignment;
 import frc.robot.commands.basic_commands.*;
 import frc.robot.controllers.Xbox;
 import frc.robot.subsystems.Elevator;
@@ -39,15 +42,16 @@ public class OI {
 		secondStick.buttonY.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_THIRD));
 		secondStick.buttonB.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.CARGO_SHIP));
 
-		secondStick.buttonStart.whenPressed(new SlideHatchOut());
-		secondStick.buttonBack.whenPressed(new SlideHatchIn());
+		//secondStick.buttonStart.whenPressed(new SlideHatchOut());
+		//secondStick.buttonBack.whenPressed(new SlideHatchIn());
 
-		driveStick.buttonLBumper.whenPressed(new ReleaseHatch());
-		driveStick.buttonRBumper.whenPressed(new GraspHatch());
+		//driveStick.buttonLBumper.whenPressed(new ReleaseHatch());
+		//driveStick.buttonRBumper.whenPressed(new GraspHatch());
+		//driveStick.buttonA.whenPressed(new StopDriveTrain());
 		
 		//driveStick.buttonA.whenPressed(new PlaceHatch());
-		//driveStick.buttonB.whenPressed(new VisionAllignment());
-		//driveStick.buttonX.whenPressed(new TurnDegreesVision(3));
+		//driveStick.buttonB.whenPressed(new VisionAlignment());
+		driveStick.buttonX.whenPressed(new TurnDegreesVision(10));
 /////////////////////////////////////////////////////////////////////////////////////
 		//THis is good
 		//driveStick.buttonB.whenPressed(new PickUpHatch());
@@ -55,6 +59,7 @@ public class OI {
 		//driveStick.buttonX.whenPressed(new AllignAndPathToTarget());
 		
 
+		// TODO: need to add controls for extending and retracting intake
 	}
 
 }

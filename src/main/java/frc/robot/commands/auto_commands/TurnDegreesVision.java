@@ -23,7 +23,7 @@ public class TurnDegreesVision extends Command {
 	double kI = 0.00056;
 	double kD = 0.0012;
 
-	private double turnThreshold = 7;
+	private double turnThreshold = 4;
 	private double timeOutSecs;
 
 	public TurnDegreesVision(double timeOutSecs) {
@@ -32,29 +32,27 @@ public class TurnDegreesVision extends Command {
 		timer = new Timer();
 		this.timeOutSecs = timeOutSecs;
 
-		turnSource = new PIDSource() {
-			@Override
-			public double getInput() {
-				return Robot.rps.getNavxAngle();
-			}
-		};
+		turnSource = () -> Robot.rps.getNavxAngle();
 
 
 		//double[] pidConstants = Robot.driveTrain.getTurnPID();
 		//turnPID = new SimplePID(turnSource, 0, pidConstants[0],pidConstants[1], pidConstants[2], "TurnDegreesPID",true);
-		turnPID = new SimplePID(turnSource, 0, kP, kI, kD, "TurnDegreesPID",true);
-		turnPID.setOutputLimits(-1, 1);
+		
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+		turnPID = new SimplePID(turnSource, 0, kP, kI, kD, "TurnDegreesPID",true);
+		turnPID.setOutputLimits(-1, 1);
+
 		turnPID.resetPID();
 		this.angle = Robot.rps.getYawToVisionTargetRawDegrees()*angleFudgeFactor + Robot.rps.getNavxAngle();
 		turnPID.setSetpoint(this.angle);
 		timer.reset();
 		timer.start();
-		
+
+		isFinished = false;
 		clockCounter = 0;
 		timeOutSecs += timer.get();
 	}
@@ -73,14 +71,16 @@ public class TurnDegreesVision extends Command {
 		} else {
 			clockCounter = 0;
 		}
-		System.out.println("Turn Power" + output);
+		System.out.println("!!!!!!!! EXECUTING !!!!!!!!!!");
+		//System.out.println("Turn Power" + output);
 		Robot.driveTrain.tankDrive(output, -output);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return isFinished || timer.get() > timeOutSecs;
+		return isFinished || timer.get() > timeOutSecs
+			|| Math.abs(Robot.oi.driveStick.getLY()) > 0.1 || Math.abs(Robot.oi.driveStick.getRX()) > 0.1;
 	}
 
 	// Called once after isFinished returns true
