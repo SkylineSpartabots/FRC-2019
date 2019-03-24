@@ -9,7 +9,7 @@ import frc.robot.util.SimplePID;
 
 public class ElevatorToPosition extends Command {
 
-  private final static int ELEVATOR_THRESHOLD = 5;
+  private static int ELEVATOR_THRESHOLD = 5;
   private final static int CLOCK_MAX = 10;
 
   private SimplePID elevatorPID;
@@ -19,6 +19,7 @@ public class ElevatorToPosition extends Command {
   private double error;
   private int clockCounter = 0;
   private boolean isFinished = false;
+  private double kP;
 
   
   private double setpoint;
@@ -52,13 +53,14 @@ public class ElevatorToPosition extends Command {
 
     elevatorTarget = this.elevatorPosition.getPosition();
 
-    elevatorPID = new SimplePID(elevatorSource, elevatorTarget, elevatorConstants[0], elevatorConstants[1], elevatorConstants[2], "ElevatorPositionPID", false);
-    
+    elevatorPID = new SimplePID(elevatorSource, elevatorTarget, elevatorConstants[0], elevatorConstants[1], elevatorConstants[2], "ElevatorPositionPID", true);
+    kP = elevatorConstants[0];
     targetIsLower = (Robot.elevator.getElevatorEncoderOutput() - elevatorTarget) > 40;
     targetIsDown = elevatorTarget == Elevator.ElevatorPosition.DOWN.getPosition();
 
     if(targetIsDown){
-      elevatorPID.setOutputLimits(-0.3, 0.60);
+      elevatorPID.setOutputLimits(-0.4, 0.1);
+      ELEVATOR_THRESHOLD = 20;
     }
     else if (targetIsLower) {
       elevatorPID.setOutputLimits(-0.2, 0.2);
@@ -75,7 +77,7 @@ public class ElevatorToPosition extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-  
+    System.out.println("kp: " + kP);
     if(isFinished){
       if(!hasVibrated){
         try {
@@ -87,12 +89,8 @@ public class ElevatorToPosition extends Command {
         hasVibrated = true;
       }
       
-      
-      if(targetIsLower){
-        Robot.elevator.setPower(0);
-      } else{
-        Robot.elevator.setStallPower();
-      }
+      Robot.elevator.setStallPower();
+    
     } else {
       output = elevatorPID.compute();
       error = elevatorPID.getError();

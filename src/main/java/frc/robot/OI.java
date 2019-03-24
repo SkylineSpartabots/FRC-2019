@@ -51,7 +51,7 @@ public class OI {
 		
 		//driveStick.buttonA.whenPressed(new PlaceHatch());
 		//driveStick.buttonB.whenPressed(new VisionAlignment());
-		driveStick.buttonX.whenPressed(new TurnDegreesVision(10));
+		//driveStick.buttonX.whenPressed(new TurnDegreesVision(10));
 /////////////////////////////////////////////////////////////////////////////////////
 		//THis is good
 		//driveStick.buttonB.whenPressed(new PickUpHatch());

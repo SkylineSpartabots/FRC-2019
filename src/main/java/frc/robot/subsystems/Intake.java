@@ -22,8 +22,6 @@ public class Intake extends Subsystem {
 	AnalogInput beamBreak;
 	Debouncer.RawInput beamBreakInput;
 	Debouncer beamBreakDebouncer;
-	private final static double CARGO_CURRENT_THRESHOLD = 1;
-	public boolean cargoOverride = false;
 
 	public Intake() {
 		masterIntakeMotor = new WPI_TalonSRX(RobotMap.RIGHT_INTAKE_MOTOR);
@@ -118,9 +116,6 @@ public class Intake extends Subsystem {
 		return beamBreak.getValue() < RobotMap.INTAKE_SENSOR_THRESHOLD;
 	}
 
-	public boolean getRawCargoPositionCurrent(){
-		return innerIntakeMotor.getOutputCurrent() > CARGO_CURRENT_THRESHOLD;
-	}
 
 	public boolean isCargo(){
 		return beamBreakDebouncer.getDebouncedValue();
@@ -137,6 +132,7 @@ public class Intake extends Subsystem {
 		SmartDashboard.putNumber("Intake Kebabs Power", masterIntakeMotor.get());
 		SmartDashboard.putNumber("Inner Intake Power", innerIntakeMotor.get());
 		SmartDashboard.putNumber("Beam Break Value", beamBreak.getValue());
+
 	}
 
 	public boolean checkSubsystem(){

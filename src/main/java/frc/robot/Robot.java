@@ -64,10 +64,10 @@ public class Robot extends TimedRobot {
 		}
 
 		SmartDashboard.putData("Auto mode", m_chooser);
-		m_chooser.addOption("OneHatchAuto", new PlaceHatch());
-		m_chooser.addOption("visiona", new VisionAlignment());
-		m_chooser.addOption("turnv", new TurnDegreesVision(15));
-		m_chooser.setDefaultOption("OneHatchAuto", new PlaceHatch());
+		//m_chooser.addOption("OneHatchAuto", new PlaceHatch());
+		///m_chooser.addOption("visiona", new VisionAlignment());
+		//m_chooser.addOption("turnv", new TurnDegreesVision(15));
+		//m_chooser.setDefaultOption("OneHatchAuto", new PlaceHatch());
 
 		System.out.println("Starting Jetson");	
 		SystemLog.writeWithTimeStamp("Starting Jetson");

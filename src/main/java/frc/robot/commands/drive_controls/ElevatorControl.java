@@ -22,7 +22,7 @@ public class ElevatorControl extends Command {
 	@Override
 	protected void execute() {
 		joyVal = -Robot.oi.secondStick.getRY();
-		if(Math.abs(joyVal) > 0.05){
+		if(Math.abs(joyVal) > 0.05){	
 			Robot.elevator.setPower(joyVal); 
 		} else {
 			Robot.elevator.setStallPower();

@@ -30,7 +30,7 @@ public class Elevator extends Subsystem {
 	
 
 	public final static int MAX_ENCODER_LIMIT = 1132;
-	public final static int MIN_ENCODER_LIMIT = 60;
+	public final static int MIN_ENCODER_LIMIT = -5;
 	public final static int amps = 15;
 	public final static int timeoutMs = 5000;
 
@@ -57,11 +57,11 @@ public class Elevator extends Subsystem {
 		elevatorEncoder = new Encoder(RobotMap.ELEVATOR_ENCODER_PORT_A, RobotMap.ELEVATOR_ENCODER_PORT_B);
 		elevatorLimitSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH);
 
-		kP = TAB.add("Elevator kP", 0.028).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		kI = TAB.add("Elevator kI", 0.002).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		kD = TAB.add("Elevator kD", 0.001).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		stallPowerMin = TAB.add("Min Stall Power", 0.07).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 1)).getEntry();
-		stallPowerMax = TAB.add("Max Stall Power", 0.09).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 1)).getEntry();
+		kP = TAB.add("Elevator kP", 0.016).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		kI = TAB.add("Elevator kI", 0.004).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		kD = TAB.add("Elevator kD", 0.002).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		stallPowerMin = TAB.add("Min Stall Power", 0.1).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 1)).getEntry();
+		stallPowerMax = TAB.add("Max Stall Power", 0.17).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 1)).getEntry();
 	}
 
 	/**
@@ -86,13 +86,18 @@ public class Elevator extends Subsystem {
 		stallPowerMinVal = stallPowerMin.getDouble(0.001);
 		stallPowerMaxVal = stallPowerMax.getDouble(0.001);
 		slope = (stallPowerMaxVal - stallPowerMinVal)/MAX_ENCODER_LIMIT;
-		return stallPowerMinVal + (slope * getElevatorEncoderOutput());
+		if(getElevatorEncoderOutput() < 50){
+			return -0.1;
+		} else {
+			return stallPowerMinVal + (slope * getElevatorEncoderOutput());
+		}
+		
 	}
 
 
 	
 	public void setStallPower()	{
-		setRawPower(getStallPower());
+		setPower(getStallPower());
 	}
 	private void setRawPower(double power) {
 		rightElevatorMotor.set(power);
@@ -108,11 +113,12 @@ public class Elevator extends Subsystem {
 	public void setPower(double power) {
 		System.out.println(power);
 		boolean maxReached = getElevatorEncoderOutput() >= MAX_ENCODER_LIMIT && power > 0;
-		boolean minReached = getElevatorEncoderOutput() <= MIN_ENCODER_LIMIT && power < 0;
-		if (maxReached) {
-			setStallPower();
-		} else if(minReached)	{
+		boolean minReached = (getElevatorEncoderOutput() <= MIN_ENCODER_LIMIT || getLimitSwitchState()) && power < 0;
+		
+		if (minReached) {
 			setRawPower(0);
+		} else if(maxReached)	{
+			setStallPower();
 		} 	else {
 			setRawPower(power);
 		}
@@ -141,7 +147,7 @@ public class Elevator extends Subsystem {
 
 		SmartDashboard.putNumber("Left Elevator Motor Output Voltage", leftElevatorMotor.getMotorOutputVoltage());
 		SmartDashboard.putNumber("Right Elevator Motor Output Voltage", rightElevatorMotor.getMotorOutputVoltage());
-
+		SmartDashboard.putNumber("LOOOOOOOOOOOOOOOOOK", leftElevatorMotor.get());
 		SmartDashboard.putNumber("Stall Power", getStallPower());
 	}
 
@@ -151,7 +157,7 @@ public class Elevator extends Subsystem {
 	 * TODO: NEED TO ADD ACTUAL VALUES
 	 */
 	public enum ElevatorPosition {
-		DOWN(-7,-7), CARGO_SHIP(557, 557), ROCKET_FIRST(360, 360), ROCKET_SECOND(790, 480), ROCKET_THIRD(1125, 900);
+		DOWN(50, 50), CARGO_SHIP(557, 557), ROCKET_FIRST(360, 360), ROCKET_SECOND(790, 480), ROCKET_THIRD(1125, 900);
 
 		public final int cargoPosition;
 		public final int hatchPosition;
