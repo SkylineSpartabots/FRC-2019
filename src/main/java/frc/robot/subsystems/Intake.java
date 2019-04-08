@@ -72,7 +72,7 @@ public class Intake extends Subsystem {
 
 		boolean isCargo = isCargo();
 		
-		if (isCargo || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT || !getIntakeSolenoidState()) {
+		if (isCargo || Robot.elevator.getElevatorEncoderOutput() > 60 || !getIntakeSolenoidState()) {
 			masterIntakeMotor.set(0);
 		} else {
 			masterIntakeMotor.set(power);
@@ -82,7 +82,7 @@ public class Intake extends Subsystem {
 			if (isCargo) {
 				retractIntake();
 				if (power < 0) {
-					if(Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT){
+					if(Robot.elevator.getElevatorEncoderOutput() > 60){
 						innerIntakeMotor.set(power*0.75);
 					} else {
 						innerIntakeMotor.set(0);

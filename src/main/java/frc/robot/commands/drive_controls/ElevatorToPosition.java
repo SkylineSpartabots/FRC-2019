@@ -59,11 +59,11 @@ public class ElevatorToPosition extends Command {
     targetIsDown = elevatorTarget == Elevator.ElevatorPosition.DOWN.getPosition();
 
     if(targetIsDown){
-      elevatorPID.setOutputLimits(-0.4, 0.1);
+      elevatorPID.setOutputLimits(-0.3, 0.1);
       ELEVATOR_THRESHOLD = 20;
     }
     else if (targetIsLower) {
-      elevatorPID.setOutputLimits(-0.2, 0.2);
+      elevatorPID.setOutputLimits(-0.3, 0.2);
     } else {
       elevatorPID.setOutputLimits(0, 0.60);
     }
@@ -77,7 +77,7 @@ public class ElevatorToPosition extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    System.out.println("kp: " + kP);
+    //System.out.println("kp: " + kP);
     if(isFinished){
       if(!hasVibrated){
         try {

@@ -202,7 +202,7 @@ public class DriveTrain extends Subsystem {
 		SmartDashboard.putNumber("Right Drive Encoder In Inches", getRightEncoderDistanceInches());
 		SmartDashboard.putNumber("Left Drive Encoder In Inches", getLeftEncoderDistanceInches());
 		SmartDashboard.putNumber("Relative Heading", Robot.rps.getNavxAngle());
-		SmartDashboard.putNumber("Absolute Heading", Robot.rps.getNavxAngle());
+		SmartDashboard.putNumber("Absolute Heading", Robot.rps.getAbsoluteAngle());
 	}
 
 	public boolean checkSubsystem(){

@@ -5,18 +5,27 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.auto_commands;
+package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.commands.basic_commands.ReleaseHatch;
+import frc.robot.commands.basic_commands.SlideHatchOut;
+import frc.robot.commands.Wait;
+import frc.robot.commands.auto_commands.*;
 
-
-public class AlignAndPathToTarget extends CommandGroup {
+public class AlignAndPathToDepot extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public AlignAndPathToTarget() {
+  public AlignAndPathToDepot() {
+    addSequential(new PerfectlyStraightDrive(60, 0.5, 0.5));//in inches
+    
     addSequential(new StopDriveTrain());
-    addSequential(new TurnDegreesVision(2));
+    addSequential(new Wait(400));
+    addParallel(new SlideHatchOut());
+    //addSequential(new TurnDegreesVision(2));
     addSequential(new VisionAlignment());
+    addSequential(new ReleaseHatch());
+    
   }
 }

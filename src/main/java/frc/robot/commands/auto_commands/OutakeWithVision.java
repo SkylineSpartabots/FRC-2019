@@ -10,13 +10,13 @@ package frc.robot.commands.auto_commands;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot;
 import frc.robot.commands.basic_commands.ReleaseHatch;
-
+import frc.robot.commands.autonomous.*;
 public class OutakeWithVision extends CommandGroup {
   /**
    * Add your docs here.
    */
   public OutakeWithVision() {
-    addSequential(new AlignAndPathToTarget());
+    addSequential(new AlignAndPathToDepot());
     if(!Robot.intake.isCargo()){
       addSequential(new ReleaseHatch());
     } else {

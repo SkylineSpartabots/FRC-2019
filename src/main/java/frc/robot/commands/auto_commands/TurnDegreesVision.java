@@ -7,7 +7,6 @@ import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 
 public class TurnDegreesVision extends Command {
-	private double angleFudgeFactor = -0.8;
 	private int clockCounter = 0;
 	private double angle;
 	private final double CLOCK_MAX = 10;
@@ -19,16 +18,18 @@ public class TurnDegreesVision extends Command {
 	private PIDSource turnSource;
 	private SimplePID turnPID;
 
-	double kP = 0.016;
-	double kI = 0.00056;
-	double kD = 0.0012;
-
+	//double kP = 0.016;
+	//double kI = 0.00056;
+	//double kD = 0.0012;
+	double kP = 0.03;
+	double kI = 0.0015;
+	double kD = 0.0035;
 	private double turnThreshold = 4;
 	private double timeOutSecs;
 
 	public TurnDegreesVision(double timeOutSecs) {
 		requires(Robot.driveTrain);
-
+		requires(Robot.hatchMechanism);
 		timer = new Timer();
 		this.timeOutSecs = timeOutSecs;
 
@@ -47,7 +48,8 @@ public class TurnDegreesVision extends Command {
 		turnPID.setOutputLimits(-1, 1);
 
 		turnPID.resetPID();
-		this.angle = Robot.rps.getYawToVisionTargetRawDegrees()*angleFudgeFactor + Robot.rps.getNavxAngle();
+		Robot.rps.reset();
+		this.angle = Robot.rps.getAngleToDepot() + Robot.rps.getNavxAngle();
 		turnPID.setSetpoint(this.angle);
 		timer.reset();
 		timer.start();

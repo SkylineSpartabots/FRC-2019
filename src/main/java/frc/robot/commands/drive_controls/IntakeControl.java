@@ -42,9 +42,9 @@ public class IntakeControl extends Command {
 			hasVibrated = false;
 		}
 		
-		if(Robot.oi.secondStick.getLY() > 0.2){
+		if(Robot.oi.secondStick.buttonBack.get()){
 			manualOverride = false;
-		} else if(Robot.oi.secondStick.getLY() < -0.2){
+		} else if(Robot.oi.secondStick.buttonStart.get()){
 			manualOverride = true;
 		}
 		SmartDashboard.putBoolean("manualoveride", manualOverride);
@@ -53,7 +53,7 @@ public class IntakeControl extends Command {
 		if(!manualOverride){
 			if (Robot.oi.secondStick.isPOVDownish()) {
 				Robot.intake.extendIntake();
-			} else if (Robot.oi.secondStick.isPOVUpish() || Robot.elevator.getElevatorEncoderOutput() > Elevator.MIN_ENCODER_LIMIT) {
+			} else if (Robot.oi.secondStick.isPOVUpish() || Robot.elevator.getElevatorEncoderOutput() > 60) {
 				Robot.intake.retractIntake();
 			}
 			

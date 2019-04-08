@@ -10,14 +10,14 @@ package frc.robot.commands.auto_commands;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.commands.basic_commands.GraspHatch;
 import frc.robot.commands.basic_commands.ReleaseHatch;
-
+import frc.robot.commands.autonomous.*;
 public class PickUpHatch extends CommandGroup {
   /**
    * Add your docs here.
    */
   public PickUpHatch() {
     addSequential(new ReleaseHatch());
-    addSequential(new AlignAndPathToTarget());
+    addSequential(new AlignAndPathToDepot());
     addSequential(new GraspHatch());
   }
 }

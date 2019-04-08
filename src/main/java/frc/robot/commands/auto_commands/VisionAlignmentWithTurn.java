@@ -15,7 +15,7 @@ import jaci.pathfinder.Trajectory.Segment;
 import jaci.pathfinder.followers.DistanceFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 
-public class VisionAlignment extends Command {
+public class VisionAlignmentWithTurn extends Command {
 	/*
 	private final double P = 1.1;
 	private final double D = 0;
@@ -77,10 +77,8 @@ public class VisionAlignment extends Command {
 		}
 	}
 	
-	public 
-	VisionAlignment() {
+	public VisionAlignmentWithTurn() {
 		requires(Robot.driveTrain);
-		requires(Robot.hatchMechanism);
 		
 	}
 
@@ -103,7 +101,7 @@ public class VisionAlignment extends Command {
 		if(!prematureTermination)	{
 			Waypoint[] points 	= new Waypoint[]{
 					new Waypoint(0, 0, 0),
-					new Waypoint(z_dist, x_dist, 0)
+					new Waypoint(z_dist, x_dist, Robot.rps.getAngleToDepot())
 			};
 			try {
 				System.out.println("Generating Trajectory");

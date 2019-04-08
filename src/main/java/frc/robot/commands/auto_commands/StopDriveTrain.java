@@ -15,7 +15,7 @@ public class StopDriveTrain extends Command {
   private double encoderDiff;
   private int clockCounter;
   private int clockMax;
-  private int encoderDiffThreshold = 10;
+  private int encoderDiffThreshold = 1;
   private double prevEncoderVal;
   
   public StopDriveTrain() {
@@ -47,7 +47,8 @@ public class StopDriveTrain extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return encoderDiff < encoderDiffThreshold;
+    return encoderDiff < encoderDiffThreshold 
+      || Math.abs(Robot.oi.driveStick.getRX()) > 0.1 || Math.abs(Robot.oi.driveStick.getLY()) > 0.1;
   }
 
   // Called once after isFinished returns true

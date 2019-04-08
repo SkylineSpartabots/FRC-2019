@@ -17,17 +17,21 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
  */
 
 public class RPS {
-	private double z_axis_offset = 0.8;
+	private double z_axis_offset = 0.43;
 	private double z_scale = 1;
-	private double positive_x_fudgefactor = 0.82;
-	private double negative_x_fudgefactor = 0.71;
-	private double positive_x_fudge_offset = 1.8/13.0;
-	private double negative_x_fudge_offset = 0.0/13.0;
+	private double positive_x_fudgefactor = 1;
+	private double negative_x_fudgefactor = 1;
+	private double positive_x_fudge_offset = -0.03;
+	private double negative_x_fudge_offset = -0.03;
 
 	private double lastUpdateTimeLimit = 2000000;
 
 	private AHRS ahrs;
-	public double angleResetOffset = 0; 
+	
+	public double angleOffset = 0; 
+
+
+	
 	private NetworkTableEntry XDisp;
 	private NetworkTableEntry YDisp;
 	private NetworkTableEntry ZDisp;
@@ -68,6 +72,7 @@ public class RPS {
 	}
 
 	public void reset() {
+		angleOffset += ahrs.getAngle();
 		ahrs.reset();
 	}
 	
@@ -125,6 +130,23 @@ public class RPS {
 	}
 
 
+	public double getAbsoluteAngle()	{
+		return ahrs.getAngle()+angleOffset;
+	}
+	public double getAbsoluteAngleHalfDegrees()	{
+		double newAngle = getAbsoluteAngle();
+		while (newAngle <= -180) newAngle += 360;
+		while (newAngle > 180) newAngle -= 360;
+		return newAngle; //-179, 180
+	}
+	public double getAngleToDepot()	{
+		double angle = getAbsoluteAngleHalfDegrees();
+		if(angle >= 0) {
+			return (180-angle);
+		}	else	{
+			return (-180-angle);
+		}
+	}
 	public double getNavxAngle()	{
 		return ahrs.getAngle();
 	}

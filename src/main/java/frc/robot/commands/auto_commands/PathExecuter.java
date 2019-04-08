@@ -93,8 +93,10 @@ public class PathExecuter extends Command {
 			Trajectory trajectory = Pathfinder.generate(points, config);
 			System.out.println("Trajectory Length: " + trajectory.length());
 			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
-			Pathfinder.writeToCSV(f, trajectory);
-			Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
+			if(f.exists())	{
+				Pathfinder.writeToCSV(f, trajectory);
+			}
+				Robot.SystemLog.writeNewData("PathExecuter: Trajectory Path Saved To File");
 
 			TankModifier modifier = new TankModifier(trajectory).modify(RobotMap.TRACK_WIDTH);
 			left = new DistanceFollower(modifier.getLeftTrajectory());
@@ -123,7 +125,7 @@ public class PathExecuter extends Command {
 	public PathExecuter(Waypoint[] points, String FileName, boolean log) {
 		requires(Robot.driveTrain);
 		this.log = log;
-			initPathExecuter(points, FileName);
+		initPathExecuter(points, FileName);
 	}
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
 		double l = 0;

@@ -42,7 +42,7 @@ public class HatchMechanismControl extends Command {
       Robot.hatchMechanism.graspHatch();
     }
 
-    if (Robot.oi.secondStick.buttonStart.get()) {
+    if (Robot.oi.secondStick.buttonLJoystick.get()) {
       Robot.hatchMechanism.slideOut();
     } else {
       Robot.hatchMechanism.slideIn();

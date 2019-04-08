@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -36,6 +37,8 @@ public class Robot extends TimedRobot {
 	public static Elevator elevator;
 	public static HatchMechanism hatchMechanism;
 
+	public static double attemptedStartTime = 0;
+	public static int numAttempts = 5;
 	public static OI oi;
 	
 
@@ -48,6 +51,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
+		
 		NetworkInst = NetworkTableInstance.getDefault();
 		JetsonTable = NetworkInst.getTable("JetsonData");
 		SystemLog = new Logger("SystemLog");
@@ -77,6 +81,7 @@ public class Robot extends TimedRobot {
 		jetsonProcessStart.inheritIO();
 		try{
 			jetsonProcessStart.start();
+			numAttempts++;
 		}	catch (IOException e){
 			System.out.println("Errpr" + e.getMessage());
 			SystemLog.writeWithTimeStamp("IOException at Jetson Start: " + e.getMessage());
@@ -98,6 +103,22 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {	
+		if(!Robot.rps.isVisionAlive() && (Timer.getFPGATimestamp()-attemptedStartTime > 5) && numAttempts <=150)	{
+			attemptedStartTime = Timer.getFPGATimestamp();
+			SystemLog.writeWithTimeStamp("Starting Jetson");
+			String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
+			ProcessBuilder jetsonProcessStart = new ProcessBuilder();
+			jetsonProcessStart.command("sh", "-c", jetsonCmd);
+			jetsonProcessStart.inheritIO();
+			try{
+				jetsonProcessStart.start();
+				numAttempts++;
+			}	catch (IOException e){
+				System.out.println("Errpr" + e.getMessage());
+				SystemLog.writeWithTimeStamp("IOException at Jetson Start: " + e.getMessage());
+			}
+			SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
+		}
 		
 		driveTrain.setDriveTrainDataOnDisplay();
 		elevator.setElevatorDataOnDisplay();
@@ -108,7 +129,8 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Angle", Robot.rps.getYawToVisionTargetRawDegrees());
 		SmartDashboard.putNumber("Navx", Robot.rps.getNavxAngle());	
 		SmartDashboard.putBoolean("isJetsonAlive", Robot.rps.isVisionAlive());	
-		SmartDashboard.putNumber("NavxResetOffset", rps.angleResetOffset);
+		SmartDashboard.putNumber("Angle to Depot", Robot.rps.getAngleToDepot());
+		//SmartDashboard.putNumber("NavxResetOffset", rps.angleResetOffset);
 	}
 
 	/**
@@ -143,10 +165,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		rps.reset();
+		rps.angleOffset = 0;
 		driveTrain.resetEncoders();	
 		Robot.hatchMechanism.slideOut();
-
+		elevator.elevatorEncoder.reset();
+		
 		if(!Robot.rps.isVisionAlive())	{
+			attemptedStartTime = Timer.getFPGATimestamp();
 			SystemLog.writeWithTimeStamp("Starting Jetson");
 			String jetsonCmd = "ssh ubuntu@10.29.76.12 /bin/bash -c '/home/ubuntu/VisionProcessing/Deploy/run_vision_program.sh'";
 			ProcessBuilder jetsonProcessStart = new ProcessBuilder();
@@ -187,7 +212,6 @@ public class Robot extends TimedRobot {
 
 		hatchMechanism.graspHatch();
 		intake.retractIntake();
-		elevator.elevatorEncoder.reset();
 	}
 
 	/**
@@ -201,7 +225,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testInit() {
-	
+		boolean elevatorStatus = elevator.checkSubsystem();
 
 	}
 
