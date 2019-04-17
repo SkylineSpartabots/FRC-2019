@@ -44,9 +44,6 @@ public class PerfectlyStraightDrive extends Command {
 			}
 		};
 
-    SmartDashboard.putNumber("kP, Perfect Drive", kP);
-
-
     
 		turnPID = new SimplePID(NavxSource, this.angle, kP, kI, kD, "DriveStraingTurnPID" ,true);
 		turnPID.setOutputLimits(-0.5, 0.5);

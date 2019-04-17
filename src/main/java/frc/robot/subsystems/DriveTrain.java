@@ -34,9 +34,13 @@ public class DriveTrain extends Subsystem {
 	private SpeedControllerGroup left, right;
 	
 
-	private static final ShuffleboardTab TAB = Shuffleboard.getTab("DriveConstants");
-	private static NetworkTableEntry turnkP, turnkI, turnkD, proportionVelocity, pathkP, pathkD, pathkA, forward, lateral, vibrateProportion;
-	//private static NetworkTableEntry zOffset, zScale, positiveXFudge, negativeXFudge, positiveOffset, negativeOffset;
+	private static final ShuffleboardTab DRIVE_TAB = Shuffleboard.getTab("Drive Constants");
+	private static final ShuffleboardTab PATH_TAB = Shuffleboard.getTab("Pathing Constants");
+	private static NetworkTableEntry turnkP, turnkI, turnkD;
+	private static NetworkTableEntry proportionVelocity, pathkP, pathkD, pathkA, forward, lateral;
+	
+	
+	
 	public DriveTrain() {
 		leftFront = new WPI_TalonSRX(RobotMap.LEFT_FRONT_DRIVE_MOTOR);
 		leftMid = new WPI_VictorSPX(RobotMap.LEFT_MID_DRIVE_MOTOR);
@@ -70,32 +74,20 @@ public class DriveTrain extends Subsystem {
 		m_drive = new DifferentialDrive(left, right);
 		m_drive.setRightSideInverted(false);
 
-		//Shuffleboard inputs
-		turnkP = TAB.add("Turn kP", 0.016).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		turnkI = TAB.add("Turn kI", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		turnkD = TAB.add("Turn kD", 0.0012).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		//General turns
+		turnkP = DRIVE_TAB.add("Turn kP", 0.016).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkI = DRIVE_TAB.add("Turn kI", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkD = DRIVE_TAB.add("Turn kD", 0.0012).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 
 
-		pathkP = TAB.add("Path kP", 1.1).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		proportionVelocity = TAB.add("Path velo", 0.0012).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		pathkD = TAB.add("Path kD", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		pathkA = TAB.add("Path kA", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		pathkP = PATH_TAB.add("Path kP", 0.9).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		proportionVelocity = PATH_TAB.add("Path velo", 0.7).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		pathkD = PATH_TAB.add("Path kD", 0.01).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		pathkA = PATH_TAB.add("Path kA", 0.02).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 	
-		lateral = TAB.add("lateral", 0).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		forward = TAB.add("forward", 2).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-
-		vibrateProportion = TAB.add("vibrate", 0.2).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 1)).getEntry();
+		lateral = PATH_TAB.add("lateral", 0).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
+		forward = PATH_TAB.add("forward", 0).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		
-		/*zOffset = TAB.add("Z-Axis Offset", 0.45).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		zScale = TAB.add("Z-Axis Scale", 1.1).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		
-		positiveXFudge = TAB.add("Postive X Fudge Factor", 1.5).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		negativeXFudge = TAB.add("Negative X Fudge Factor", 1.35).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		
-		positiveOffset = TAB.add("Postive X Fudge Offset", 0.1).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		negativeXFudge = TAB.add("Negative X Fudge Offset", 0.08).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();*/
-		
-	
 	}
 
 	/**
@@ -106,20 +98,16 @@ public class DriveTrain extends Subsystem {
 		double[] constants = {turnkP.getDouble(0.00001), turnkI.getDouble(0.00001), turnkD.getDouble(0.00001)};
 		return constants;
 	}
-
-	public double[] getPathPID(){
-		double[] constants = {pathkP.getDouble(0.00001), pathkD.getDouble(0.00001), proportionVelocity.getDouble(0.00001), pathkA.getDouble(0.00001)};
+	public double[] getPathConstants(){
+		double[] constants = {pathkP.getDouble(0.9), pathkD.getDouble(0.01), proportionVelocity.getDouble(0.7), pathkA.getDouble(0.02)};
 		return constants;
 	}
 
-	public double[] distances(){
+	public double[] getPathTestDistances(){
 		double[] constants = {forward.getDouble(0.001), lateral.getDouble(0.001)};
 		return constants;
 	}
 
-	public double getVibrate(){
-		return vibrateProportion.getDouble(0.001);
-	}
 
 	
 	/**

@@ -18,9 +18,6 @@ public class TurnDegreesVision extends Command {
 	private PIDSource turnSource;
 	private SimplePID turnPID;
 
-	//double kP = 0.016;
-	//double kI = 0.00056;
-	//double kD = 0.0012;
 	double kP = 0.03;
 	double kI = 0.0015;
 	double kD = 0.0035;
@@ -29,28 +26,22 @@ public class TurnDegreesVision extends Command {
 
 	public TurnDegreesVision(double timeOutSecs) {
 		requires(Robot.driveTrain);
-		requires(Robot.hatchMechanism);
 		timer = new Timer();
-		this.timeOutSecs = timeOutSecs;
-
 		turnSource = () -> Robot.rps.getNavxAngle();
-
-
-		//double[] pidConstants = Robot.driveTrain.getTurnPID();
-		//turnPID = new SimplePID(turnSource, 0, pidConstants[0],pidConstants[1], pidConstants[2], "TurnDegreesPID",true);
-		
+		this.timeOutSecs = timeOutSecs;
 	}
+
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+		angle = Robot.rps.getAngleToDepot() + Robot.rps.getNavxAngle();
+
 		turnPID = new SimplePID(turnSource, 0, kP, kI, kD, "TurnDegreesPID",true);
 		turnPID.setOutputLimits(-1, 1);
-
 		turnPID.resetPID();
-		Robot.rps.reset();
-		this.angle = Robot.rps.getAngleToDepot() + Robot.rps.getNavxAngle();
-		turnPID.setSetpoint(this.angle);
+		
+		turnPID.setSetpoint(angle);
 		timer.reset();
 		timer.start();
 
@@ -73,8 +64,6 @@ public class TurnDegreesVision extends Command {
 		} else {
 			clockCounter = 0;
 		}
-		System.out.println("!!!!!!!! EXECUTING !!!!!!!!!!");
-		//System.out.println("Turn Power" + output);
 		Robot.driveTrain.tankDrive(output, -output);
 	}
 

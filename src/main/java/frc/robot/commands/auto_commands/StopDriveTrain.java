@@ -15,7 +15,7 @@ public class StopDriveTrain extends Command {
   private double encoderDiff;
   private int clockCounter;
   private int clockMax;
-  private int encoderDiffThreshold = 1;
+  private int encoderDiffThreshold = 0;
   private double prevEncoderVal;
   
   public StopDriveTrain() {

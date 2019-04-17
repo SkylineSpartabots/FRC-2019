@@ -8,13 +8,9 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.Robot;
-import frc.robot.commands.auto_commands.EncoderDrive;
-import frc.robot.commands.auto_commands.PathExecuter;
 import frc.robot.commands.auto_commands.PerfectlyStraightDrive;
 import frc.robot.commands.auto_commands.VisionAlignment;
 import frc.robot.commands.basic_commands.ReleaseHatch;
-import jaci.pathfinder.Waypoint;
 
 public class PlaceHatch extends CommandGroup {
 

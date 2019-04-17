@@ -16,16 +16,7 @@ import jaci.pathfinder.followers.DistanceFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 
 public class VisionAlignment extends Command {
-	/*
-	private final double P = 1.1;
-	private final double D = 0;
-	private final double k_a = 0.02;
 
-	private final double TurnP = 0.027;
-	private final double TurnI = 0.0;
-	private final double TurnD = 0.00;
-
-	*/
 	public Debouncer isFinishedDebouncer;
 	public boolean prematureTermination = false;
 	public boolean log = true;
@@ -48,21 +39,16 @@ public class VisionAlignment extends Command {
 	private double RightMotorOutput = 0;
 		
 
-	public void initPathExecuter(Trajectory traj, String FileName, boolean logPID) {
-
-		/*pathConstants = Robot.driveTrain.getPathPID();
-		turnConstants = Robot.driveTrain.getTurnPID();
-
+	public void getPathingConstants(){
+		double[] pathConstants = Robot.driveTrain.getPathConstants();
 		P = pathConstants[0];
 		D = pathConstants[1];
 		proportionOfMaxVelocity = pathConstants[2];
 		k_a = pathConstants[3];
-
-		TurnP = turnConstants[0];
-		TurnI = turnConstants[1];
-		TurnD = turnConstants[2];*/
+	}
 
 
+	public void initPathExecuter(Trajectory traj, String FileName, boolean logPID) {
 		try {
 			TankModifier modifier = new TankModifier(traj).modify(RobotMap.TRACK_WIDTH);
 			left = new DistanceFollower(modifier.getLeftTrajectory());
@@ -77,11 +63,9 @@ public class VisionAlignment extends Command {
 		}
 	}
 	
-	public 
-	VisionAlignment() {
+	public VisionAlignment() {
 		requires(Robot.driveTrain);
-		requires(Robot.hatchMechanism);
-		
+		getPathingConstants();
 	}
 
 	private boolean verifyPathWaypoints(double z, double x)	{
@@ -170,7 +154,7 @@ public class VisionAlignment extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-		System.out.println("Vision Allignment Finshed");
+		System.out.println("Vision Alignment Finshed");
 		Robot.rps.reset();
 		if(!prematureTermination)	{
 			turnPID.resetPID();

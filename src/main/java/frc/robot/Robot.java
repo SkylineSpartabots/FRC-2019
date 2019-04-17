@@ -37,6 +37,8 @@ public class Robot extends TimedRobot {
 	public static Elevator elevator;
 	public static HatchMechanism hatchMechanism;
 
+	public static boolean isAuto = false;
+
 	public static double attemptedStartTime = 0;
 	public static int numAttempts = 5;
 	public static OI oi;
@@ -51,7 +53,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		
 		NetworkInst = NetworkTableInstance.getDefault();
 		JetsonTable = NetworkInst.getTable("JetsonData");
 		SystemLog = new Logger("SystemLog");
@@ -120,16 +121,15 @@ public class Robot extends TimedRobot {
 			SystemLog.writeWithTimeStamp("Jetson Process Start Attempted | Did not Block");
 		}
 		
+		isAuto = isAutonomous();
+		
 		driveTrain.setDriveTrainDataOnDisplay();
 		elevator.setElevatorDataOnDisplay();
 		hatchMechanism.setHatchMechanismDataOnDisplay();
 		intake.setIntakeDataOnDisplay();
-		SmartDashboard.putNumber("XDisp", Robot.rps.getXDisplacementToVisionTargetRawInches());
-		SmartDashboard.putNumber("ZDisp", Robot.rps.getZDisplacementToVisionTargetRawInches());
-		SmartDashboard.putNumber("Angle", Robot.rps.getYawToVisionTargetRawDegrees());
-		SmartDashboard.putNumber("Navx", Robot.rps.getNavxAngle());	
-		SmartDashboard.putBoolean("isJetsonAlive", Robot.rps.isVisionAlive());	
-		SmartDashboard.putNumber("Angle to Depot", Robot.rps.getAngleToDepot());
+			
+		
+
 		//SmartDashboard.putNumber("NavxResetOffset", rps.angleResetOffset);
 	}
 
@@ -188,6 +188,7 @@ public class Robot extends TimedRobot {
 		
 		//m_autonomousCommand = new VisionAlignment();//m_chooser.getSelected();
 		if (m_autonomousCommand != null) {
+			
 			m_autonomousCommand.start();
 		}
 	}

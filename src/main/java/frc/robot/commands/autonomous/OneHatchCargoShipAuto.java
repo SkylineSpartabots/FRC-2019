@@ -8,22 +8,25 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.commands.auto_commands.PerfectlyStraightDrive;
+import frc.robot.commands.auto_commands.StopDriveTrain;
+import frc.robot.commands.auto_commands.TurnDegrees;
+import frc.robot.commands.auto_commands.VisionAlignment;
+import frc.robot.commands.auto_commands.WaitForStart;
 import frc.robot.commands.basic_commands.ReleaseHatch;
 import frc.robot.commands.basic_commands.SlideHatchOut;
 
-import frc.robot.commands.auto_commands.*;
-
-public class AlignAndPathToDepot extends CommandGroup {
+public class OneHatchCargoShipAuto extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public AlignAndPathToDepot() {
+  public OneHatchCargoShipAuto() {
+    addSequential(new WaitForStart());
     addSequential(new PerfectlyStraightDrive(60, 0.5, 0.5));//in inches
     addSequential(new StopDriveTrain());
     addParallel(new SlideHatchOut());
-    //addSequential(new TurnDegreesVision(2));
+    addSequential(new TurnDegrees(0, 2));
     addSequential(new VisionAlignment());
     addSequential(new ReleaseHatch());
-    
   }
 }

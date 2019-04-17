@@ -7,16 +7,16 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class EncoderDrive extends Command {
 
-  private double distanceMeters;
+  private double distanceInches;
   private double leftPower, rightPower;
   public boolean isForward = true;
 
-  public EncoderDrive(double distanceMeters, double leftPower, double rightPower){
+  public EncoderDrive(double distanceInches, double leftPower, double rightPower){
     
-    this.distanceMeters = distanceMeters;
+    this.distanceInches = distanceInches;
     this.leftPower = leftPower;
     this.rightPower = rightPower;
-    if(distanceMeters<0) isForward = false;
+    if(distanceInches<0) isForward = false;
     requires(Robot.driveTrain);
   }
 
@@ -30,25 +30,22 @@ public class EncoderDrive extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-
     Robot.driveTrain.tankDrive(leftPower, rightPower);
-   
-
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
     if(isForward){
-      if(Robot.driveTrain.getLeftEncoderDistanceMeters() >= distanceMeters){
+      if(Robot.driveTrain.getLeftEncoderDistanceInches() >= distanceInches){
         return true;
       }         
     } else{
-      if(Robot.driveTrain.getLeftEncoderDistanceMeters() <= distanceMeters){
+      if(Robot.driveTrain.getLeftEncoderDistanceInches() <= distanceInches){
         return true;
       } 
     }    
-    return Math.abs(Robot.oi.driveStick.getLY()) > 0.1;
+    return Math.abs(Robot.oi.driveStick.getLY()) > 0.1 || Math.abs(Robot.oi.driveStick.getRX()) > 0.1;
   }
 
   // Called once after isFinished returns true

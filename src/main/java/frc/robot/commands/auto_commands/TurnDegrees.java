@@ -9,6 +9,7 @@ import frc.robot.util.SimplePID;
 
 public class TurnDegrees extends Command {
 
+	private double kP, kI, kD;
 
 	private double angle;
 	private final int CLOCK_MAX = 5;
@@ -17,7 +18,7 @@ public class TurnDegrees extends Command {
 	private PIDSource turnSource;
 	private SimplePID turnPID;
 
-	private double turnThreshold;
+	private double turnThreshold = 3;
 	private double timeOutSecs;
 
 	private Debouncer pidDebouncer;
@@ -25,21 +26,27 @@ public class TurnDegrees extends Command {
 
 	public TurnDegrees(double angle, double timeOutSecs) {
 		requires(Robot.driveTrain);
-
 		timer = new Timer();
-		this.angle = angle + Robot.rps.getNavxAngle();
+		this.angle = angle;
 		this.timeOutSecs = timeOutSecs;
-
-		turnSource = () -> Robot.rps.getNavxAngle();
+		turnSource = () -> Robot.rps.getAbsoluteAngle();
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
 
-		double[] pidConstants = Robot.driveTrain.getTurnPID();
+		if(Math.abs(angle - turnSource.getInput()) < 20) {
+			kP = 0.03;
+			kI = 0.0015;
+			kD = 0.0035;
+		} else {
+			kP = 0.0016;
+			kI = 0.00056;
+			kD = 0.0012;
+		}
 		
-		turnPID = new SimplePID(turnSource, this.angle, pidConstants[0], pidConstants[1], pidConstants[2], "TurnDegreesPID", false);
+		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, "TurnDegreesPID", false);
 		turnPID.setOutputLimits(-1, 1);
 
 		pidDebouncerInput = () -> Math.abs(turnPID.getError()) <= turnThreshold;
@@ -47,7 +54,6 @@ public class TurnDegrees extends Command {
 		timer.reset();
 		timer.start();
 		turnPID.resetPID();
-
 
 		timeOutSecs += timer.get();
 	}
@@ -62,7 +68,8 @@ public class TurnDegrees extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return pidDebouncer.getDebouncedValue() || timer.get() > timeOutSecs;
+		return pidDebouncer.getDebouncedValue() || timer.get() > timeOutSecs 
+			|| Math.abs(Robot.oi.driveStick.getLY()) > 0.1 || Math.abs(Robot.oi.driveStick.getRX()) > 0.1;
 	}
 
 	// Called once after isFinished returns true

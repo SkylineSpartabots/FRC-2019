@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * @author NeilHazra
@@ -37,9 +38,10 @@ public class RPS {
 	private NetworkTableEntry ZDisp;
 	private NetworkTableEntry Yaw;
 
-	//private ShuffleboardTab visionTab;
-	//private NetworkTableEntry Z_AXIS_OFFSET, Z_SCALE, POSITIVE_X_FUDGE_FACTOR, NEGATIVE_X_FUDGE_FACTOR, 
-	//POSITIVE_X_FUDGE_OFFSET, NEGATIVE_X_FUDGE_OFFSET;
+	private static final ShuffleboardTab VISION_TAB = Shuffleboard.getTab("Vision Constants");
+	private static NetworkTableEntry Z_AXIS_OFFSET, Z_SCALE, POSITIVE_X_FUDGE_FACTOR, NEGATIVE_X_FUDGE_FACTOR, 
+		POSITIVE_X_FUDGE_OFFSET, NEGATIVE_X_FUDGE_OFFSET;
+	
 
 	
 	public RPS() {
@@ -49,26 +51,24 @@ public class RPS {
 		Yaw = Robot.JetsonTable.getEntry("Yaw");
 		ahrs = new AHRS(SPI.Port.kMXP);
 
-		/*visionTab = Shuffleboard.getTab("VisionConstants");
-
-		Z_AXIS_OFFSET = visionTab.add("Z Axis Offset", 0.5).withWidget(BuiltInWidgets.kTextView)
+		Z_AXIS_OFFSET = VISION_TAB.add("Z Axis Offset", 0.43).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
 		
-		Z_SCALE = visionTab.add("Z Scale", 1).withWidget(BuiltInWidgets.kTextView)
+		Z_SCALE = VISION_TAB.add("Z Scale", 1).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
 
-		POSITIVE_X_FUDGE_FACTOR = visionTab.add("Positive X Fudge Factor", 0.85).withWidget(BuiltInWidgets.kTextView)
+		POSITIVE_X_FUDGE_FACTOR = VISION_TAB.add("Positive X Fudge Factor", 1).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5., "Max", 5)).getEntry();
 		
-		NEGATIVE_X_FUDGE_FACTOR = visionTab.add("Negative X Fudge Factor", 1).withWidget(BuiltInWidgets.kTextView)
+		NEGATIVE_X_FUDGE_FACTOR = VISION_TAB.add("Negative X Fudge Factor", 1).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
 	
-		POSITIVE_X_FUDGE_OFFSET = visionTab.add("Positive X Fudge Offset", 1.0/13.0).withWidget(BuiltInWidgets.kTextView)
+		POSITIVE_X_FUDGE_OFFSET = VISION_TAB.add("Positive X Fudge Offset", -0.03).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
 		
-		NEGATIVE_X_FUDGE_OFFSET = visionTab.add("Negative X Fudge offset", 2.0/13.0).withWidget(BuiltInWidgets.kTextView)
-			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();*/
-		
+		NEGATIVE_X_FUDGE_OFFSET = VISION_TAB.add("Negative X Fudge offset", -0.03).withWidget(BuiltInWidgets.kTextView)
+			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
+
 	}
 
 	public void reset() {
@@ -101,12 +101,14 @@ public class RPS {
 	}
 
 	public double getZDisplacementEditedForCameraPositionMeters()	{
+		getVisionConstants();
 		return getZDisplacementToVisionTargetRawMeters()*z_scale - 
 			z_axis_offset; 
 	}
 
 	public double getXDisplacementEditedForCameraPositionMeters()	{
-		double x_dist;		
+		double x_dist;
+		getVisionConstants();		
 		if(Robot.rps.getXDisplacementToVisionTargetRawMeters() > 0)	{
 			x_dist = getXDisplacementToVisionTargetRawMeters()*positive_x_fudgefactor +
 				positive_x_fudge_offset;
@@ -149,5 +151,24 @@ public class RPS {
 	}
 	public double getNavxAngle()	{
 		return ahrs.getAngle();
+	}
+
+	public void getVisionConstants() {
+		z_scale = Z_SCALE.getDouble(1);
+		z_axis_offset = Z_AXIS_OFFSET.getDouble(0.43);
+		positive_x_fudgefactor = POSITIVE_X_FUDGE_FACTOR.getDouble(1);
+		positive_x_fudge_offset = POSITIVE_X_FUDGE_OFFSET.getDouble(-0.03);
+		negative_x_fudgefactor = NEGATIVE_X_FUDGE_FACTOR.getDouble(1);
+		negative_x_fudge_offset = NEGATIVE_X_FUDGE_OFFSET.getDouble(-0.03);
+	}
+
+	public void setVisionDataOnDisplay(){
+		SmartDashboard.putBoolean("Is Jetson Alive", isVisionAlive());
+		SmartDashboard.putNumber("Raw Distance To Target (in)", getZDisplacementToVisionTargetRawInches());
+		SmartDashboard.putNumber("Raw Lateral Distance To Target (in)", getXDisplacementToVisionTargetRawInches());
+		SmartDashboard.putNumber("Adjusted Distance To Target (in)", getZDisplacementEditedForCameraPositionMeters()*0.0254);
+		SmartDashboard.putNumber("Adjusted Distance To Target (in)", getXDisplacementEditedForCameraPositionMeters()*0.0254);
+		SmartDashboard.putNumber("Angle to Depot", getAngleToDepot());
+		SmartDashboard.putNumber("Angle To Target", getYawToVisionTargetRawDegrees());
 	}
 }

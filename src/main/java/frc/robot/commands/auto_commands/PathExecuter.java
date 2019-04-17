@@ -28,7 +28,7 @@ public class PathExecuter extends Command {
 	private double proportionOfMaxVelocity = 0.7;
 	private double P = 0.9;
 	private double D = 0.01;
-	private double k_a = 0.02;
+	private double k_a = 0.02;	
 
 	private double TurnP = 0.005;
 	private double TurnI = 0.0;
@@ -43,23 +43,17 @@ public class PathExecuter extends Command {
 	private double RightMotorOutput = 0;
 	private boolean log = true;
 
-	private double[] pathConstants, turnConstants;
+
+	public void getPathingConstants(){
+		double[] pathConstants = Robot.driveTrain.getPathConstants();
+		P = pathConstants[0];
+		D = pathConstants[1];
+		proportionOfMaxVelocity = pathConstants[2];
+		k_a = pathConstants[3];
+	}
 
 
 	public void initPathExecuter(String FileName) {
-		
-		pathConstants = Robot.driveTrain.getPathPID();
-		turnConstants = Robot.driveTrain.getTurnPID();
-		//P = pathConstants[0];
-		//D = pathConstants[1];
-		//proportionOfMaxVelocity = pathConstants[2];
-		//k_a = pathConstants[3];
-
-		//TurnP = turnConstants[0];
-		//TurnI = turnConstants[1];
-		//TurnD = turnConstants[2];
-
-
 		try {
 			File f = new File(RobotMap.AUTO_TRAJECTORY_PATH_LOCATIONS + FileName);
 			if(!f.exists())	{
@@ -118,13 +112,14 @@ public class PathExecuter extends Command {
 	public PathExecuter(String FileName, boolean log) {
 		requires(Robot.driveTrain);	
 		this.log = log;	
-		
+		getPathingConstants();
 		initPathExecuter(FileName);
 		
 	}
 	public PathExecuter(Waypoint[] points, String FileName, boolean log) {
 		requires(Robot.driveTrain);
 		this.log = log;
+		getPathingConstants();
 		initPathExecuter(points, FileName);
 	}
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
