@@ -11,14 +11,20 @@ public class TurnDegrees extends Command {
 
 	private double kP, kI, kD;
 
+	/**
+	 * kP = 0.023
+	 * kI = 0.006
+	 * kD = 0.011
+	 */
+
 	private double angle;
-	private final int CLOCK_MAX = 5;
+	private final int CLOCK_MAX = 1;
 	private Timer timer;
 	private double output = 0;
 	private PIDSource turnSource;
 	private SimplePID turnPID;
 
-	private double turnThreshold = 3;
+	private double turnThreshold;
 	private double timeOutSecs;
 
 	private Debouncer pidDebouncer;
@@ -36,18 +42,20 @@ public class TurnDegrees extends Command {
 	@Override
 	protected void initialize() {
 
-		if(Math.abs(angle - turnSource.getInput()) < 20) {
-			kP = 0.03;
-			kI = 0.0015;
-			kD = 0.0035;
-		} else {
-			kP = 0.0016;
-			kI = 0.00056;
-			kD = 0.0012;
-		}
+		double[] getPID = Robot.driveTrain.getTurnPID();
+
+		
+		kP = 0.022;
+		kI = 0.003;
+		kD = 0.009;
+		
+		turnThreshold = 1.5;
+		System.out.println("!!!!!!!!!!!!!!!!!!!! KP " + kP + "!!!!!!!!!!!!!!");
+		System.out.println("!!!!!!!!!!!!!!!!!!!! Threshold " + turnThreshold + "!!!!!!!!!!!!!!");
+		 
 		
 		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, "TurnDegreesPID", false);
-		turnPID.setOutputLimits(-1, 1);
+		turnPID.setOutputLimits(-.65, .65);
 
 		pidDebouncerInput = () -> Math.abs(turnPID.getError()) <= turnThreshold;
 		pidDebouncer = new Debouncer(pidDebouncerInput, CLOCK_MAX);
@@ -63,6 +71,12 @@ public class TurnDegrees extends Command {
 	protected void execute() {
 		output = turnPID.compute();
 		Robot.driveTrain.tankDrive(output, -output);
+		boolean withinThreshold = turnPID.getError() <= turnThreshold;
+
+		/*System.out.println("ERROR: " + turnPID.getError() + " ||||||||| OUTPUT: " + output
+			+ " ||||| VOLTAGE: " + Robot.driveTrain.getOutpuVoltage() + " ||||||| IN THRESHOLD: "
+			 + withinThreshold);*/
+
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

@@ -4,6 +4,7 @@ import frc.robot.commands.drive_controls.*;
 import frc.robot.commands.autonomous.*;
 import frc.robot.commands.auto_commands.PathExecuter;
 import frc.robot.commands.auto_commands.StopDriveTrain;
+import frc.robot.commands.auto_commands.TurnDegrees;
 import frc.robot.commands.auto_commands.TurnDegreesVision;
 import frc.robot.commands.auto_commands.VisionAlignment;
 import frc.robot.commands.auto_commands.VisionAlignmentWithTurn;
@@ -23,6 +24,7 @@ public class OI {
 	public OI() {
 		driveStick = new Xbox(0);
 		secondStick = new Xbox(1);
+
 		/*
 			Start Point: bottom of platform (left side)
 			End Point: Near Cargo
@@ -48,24 +50,18 @@ public class OI {
 
 		//secondStick.buttonStart.whenPressed(new SlideHatchOut());
 		//secondStick.buttonBack.whenPressed(new SlideHatchIn());
-
+		
 		//driveStick.buttonLBumper.whenPressed(new ReleaseHatch());
 		//driveStick.buttonRBumper.whenPressed(new GraspHatch());
 		//driveStick.buttonA.whenPressed(new StopDriveTrain());
 		
-		  driveStick.buttonA.whenPressed(new AlignAndPathToDepot());
-		  driveStick.buttonB.whenPressed(new VisionAlignment());
-		  driveStick.buttonX.whenPressed(new TurnDegreesVision(10));
-		 
-		  Waypoint[] points = new Waypoint[]{
-			new Waypoint(0, 0, 0),
-			new Waypoint(3, 1, 0)
-		  };
-
-		  driveStick.buttonY.whenPressed(new PathExecuter(new Waypoint[]{
-															new Waypoint(0, 0, 0),
-															new Waypoint(3, 1, 0)
-														}, "Test", true));
+		//driveStick.buttonA.whenPressed(new RightDoubleCargoShipAuto());
+		//driveStick.buttonX.whenPressed(new PathingTest());
+		//driveStick.buttonY.whenPressed(new TurnDegrees(90, 10));
+		//driveStick.buttonB.whenPressed(new PathExecuter(backTest, true, 0.2, "Path test", false));
+	    //driveStick.buttonB.whenPressed(new VisionAlignment());
+		  //driveStick.buttonX.whenPressed(new PathingTest());
+	
 
 /////////////////////////////////////////////////////////////////////////////////////
 		//THis is good

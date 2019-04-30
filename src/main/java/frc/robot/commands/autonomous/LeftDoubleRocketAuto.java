@@ -34,16 +34,19 @@ public class LeftDoubleRocketAuto extends CommandGroup {
     };
 
     //Place first hatch on the near side of rocket
-    addSequential(new PerfectlyStraightDrive(60, 0.6, 0.6));
-    addSequential(new PathExecuter(toFrontRocket, "To Front Rocket", false));
-    addSequential(new StopDriveTrain());
-    addParallel(new SlideHatchOut());
-    addSequential(new VisionAlignment());
-    addSequential(new ReleaseHatch());
-    addSequential(new Wait(100));
+    //addSequential(new PerfectlyStraightDrive(60, 0.5, 0.5));
+    //addSequential(new PathExecuter(toFrontRocket, "To Front Rocket", false));
+    addSequential(new TurnDegrees(-90, 4));
+    //addSequential(new PerfectlyStraightDrive(84, 0.6, 0.6));
+    //addSequential(new TurnDegrees(-45, 4));
+    //addSequential(new StopDriveTrain());
+    //addParallel(new SlideHatchOut());
+    //addSequential(new VisionAlignment());
+    //addSequential(new ReleaseHatch());
+    //addSequential(new Wait(100));
 
     //Get second hatch from depot
-    addSequential(new EncoderDrive(-15, -15, -0.6));
+    /*addSequential(new EncoderDrive(-15, -15, -0.6));
     addParallel(new SlideHatchIn());
     addSequential(new TurnDegrees(180, 3));
     addParallel(new GraspHatch());
@@ -66,6 +69,6 @@ public class LeftDoubleRocketAuto extends CommandGroup {
     addSequential(new Wait(100));
     addSequential(new EncoderDrive(-15, -15, -0.5));
     addParallel(new SlideHatchIn());
-    addSequential(new GraspHatch());
+    addSequential(new GraspHatch());*/
   }
 }

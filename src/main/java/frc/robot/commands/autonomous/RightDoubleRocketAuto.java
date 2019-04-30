@@ -35,7 +35,7 @@ public class RightDoubleRocketAuto extends CommandGroup {
 
     //Place first hatch on the near side of rocket
     addSequential(new PerfectlyStraightDrive(60, 0.6, 0.6));
-    addSequential(new PathExecuter(toFrontRocket, "To Front Rocket", false));
+    //addSequential(new PathExecuter(toFrontRocket, "To Front Rocket", false));
     addSequential(new StopDriveTrain());
     addParallel(new SlideHatchOut());
     addSequential(new VisionAlignment());
@@ -49,8 +49,9 @@ public class RightDoubleRocketAuto extends CommandGroup {
     addParallel(new GraspHatch());
     addSequential(new PerfectlyStraightDrive(140, 0.8, 0.8));
     addSequential(new StopDriveTrain());
-    addParallel(new SlideHatchOut());
+    addParallel(new ReleaseHatch());
     addSequential(new VisionAlignment());
+    addParallel(new SlideHatchOut());
     addSequential(new GraspHatch());
     addSequential(new Wait(100));
 
@@ -58,7 +59,7 @@ public class RightDoubleRocketAuto extends CommandGroup {
     addSequential(new EncoderDrive(-15, -15, -0.5));
     addParallel(new SlideHatchIn());
     addSequential(new TurnDegrees(0, 2));
-    addSequential(new PathExecuter(toBackRocket, "To Back Rocket", false));
+    //addSequential(new PathExecuter(toBackRocket, "To Back Rocket", false));
     addSequential(new StopDriveTrain());
     addParallel(new SlideHatchOut());
     addSequential(new VisionAlignment());

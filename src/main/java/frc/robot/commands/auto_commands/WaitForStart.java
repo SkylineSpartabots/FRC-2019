@@ -12,10 +12,7 @@ import frc.robot.Robot;
 
 public class WaitForStart extends Command {
   public WaitForStart() {
-    requires(Robot.driveTrain);
-    requires(Robot.hatchMechanism);
-    requires(Robot.intake);
-    requires(Robot.elevator);
+   
   }
 
   // Called repeatedly when this Command is scheduled to run

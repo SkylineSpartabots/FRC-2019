@@ -18,12 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 
 public class RPS {
-	private double z_axis_offset = 0.43;
-	private double z_scale = 1;
-	private double positive_x_fudgefactor = 1;
-	private double negative_x_fudgefactor = 1;
-	private double positive_x_fudge_offset = -0.03;
-	private double negative_x_fudge_offset = -0.03;
+	private double z_axis_offset = 0.45;
+	private double z_scale = 1.01;
+	private double positive_x_fudgefactor = 1.0;
+	private double negative_x_fudgefactor = 1.22;
+	private double positive_x_fudge_offset = 0.025;
+	private double negative_x_fudge_offset = 0.05;
 
 	private double lastUpdateTimeLimit = 2000000;
 
@@ -51,22 +51,22 @@ public class RPS {
 		Yaw = Robot.JetsonTable.getEntry("Yaw");
 		ahrs = new AHRS(SPI.Port.kMXP);
 
-		Z_AXIS_OFFSET = VISION_TAB.add("Z Axis Offset", 0.43).withWidget(BuiltInWidgets.kTextView)
+		Z_AXIS_OFFSET = VISION_TAB.add("Z Axis Offset", z_axis_offset).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
 		
-		Z_SCALE = VISION_TAB.add("Z Scale", 1).withWidget(BuiltInWidgets.kTextView)
+		Z_SCALE = VISION_TAB.add("Z Scale", z_scale).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
 
-		POSITIVE_X_FUDGE_FACTOR = VISION_TAB.add("Positive X Fudge Factor", 1).withWidget(BuiltInWidgets.kTextView)
+		POSITIVE_X_FUDGE_FACTOR = VISION_TAB.add("Positive X Fudge Factor", positive_x_fudgefactor).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5., "Max", 5)).getEntry();
 		
-		NEGATIVE_X_FUDGE_FACTOR = VISION_TAB.add("Negative X Fudge Factor", 1).withWidget(BuiltInWidgets.kTextView)
+		NEGATIVE_X_FUDGE_FACTOR = VISION_TAB.add("Negative X Fudge Factor", negative_x_fudgefactor).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
 	
-		POSITIVE_X_FUDGE_OFFSET = VISION_TAB.add("Positive X Fudge Offset", -0.03).withWidget(BuiltInWidgets.kTextView)
+		POSITIVE_X_FUDGE_OFFSET = VISION_TAB.add("Positive X Fudge Offset", positive_x_fudge_offset).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
 		
-		NEGATIVE_X_FUDGE_OFFSET = VISION_TAB.add("Negative X Fudge offset", -0.03).withWidget(BuiltInWidgets.kTextView)
+		NEGATIVE_X_FUDGE_OFFSET = VISION_TAB.add("Negative X Fudge offset", negative_x_fudge_offset).withWidget(BuiltInWidgets.kTextView)
 			.withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
 
 	}
@@ -166,8 +166,8 @@ public class RPS {
 		SmartDashboard.putBoolean("Is Jetson Alive", isVisionAlive());
 		SmartDashboard.putNumber("Raw Distance To Target (in)", getZDisplacementToVisionTargetRawInches());
 		SmartDashboard.putNumber("Raw Lateral Distance To Target (in)", getXDisplacementToVisionTargetRawInches());
-		SmartDashboard.putNumber("Adjusted Distance To Target (in)", getZDisplacementEditedForCameraPositionMeters()*0.0254);
-		SmartDashboard.putNumber("Adjusted Distance To Target (in)", getXDisplacementEditedForCameraPositionMeters()*0.0254);
+		SmartDashboard.putNumber("Adjusted Distance To Target  (in)", getZDisplacementEditedForCameraPositionMeters()*39.3701);
+		SmartDashboard.putNumber("Adjusted Distance To Target Lateral (in)", getXDisplacementEditedForCameraPositionMeters()*39.3701);
 		SmartDashboard.putNumber("Angle to Depot", getAngleToDepot());
 		SmartDashboard.putNumber("Angle To Target", getYawToVisionTargetRawDegrees());
 	}

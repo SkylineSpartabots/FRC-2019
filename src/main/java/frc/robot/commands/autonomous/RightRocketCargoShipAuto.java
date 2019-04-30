@@ -27,7 +27,7 @@ public class RightRocketCargoShipAuto extends CommandGroup {
 
 
     addSequential(new PerfectlyStraightDrive(60, 0.5, 0.5));//in inches
-    addSequential(new PathExecuter(toFrontRocket, "To Front Rocket", false));
+    //addSequential(new PathExecuter(toFrontRocket, "To Front Rocket", false));
     addSequential(new StopDriveTrain());
     addParallel(new SlideHatchOut());
     addSequential(new VisionAlignment());

@@ -24,6 +24,8 @@ import jaci.pathfinder.modifiers.TankModifier;
 public class PathExecuter extends Command {
 	public Debouncer isFinishedDebouncer;
 	public boolean prematureTermination = false;
+	private boolean isBackwards;
+	//private Timer timer;
 
 	private double proportionOfMaxVelocity = 0.7;
 	private double P = 0.9;
@@ -42,6 +44,8 @@ public class PathExecuter extends Command {
 	private double LeftMotorOutput = 0;
 	private double RightMotorOutput = 0;
 	private boolean log = true;
+
+	private double timeOutSecs;
 
 
 	public void getPathingConstants(){
@@ -67,11 +71,9 @@ public class PathExecuter extends Command {
 			right = new DistanceFollower(modifier.getRightTrajectory());
 			left.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
 			right.configurePIDVA(P, 0.0, D, 1.0/RobotMap.MAX_VELOCITY, k_a);
-			NAVXSource = new PIDSource() {
-				public double getInput() {
-					return Robot.rps.getNavxAngle();
-				}
-			};			
+
+			NAVXSource = () -> Robot.rps.getNavxAngle();
+
 			turnPID = new SimplePID(NAVXSource, 0, TurnP, TurnI, TurnD, FileName+"TurnPID",log);
 			PathingLog = new Logger(FileName + "Log");
 		} catch (Exception e) {
@@ -109,19 +111,38 @@ public class PathExecuter extends Command {
 		}
 	}
 
-	public PathExecuter(String FileName, boolean log) {
+	public PathExecuter(String FileName, boolean isBackwards, double timeOutSecs, double appliedProportionofMaxVelocity, boolean log) {
 		requires(Robot.driveTrain);	
 		this.log = log;	
 		getPathingConstants();
 		initPathExecuter(FileName);
+
+		/*timer = new Timer();
+		timer.reset();
+		timer.start();*/
+
+		this.isBackwards = isBackwards;
+		proportionOfMaxVelocity *= appliedProportionofMaxVelocity;
+		//this.timeOutSecs = timeOutSecs + timer.get();
 		
+		prematureTermination = Math.abs(Robot.oi.driveStick.getRX()) > 0.1 || Math.abs(Robot.oi.driveStick.getLY()) > 0.1;
 	}
-	public PathExecuter(Waypoint[] points, String FileName, boolean log) {
+	public PathExecuter(Waypoint[] points, boolean isBackwards,double timeOutSecs, double appliedProportionofMaxVelocity, String FileName, boolean log) {
 		requires(Robot.driveTrain);
 		this.log = log;
 		getPathingConstants();
 		initPathExecuter(points, FileName);
+		
+		/*timer = new Timer();
+		timer.reset();
+		timer.start();*/
+
+		this.isBackwards = isBackwards;
+		proportionOfMaxVelocity *= appliedProportionofMaxVelocity;
+		//this.timeOutSecs = timeOutSecs + timer.get();
+		prematureTermination = Math.abs(Robot.oi.driveStick.getRX()) > 0.1 || Math.abs(Robot.oi.driveStick.getLY()) > 0.1;
 	}
+
 	public void updateMotorOutputs(double LeftEncoderDistance, double RightEncoderDistance) {
 		double l = 0;
 		double r = 0;
@@ -136,8 +157,15 @@ public class PathExecuter extends Command {
 		double desired_heading = Pathfinder.boundHalfDegrees(Pathfinder.r2d(left.getHeading()));
 		turnPID.setSetpoint(-desired_heading);
 		double turn = turnPID.compute();
-		LeftMotorOutput = l + turn;
-		RightMotorOutput = r - turn;
+
+		if(!isBackwards) {
+			LeftMotorOutput = l + turn;
+			RightMotorOutput = r - turn;
+		} else {
+			LeftMotorOutput = l - turn;
+			RightMotorOutput = r + turn;
+		}
+
 		if(log && !left.isFinished() && !right.isFinished())	{
 				PathingLog.writeNewData(
 					Timer.getFPGATimestamp()+","+desired_heading+","+left_s.position+","+right_s.position+","+
@@ -168,8 +196,15 @@ public class PathExecuter extends Command {
 	@Override
 	protected void execute() {
 		if(!prematureTermination)	{
-			updateMotorOutputs(Robot.driveTrain.getLeftEncoderDistanceMeters(), Robot.driveTrain.getRightEncoderDistanceMeters());
-			Robot.driveTrain.rawMotorOutput(LeftMotorOutput, RightMotorOutput);
+
+			if(!isBackwards){
+				updateMotorOutputs(Robot.driveTrain.getLeftEncoderDistanceMeters(), Robot.driveTrain.getRightEncoderDistanceMeters());
+				Robot.driveTrain.rawMotorOutput(LeftMotorOutput, RightMotorOutput);
+			} else {
+				updateMotorOutputs(-Robot.driveTrain.getLeftEncoderDistanceMeters(), -Robot.driveTrain.getRightEncoderDistanceMeters());
+				Robot.driveTrain.rawMotorOutput(-LeftMotorOutput, -RightMotorOutput);
+			}
+			
 			System.out.println("kp:\t" + P + "kd:\t" + D + "maxv:\t" + proportionOfMaxVelocity + "ka:\t" + k_a);
 		}
 	}

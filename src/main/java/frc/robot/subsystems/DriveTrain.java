@@ -36,7 +36,7 @@ public class DriveTrain extends Subsystem {
 
 	private static final ShuffleboardTab DRIVE_TAB = Shuffleboard.getTab("Drive Constants");
 	private static final ShuffleboardTab PATH_TAB = Shuffleboard.getTab("Pathing Constants");
-	private static NetworkTableEntry turnkP, turnkI, turnkD;
+	private static NetworkTableEntry turnkP, turnkI, turnkD, turnThreshold;
 	private static NetworkTableEntry proportionVelocity, pathkP, pathkD, pathkA, forward, lateral;
 	
 	
@@ -75,10 +75,11 @@ public class DriveTrain extends Subsystem {
 		m_drive.setRightSideInverted(false);
 
 		//General turns
-		turnkP = DRIVE_TAB.add("Turn kP", 0.016).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		turnkI = DRIVE_TAB.add("Turn kI", 0.00056).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
-		turnkD = DRIVE_TAB.add("Turn kD", 0.0012).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkP = DRIVE_TAB.add("Turn kP", 0.02).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkI = DRIVE_TAB.add("Turn kI", 0.005).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
+		turnkD = DRIVE_TAB.add("Turn kD", 0.011).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 
+		turnThreshold = DRIVE_TAB.add("Turn Threshold", 1.5).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 
 		pathkP = PATH_TAB.add("Path kP", 0.9).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		proportionVelocity = PATH_TAB.add("Path velo", 0.7).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
@@ -88,6 +89,7 @@ public class DriveTrain extends Subsystem {
 		lateral = PATH_TAB.add("lateral", 0).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", -5, "Max", 5)).getEntry();
 		forward = PATH_TAB.add("forward", 0).withWidget(BuiltInWidgets.kTextView).withProperties(Map.of("Min", 0.0, "Max", 5)).getEntry();
 		
+
 	}
 
 	/**
@@ -95,7 +97,7 @@ public class DriveTrain extends Subsystem {
 	 * @return returns double array of turn pid constants in form of kp, ki, kd
 	 */
 	public double[] getTurnPID() {
-		double[] constants = {turnkP.getDouble(0.00001), turnkI.getDouble(0.00001), turnkD.getDouble(0.00001)};
+		double[] constants = {turnkP.getDouble(0), turnkI.getDouble(0), turnkD.getDouble(0), turnThreshold.getDouble(0)};
 		return constants;
 	}
 	public double[] getPathConstants(){
@@ -106,6 +108,10 @@ public class DriveTrain extends Subsystem {
 	public double[] getPathTestDistances(){
 		double[] constants = {forward.getDouble(0.001), lateral.getDouble(0.001)};
 		return constants;
+	}
+
+	public double getOutpuVoltage(){
+		return leftFront.getMotorOutputVoltage();
 	}
 
 
