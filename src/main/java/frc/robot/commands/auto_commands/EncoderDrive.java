@@ -18,6 +18,7 @@ public class EncoderDrive extends Command {
     this.rightPower = rightPower;
     if(distanceInches<0) isForward = false;
     requires(Robot.driveTrain);
+    
   }
 
   // Called just before this Command runs the first time

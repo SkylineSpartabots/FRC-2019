@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.Timer;
 
 /**
@@ -16,11 +18,11 @@ public class SimplePID {
 
 	private double outputMax = 1;
 	private double outputMin = -1;
-	private PIDSource pidsource;
 	private double output; // value to send to the motor
 	/** The process error */
 	private double error;
 	/** The input of the PIDController */
+	private DoubleSupplier pidsource;
 	private double input; // what the value actually is
 	private double setpoint; // desired target value
 	private double prevInput;
@@ -29,9 +31,6 @@ public class SimplePID {
 	private double derivative; // D term
 	public double kp, ki, kd; // tuning parameters, the hardest part of PID
 	private double prevTime = 0;
-	private Logger PIDlog;
-	private boolean log;
-
 	/**
 	 * 
 	 * @param pidsource  Object implementing PIDSource, contains method returning
@@ -42,35 +41,31 @@ public class SimplePID {
 	 * @param ki         integral gain
 	 * @param kd         derivative gain
 	 */
-	public SimplePID(Object pidsource, double setpoint, double kp, double ki, double kd, String filename, boolean log) {
-		this.pidsource = (PIDSource) pidsource;
+	public SimplePID(DoubleSupplier pidsource, double setpoint, double kp, double ki, double kd) {
+		this.pidsource = pidsource;
 		this.setpoint = setpoint;
 		this.kp = kp;
 		this.ki = ki;
 		this.kd = kd;
-		this.log = log;
-
-		if (this.log) {
-			try {
-				PIDlog = new Logger("PIDLoops//" + filename);
-			} catch (NullPointerException ex) {
-				System.out.println("SimplePID File Exception: Log Enabled without Valid FilePath" + ex.getMessage());
-				this.log = false;
-			}
-		}
-
-		if (this.log) {
-			PIDlog.writeNewData("Vernier Format 2");
-			PIDlog.writeNewData("Vernier Format 2");
-			PIDlog.writeNewData("Untiled.clmb 5/5/2019 9:37:43 .");
-			PIDlog.writeNewData("Data Set");
-			PIDlog.writeNewData("Time	Input	Output	Error");
-			PIDlog.writeNewData("x	y	z	w\n");
-		}
 	}
 
 	public double getOutput() {
 		return output;
+	}
+
+	public void setkP(double kp) {
+		this.kp = kp;
+		resetPID();
+	}
+
+	public void setkI(double ki) {
+		this.ki = ki;
+		resetPID();
+	}
+
+	public void setkD(double kd){
+		this.kd = kd;
+		resetPID();
 	}
 
 	public static double map(double oldValue, double oldMin, double oldMax, double newMin, double newMax) {
@@ -78,25 +73,18 @@ public class SimplePID {
 	}
 
 	public double getInput() {
-		return pidsource.getInput();
+		return pidsource.getAsDouble();
 	}
 
 	public double getError() {
 		return error;
 	}
 
-	/**
-	 * @return the desired target value
-	 */
+
 	public double getSetpoint() {
 		return setpoint;
 	}
 
-	/**
-	 * Sets the desired target value
-	 * 
-	 * @param setpoint desired target value
-	 */
 	public void setSetpoint(double setpoint) {
 		this.setpoint = setpoint;
 		resetPID();
@@ -109,15 +97,7 @@ public class SimplePID {
 		outputMin = min;
 	}
 
-	/**
-	 * PID Algorithm calculates
-	 * 
-	 * @author NeilHazra
-	 *
-	 */
-	public void writeNewData(double seconds, double input, double output, double error) {
-		PIDlog.writeNewData("" + seconds + "\t" + input + "\t" + output + "\t" + error);
-	}
+
 
 	public void resetPID() {
 		proportional = 0;
@@ -133,7 +113,7 @@ public class SimplePID {
 		double currentTime = Timer.getFPGATimestamp();
 		double dt = (currentTime - prevTime);
 
-		input = pidsource.getInput();
+		input = pidsource.getAsDouble();
 		error = setpoint - input; 
 		proportional = kp * error;
 		integral += ki * error;
@@ -159,10 +139,6 @@ public class SimplePID {
 
 		prevInput = input;
 		prevTime = currentTime;
-
-		if (log) {
-			writeNewData(currentTime, input, output, error);
-		}
 
 		return output;
 	}

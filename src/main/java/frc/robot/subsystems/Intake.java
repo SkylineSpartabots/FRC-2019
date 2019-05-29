@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -13,14 +15,14 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.drive_controls.*;
 import frc.robot.util.Debouncer;
-import frc.robot.util.Equivalency;
+
 
 public class Intake extends Subsystem {
 
 	WPI_TalonSRX masterIntakeMotor, slaveIntakeMotor, innerIntakeMotor;
 	Solenoid intakeSolenoid, slaveIntakeSolenoid;
 	AnalogInput beamBreak;
-	Debouncer.RawInput beamBreakInput;
+	BooleanSupplier beamBreakInput;
 	Debouncer beamBreakDebouncer;
 
 	public Intake() {
@@ -136,99 +138,8 @@ public class Intake extends Subsystem {
 	}
 
 	public boolean checkSubsystem(){
-		boolean motorFailure = false;
-		boolean solenoidFailure = false;
-		boolean sensorFailure = false;
-
-		System.out.println("Testing Intake........................");
-
-
-		System.out.println("\n\nTesting Intake Motors.................");
-		final double kCurrentThreshold = 0.5;
-
-		masterIntakeMotor.set(1);
-		innerIntakeMotor.set(1);
-		Timer.delay(3);
-		double masterIntakeCurrent = masterIntakeMotor.getOutputCurrent();
-		double slaveIntakeCurrent = slaveIntakeMotor.getOutputCurrent();
-		double innerIntakeCurrent = innerIntakeMotor.getOutputCurrent();
-		masterIntakeMotor.set(0);
-		innerIntakeMotor.set(0);
-
-		System.out.println("Master Intake Current:\t" + masterIntakeCurrent);
-		System.out.println("Slave Intake Current:\t" + slaveIntakeCurrent);
-		System.out.println("Inner Intake Current:\t" + innerIntakeCurrent);
-
-		if(masterIntakeCurrent < kCurrentThreshold){
-			System.out.println("!!!!!!!! FAILURE: RIGHT INTAKE MOTOR CURRENT LOW !!!!!!!!");
-			motorFailure = true;
-		}
-
-		if(slaveIntakeCurrent < kCurrentThreshold){
-			System.out.println("!!!!!!!! FAILURE: LEFT INTAKE MOTOR CURRENT LOW !!!!!!!!");
-			motorFailure = true;
-		}
-
-		if(slaveIntakeCurrent < kCurrentThreshold){
-			System.out.println("!!!!!!!! FAILURE: INNER INTAKE MOTOR CURRENT LOW !!!!!!!!");
-			motorFailure = true;
-		}
-
-		if(!Equivalency.allAboutEqualTo(Arrays.asList(masterIntakeCurrent, slaveIntakeCurrent), masterIntakeCurrent, kCurrentThreshold)){
-			System.out.println("!!!!!!!! FAILURE: INTAKE KEBABS OPERATING AT VARYING CURRENT !!!!!!!!");
-			motorFailure = true;
-		}
-
-		if(!motorFailure){
-			System.out.println("######## SUCCESSFUL: GO FOR INTAKE MOTORS ########");
-		}
-
-
-		System.out.println("\n\nTesting Intake Solenoids...............");
-
-		extendIntake();
-		Timer.delay(2);
-		if(!getIntakeSolenoidState()){
-			System.out.println("!!!!!!!! FAILURE: INTAKE SOLENOIDS FAILED TO EXTEND !!!!!!!!");
-			solenoidFailure = true;
-		}
-
-		retractIntake();
-		Timer.delay(2);
-		if(getIntakeSolenoidState()){
-			System.out.println("!!!!!!!! FAILURE: INTAKE SOLENOIDS FAILED TO RETRACT !!!!!!!!");
-			solenoidFailure = true;
-		}
-		
-		if(!solenoidFailure){
-			System.out.println("######## SUCCESSFUL: GO FOR INTAKE SOLENOIDS ########");
-		}
-
-		System.out.println("\n\nTesting Beam Break.....................");
-		if(getRawCargoPosition()) {
-			sensorFailure = true;
-			System.out.println("!!!!!!!! FAILURE: BEAM BREAK STARTED IN A BROKEN STATE !!!!!!!!");
-		} else {
-			for(int i = 0; i <= 10; i++) {
-				System.out.println("PLEASE MANUALLY BREAK BEAM");
-				if(getRawCargoPosition()) {
-					System.out.println("BEAM SUCCESSFULLY BROKEN");
-					sensorFailure = false;
-					break;
-				} else {
-					sensorFailure = true;
-				}
-				Timer.delay(0.5);
-			}
-
-			if(sensorFailure) {
-				System.out.println("!!!!!!!! FAILURE: BEAM WAS NOT BROKEN !!!!!!!!");
-			} else {
-				System.out.println("######## SUCCESSFUL: GO FOR BEAM BREAK ########");
-			}
-
-		}
-
-		return !motorFailure && !solenoidFailure && !sensorFailure;
+		return true;
 	}
+
+		
 }

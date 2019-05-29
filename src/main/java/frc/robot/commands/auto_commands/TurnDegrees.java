@@ -1,10 +1,12 @@
 package frc.robot.commands.auto_commands;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.util.Debouncer;
-import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 
 public class TurnDegrees extends Command {
@@ -21,40 +23,35 @@ public class TurnDegrees extends Command {
 	private final int CLOCK_MAX = 1;
 	private Timer timer;
 	private double output = 0;
-	private PIDSource turnSource;
+	private DoubleSupplier turnSource;
 	private SimplePID turnPID;
 
 	private double turnThreshold;
 	private double timeOutSecs;
 
 	private Debouncer pidDebouncer;
-	private Debouncer.RawInput pidDebouncerInput;
+	private BooleanSupplier pidDebouncerInput;
 
 	public TurnDegrees(double angle, double timeOutSecs) {
 		requires(Robot.driveTrain);
 		timer = new Timer();
 		this.angle = angle;
 		this.timeOutSecs = timeOutSecs;
-		turnSource = () -> Robot.rps.getAbsoluteAngle();
+		turnSource = () -> Robot.navx.getAngle();
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-
-		double[] getPID = Robot.driveTrain.getTurnPID();
-
 		
 		kP = 0.022;
 		kI = 0.003;
 		kD = 0.009;
 		
 		turnThreshold = 1.5;
-		System.out.println("!!!!!!!!!!!!!!!!!!!! KP " + kP + "!!!!!!!!!!!!!!");
-		System.out.println("!!!!!!!!!!!!!!!!!!!! Threshold " + turnThreshold + "!!!!!!!!!!!!!!");
 		 
 		
-		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD, "TurnDegreesPID", false);
+		turnPID = new SimplePID(turnSource, this.angle, kP, kI, kD);
 		turnPID.setOutputLimits(-.65, .65);
 
 		pidDebouncerInput = () -> Math.abs(turnPID.getError()) <= turnThreshold;
@@ -71,11 +68,6 @@ public class TurnDegrees extends Command {
 	protected void execute() {
 		output = turnPID.compute();
 		Robot.driveTrain.tankDrive(output, -output);
-		boolean withinThreshold = turnPID.getError() <= turnThreshold;
-
-		/*System.out.println("ERROR: " + turnPID.getError() + " ||||||||| OUTPUT: " + output
-			+ " ||||| VOLTAGE: " + Robot.driveTrain.getOutpuVoltage() + " ||||||| IN THRESHOLD: "
-			 + withinThreshold);*/
 
 	}
 

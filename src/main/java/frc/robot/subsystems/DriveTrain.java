@@ -195,43 +195,10 @@ public class DriveTrain extends Subsystem {
 	public void setDriveTrainDataOnDisplay() {
 		SmartDashboard.putNumber("Right Drive Encoder In Inches", getRightEncoderDistanceInches());
 		SmartDashboard.putNumber("Left Drive Encoder In Inches", getLeftEncoderDistanceInches());
-		SmartDashboard.putNumber("Relative Heading", Robot.rps.getNavxAngle());
-		SmartDashboard.putNumber("Absolute Heading", Robot.rps.getAbsoluteAngle());
+		SmartDashboard.putNumber("Relative Heading", Robot.navx.getAngle());
 	}
 
-	public boolean checkSubsystem(){
-		System.out.println("\n\n\n\nTesting Drive Train..........................");
 
-		double kEncoderThreshold = 20;
-		boolean rightEncoderFailure = false;
-		boolean leftEncoderFailure = false;
-
-		resetEncoders();
-		
-		System.out.println("\n\nTesting Drive Encoders...........................");
-		tankDrive(0.6, 0.6);
-		Timer.delay(1);
-		tankDrive(0, 0);
-
-		if(encoderRight.get() > kEncoderThreshold){
-			System.out.println("######## SUCCESSFUL: GO FOR RIGHT DRIVE ENCODERS ########");
-		} else {
-			System.out.println("!!!!!!!! FAILURE: RIGHT ENCODERS ARE NOT FUNCTIONAL !!!!!!!!");
-			rightEncoderFailure = true;
-		}
-
-		if(encoderLeft.get() > kEncoderThreshold){
-			System.out.println("######## SUCCESSFUL: GO FOR LEFT DRIVE ENCODERS ########");
-		} else {
-			System.out.println("!!!!!!!! FAILURE: LEFT ENCODERS ARE NOT FUNCTIONAL !!!!!!!!");
-			leftEncoderFailure = true;
-		}
-
-		return !leftEncoderFailure && !rightEncoderFailure;
-
-
-
-	}
 
 	
 

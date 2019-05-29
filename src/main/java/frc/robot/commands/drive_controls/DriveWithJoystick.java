@@ -2,9 +2,10 @@ package frc.robot.commands.drive_controls;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.controllers.Xbox;
+
 public class DriveWithJoystick extends Command {
 
-	double forwardClipAmount, turnClipAmount;
+	private double forwardClipAmount, turnClipAmount;
 
 
 	public DriveWithJoystick() {
@@ -33,7 +34,12 @@ public class DriveWithJoystick extends Command {
 			turnClipAmount = 1;
 		}
 
-		Robot.driveTrain.arcadeDrive(-Xbox.clipAxis(forward, forwardClipAmount), 0.75*(Xbox.clipAxis(turn, turnClipAmount)));
+		if(Robot.oi.driveStick.buttonA.get()) {
+			Robot.driveTrain.arcadeDrive(-Xbox.clipAxis(forward, forwardClipAmount), Xbox.clipAxis(Robot.limelight.getSteerCorrection(), turnClipAmount));
+		} else {
+			Robot.driveTrain.arcadeDrive(-Xbox.clipAxis(forward, forwardClipAmount), 0.75*(Xbox.clipAxis(turn, turnClipAmount)));
+		}
+		
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

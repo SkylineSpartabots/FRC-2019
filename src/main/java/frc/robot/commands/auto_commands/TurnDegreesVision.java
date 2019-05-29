@@ -1,9 +1,10 @@
 package frc.robot.commands.auto_commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 
 public class TurnDegreesVision extends Command {
@@ -15,7 +16,7 @@ public class TurnDegreesVision extends Command {
 
 	private Timer timer;
 	private double output = 0;
-	private PIDSource turnSource;
+	private DoubleSupplier turnSource;
 	private SimplePID turnPID;
 
 	double kP = 0.03;
@@ -27,7 +28,7 @@ public class TurnDegreesVision extends Command {
 	public TurnDegreesVision(double timeOutSecs) {
 		requires(Robot.driveTrain);
 		timer = new Timer();
-		turnSource = () -> Robot.rps.getNavxAngle();
+		turnSource = () -> Robot.navx.getAngle();
 		this.timeOutSecs = timeOutSecs;
 	}
 
@@ -35,9 +36,9 @@ public class TurnDegreesVision extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		angle = Robot.rps.getAngleToDepot() + Robot.rps.getNavxAngle();
+		angle = Robot.navx.getAngle();
 
-		turnPID = new SimplePID(turnSource, 0, kP, kI, kD, "TurnDegreesPID",true);
+		turnPID = new SimplePID(turnSource, 0, kP, kI, kD);
 		turnPID.setOutputLimits(-1, 1);
 		turnPID.resetPID();
 		

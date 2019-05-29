@@ -1,10 +1,11 @@
 package frc.robot.commands.drive_controls;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.commands.VibrateControllers;
 import frc.robot.subsystems.Elevator;
-import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
 
 public class ElevatorToPosition extends Command {
@@ -13,7 +14,7 @@ public class ElevatorToPosition extends Command {
   private final static int CLOCK_MAX = 10;
 
   private SimplePID elevatorPID;
-  private PIDSource elevatorSource;
+  private DoubleSupplier elevatorSource;
   private int elevatorTarget;
   private double output;
   private double error;
@@ -53,7 +54,7 @@ public class ElevatorToPosition extends Command {
 
     elevatorTarget = this.elevatorPosition.getPosition();
 
-    elevatorPID = new SimplePID(elevatorSource, elevatorTarget, elevatorConstants[0], elevatorConstants[1], elevatorConstants[2], "ElevatorPositionPID", true);
+    elevatorPID = new SimplePID(elevatorSource, elevatorTarget, elevatorConstants[0], elevatorConstants[1], elevatorConstants[2]);
     kP = elevatorConstants[0];
     targetIsLower = (Robot.elevator.getElevatorEncoderOutput() - elevatorTarget) > 40;
     targetIsDown = elevatorTarget == Elevator.ElevatorPosition.DOWN.getPosition();

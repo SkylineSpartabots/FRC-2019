@@ -5,75 +5,70 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drive_controls;
+package frc.robot.commands.auto_commands;
+
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.util.SimplePID;
+import frc.robot.util.vision.Limelight;
 
-/**
- * This logic controls the hatch mechanism Gamepad Controls (Second Stick):
- * Right Bumper -> release hatch Left Bumper -> grasp hatch
- * 
- * Also implements the limit swtich, if the limit swich and changed from a false
- * to true state, grasp hatch
- */
+public class AlignToTarget extends Command {
 
-public class HatchMechanismControl extends Command {
+  private final double DESIRED_TARGET_AREA = 0;
+  private SimplePID distancePID;
+  private DoubleSupplier distanceSupplier;
+  private double kP = 0.001;
+  private double kI = 0.00;
+  private double kD = 0.00;
 
 
-  public HatchMechanismControl() {
-    requires(Robot.hatchMechanism);
+  public AlignToTarget() {
+    requires(Robot.driveTrain);
+    distanceSupplier = () -> Limelight.getTargetArea();
+    distancePID = new SimplePID(distanceSupplier, DESIRED_TARGET_AREA, kP, kI, kD);
+    distancePID.setOutputLimits(-0.3, 0.3);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-
+    Robot.driveTrain.arcadeDrive(0, 0);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
 
-    if(Robot.oi.driveStick.buttonLBumper.get()){
-      Robot.hatchMechanism.releaseHatch();
-    } else if(Robot.oi.driveStick.buttonRBumper.get()){
-      Robot.hatchMechanism.graspHatch();
-    }
-    
-    boolean isAuto = false;
-    if(isAuto){
-      if (Robot.oi.secondStick.buttonLJoystick.get()) {
-        Robot.hatchMechanism.slideOut();
-      } else if(Robot.oi.secondStick.buttonRJoystick.get()){
-        Robot.hatchMechanism.slideIn();
-      }
-    } else {
-      if (Robot.oi.secondStick.buttonLJoystick.get()) {
-        Robot.hatchMechanism.slideOut();
-      } else {
-        Robot.hatchMechanism.slideIn();
-      }
-    }
-    
+    Robot.oi.driveStick.vibrate(0.5);
 
+    Robot.driveTrain.arcadeDrive(distancePID.compute(), Robot.limelight.getSteerCorrection());
 
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return !Limelight.isTargetVisible() || !Robot.oi.driveStick.buttonB.get();
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.driveTrain.arcadeDrive(0, 0);
+    Robot.oi.driveStick.vibrate(0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
+
+
+
+
+
 }

@@ -1,10 +1,11 @@
 package frc.robot.commands.auto_commands;
 
 import frc.robot.Robot;
-import frc.robot.util.PIDSource;
 import frc.robot.util.SimplePID;
+
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
@@ -22,8 +23,8 @@ public class PerfectlyStraightDrive extends Command {
 
   private double output = 0;
  
-	PIDSource NavxSource;
-	SimplePID turnPID;
+	private DoubleSupplier gyroSource;
+	private SimplePID turnPID;
 
   public double kP = 0.020;
 	public double kI = 0.00001;
@@ -35,17 +36,11 @@ public class PerfectlyStraightDrive extends Command {
     this.leftPower = leftPower;
     this.rightPower = rightPower;
     requires(Robot.driveTrain);
-    angle = Robot.rps.getNavxAngle();
+    angle = Robot.navx.getAngle();
     
-		NavxSource = new PIDSource(){
-			@Override
-			public double getInput() {
-				return Robot.rps.getNavxAngle();
-			}
-		};
+		gyroSource = () -> Robot.navx.getAngle();
 
-    
-		turnPID = new SimplePID(NavxSource, this.angle, kP, kI, kD, "DriveStraingTurnPID" ,true);
+		turnPID = new SimplePID(gyroSource, this.angle, kP, kI, kD);
 		turnPID.setOutputLimits(-0.5, 0.5);
 
   }
