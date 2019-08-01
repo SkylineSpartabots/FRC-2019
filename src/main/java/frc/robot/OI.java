@@ -46,8 +46,12 @@ public class OI {
 		secondStick.buttonY.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.ROCKET_THIRD));
 		secondStick.buttonB.whenPressed(new ElevatorToPosition(Elevator.ElevatorPosition.CARGO_SHIP));
 
+<<<<<<< Updated upstream
 		//secondStick.buttonStart.whenPressed(new SlideHatchOut());
 		//secondStick.buttonBack.whenPressed(new SlideHatchIn());
+=======
+		driveStick.buttonA.whenPressed(new AlignToTarget());
+>>>>>>> Stashed changes
 
 		//driveStick.buttonLBumper.whenPressed(new ReleaseHatch());
 		//driveStick.buttonRBumper.whenPressed(new GraspHatch());
